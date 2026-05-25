@@ -369,28 +369,71 @@ code{font-family:monospace;font-size:11px;background:var(--surface);padding:1px 
         <div class="guide-step"><span class="guide-step-num">3</span><div>Task·마일스톤·편집 로그 모두 복원됩니다</div></div>
       </div>
       <div class="guide-block" style="grid-column:1/-1;border:1.5px solid var(--green-mid);background:var(--green-light)">
-        <div class="guide-title"><i class="ti ti-calendar-week" style="color:var(--green)"></i> 주간 공유 프로세스</div>
+        <div class="guide-title"><i class="ti ti-calendar-week" style="color:var(--green)"></i> 주간 공유 프로세스 <span style="font-size:10px;background:var(--green-mid);color:#fff;padding:1px 7px;border-radius:4px;margin-left:4px">GitHub Pages 기준</span></div>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+
           <div style="background:var(--surface);border-radius:var(--radius);padding:12px">
-            <div style="font-size:11px;font-weight:600;color:var(--blue);margin-bottom:8px"><i class="ti ti-calendar"></i> 미팅 전</div>
-            <div class="guide-step"><span class="guide-step-num" style="background:var(--blue-mid)">1</span><div>데이터 백업 클릭 → JSON 저장</div></div>
-            <div class="guide-step"><span class="guide-step-num" style="background:var(--blue-mid)">2</span><div>팀 슬랙/카톡에 파일 공유</div></div>
-            <div class="guide-step" style="border:none"><span class="guide-step-num" style="background:var(--blue-mid)">3</span><div>팀원들 데이터 복원</div></div>
+            <div style="font-size:11px;font-weight:600;color:var(--blue);margin-bottom:8px"><i class="ti ti-calendar"></i> 미팅 전 (월요일 오전)</div>
+            <div class="guide-step"><span class="guide-step-num" style="background:var(--blue-mid)">1</span><div>대시보드에서 상태 최종 업데이트</div></div>
+            <div class="guide-step"><span class="guide-step-num" style="background:var(--blue-mid)">2</span><div>Claude에서 최신 파일 받아 <code>index.html</code>로 변경</div></div>
+            <div class="guide-step"><span class="guide-step-num" style="background:var(--blue-mid)">3</span><div>GitHub에 <b>Upload files</b>로 업로드 → Commit</div></div>
+            <div class="guide-step" style="border:none"><span class="guide-step-num" style="background:var(--blue-mid)">4</span><div>팀원에게 URL 공유<br><code style="font-size:10px">jooy-hi.github.io/4pl-dashboard</code></div></div>
           </div>
+
           <div style="background:var(--surface);border-radius:var(--radius);padding:12px">
             <div style="font-size:11px;font-weight:600;color:var(--amber);margin-bottom:8px"><i class="ti ti-users"></i> 미팅 중</div>
-            <div class="guide-step"><span class="guide-step-num" style="background:var(--amber-mid)">1</span><div>화면 공유 후 실시간 업데이트</div></div>
-            <div class="guide-step"><span class="guide-step-num" style="background:var(--amber-mid)">2</span><div>지연/주의 탭으로 이슈 논의</div></div>
-            <div class="guide-step" style="border:none"><span class="guide-step-num" style="background:var(--amber-mid)">3</span><div>마일스톤 탭 진행 현황 공유</div></div>
+            <div class="guide-step"><span class="guide-step-num" style="background:var(--amber-mid)">1</span><div>팀원들 URL 새로고침 → 최신 버전 확인</div></div>
+            <div class="guide-step"><span class="guide-step-num" style="background:var(--amber-mid)">2</span><div>담당자 화면 공유하며 실시간 업데이트</div></div>
+            <div class="guide-step"><span class="guide-step-num" style="background:var(--amber-mid)">3</span><div>지연/주의 탭으로 이슈 논의</div></div>
+            <div class="guide-step" style="border:none"><span class="guide-step-num" style="background:var(--amber-mid)">4</span><div>마일스톤 탭으로 Phase별 현황 공유</div></div>
           </div>
+
           <div style="background:var(--surface);border-radius:var(--radius);padding:12px">
             <div style="font-size:11px;font-weight:600;color:var(--green);margin-bottom:8px"><i class="ti ti-check"></i> 미팅 후</div>
-            <div class="guide-step"><span class="guide-step-num">1</span><div>저장 버튼 클릭</div></div>
-            <div class="guide-step"><span class="guide-step-num">2</span><div>데이터 백업 → 최신 JSON 저장</div></div>
-            <div class="guide-step" style="border:none"><span class="guide-step-num">3</span><div>팀원에게 최신 파일 재공유</div></div>
+            <div class="guide-step"><span class="guide-step-num">1</span><div>미팅 중 변경사항 저장 버튼 클릭</div></div>
+            <div class="guide-step"><span class="guide-step-num">2</span><div>Claude에서 최신 파일 재다운로드</div></div>
+            <div class="guide-step"><span class="guide-step-num">3</span><div><code>index.html</code>로 변경 후 GitHub 재업로드</div></div>
+            <div class="guide-step" style="border:none"><span class="guide-step-num">4</span><div>팀원들 URL 새로고침 → 최신 데이터 반영 ✅</div></div>
+          </div>
+
+        </div>
+        <div style="margin-top:12px;padding:8px 12px;background:var(--surface);border-radius:var(--radius);font-size:11px;color:var(--text2);border:0.5px solid var(--border)">
+          💡 <b>새 기기/브라우저에서 열 때</b>: 상단 <b>데이터 복원</b> 버튼으로 JSON 백업 파일 불러오기 필요 &nbsp;|&nbsp;
+          <b>저장 단축키</b>: 상단 저장 버튼 (30초 자동 저장) &nbsp;|&nbsp;
+          <b>편집폼 닫기</b>: ESC 키
+        </div>
+      </div>
+
+<div class="guide-block" style="grid-column:1/-1;border:1.5px solid var(--purple-mid);background:var(--purple-light)">
+        <div class="guide-title"><i class="ti ti-brand-github" style="color:var(--purple)"></i> GitHub Pages 업데이트 방법</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div>
+            <div style="font-size:11px;font-weight:600;color:var(--purple);margin-bottom:10px"><i class="ti ti-refresh"></i> 대시보드 파일 업데이트</div>
+            <div class="guide-step"><span class="guide-step-num" style="background:var(--purple-mid)">1</span><div>Claude에서 수정 요청 후 <b>파일 다운로드</b></div></div>
+            <div class="guide-step"><span class="guide-step-num" style="background:var(--purple-mid)">2</span><div>파일명 변경: <code>4pl_wbs_dashboard.html</code> → <code>index.html</code></div></div>
+            <div class="guide-step"><span class="guide-step-num" style="background:var(--purple-mid)">3</span><div><b>github.com/jooy-hi/4pl-dashboard</b> 접속</div></div>
+            <div class="guide-step"><span class="guide-step-num" style="background:var(--purple-mid)">4</span><div><b>Add file → Upload files</b> 클릭</div></div>
+            <div class="guide-step"><span class="guide-step-num" style="background:var(--purple-mid)">5</span><div><code>index.html</code> 드래그앤드롭 → <b>Commit changes</b> 클릭</div></div>
+            <div class="guide-step" style="border:none"><span class="guide-step-num" style="background:var(--purple-mid)">6</span><div>1~2분 후 URL 새로고침 → 완료 ✅<br><code style="font-size:10px">https://jooy-hi.github.io/4pl-dashboard</code></div></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="font-size:11px;font-weight:600;color:var(--purple);margin-bottom:2px"><i class="ti ti-alert-circle"></i> 주의사항</div>
+            <div style="padding:8px 10px;background:var(--surface);border-radius:var(--radius);border:0.5px solid var(--border)">
+              <div style="font-size:11px;font-weight:600;color:var(--amber);margin-bottom:3px"><i class="ti ti-database"></i> 데이터는 각자 브라우저에 저장</div>
+              <div style="font-size:11px;color:var(--text2)">GitHub 업로드는 파일(코드)만 업데이트됩니다. 상태값·댓글·연관Task 등 데이터는 각자 브라우저에 그대로 유지됩니다.</div>
+            </div>
+            <div style="padding:8px 10px;background:var(--surface);border-radius:var(--radius);border:0.5px solid var(--border)">
+              <div style="font-size:11px;font-weight:600;color:var(--red);margin-bottom:3px"><i class="ti ti-refresh-alert"></i> 새 기기/브라우저에서 열 때만</div>
+              <div style="font-size:11px;color:var(--text2)">새 컴퓨터·브라우저에서 열 때는 <b>데이터 복원</b> 버튼으로 JSON 백업 파일을 불러오세요.</div>
+            </div>
+            <div style="padding:8px 10px;background:var(--surface);border-radius:var(--radius);border:0.5px solid var(--border)">
+              <div style="font-size:11px;font-weight:600;color:var(--green);margin-bottom:3px"><i class="ti ti-check"></i> 팀원 공유</div>
+              <div style="font-size:11px;color:var(--text2)">팀원은 URL 새로고침만 하면 최신 버전 확인 가능합니다.<br><code style="font-size:10px">https://jooy-hi.github.io/4pl-dashboard</code></div>
+            </div>
           </div>
         </div>
       </div>
+
     </div>
   </div>
 </div>
