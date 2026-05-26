@@ -226,9 +226,6 @@ code{font-family:monospace;font-size:11px;background:var(--surface);padding:1px 
 .save-toast{position:fixed;bottom:20px;right:20px;background:var(--green);color:#fff;font-size:12px;padding:8px 16px;border-radius:var(--radius);opacity:0;transition:opacity 0.3s;z-index:100;pointer-events:none;}
 .save-toast.show{opacity:1;}
 </style>
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 </head>
 <body>
 <div class="page">
@@ -720,7 +717,7 @@ function statusPillHtml(est) {
 }
 
 // ── Storage ──
-// ── Firebase 초기화 ──
+// ── Firebase 설정 ──
 var firebaseConfig = {
   apiKey: "AIzaSyBB2MnLc1WoaVXmHiSKnQfJgjv5kFErWg8",
   authDomain: "plwbs-d15ff.firebaseapp.com",
@@ -730,8 +727,7 @@ var firebaseConfig = {
   messagingSenderId: "1073510410024",
   appId: "1:1073510410024:web:983fe65b0d7391cb62d21d"
 };
-firebase.initializeApp(firebaseConfig);
-var db = firebase.database();
+var db = null;
 var isSyncing = false;
 var saveTimer = null;
 
@@ -751,20 +747,23 @@ function loadData() {
 
   // 2) Firebase 실시간 리스너
   showSyncStatus('☁ 연결 중...', 'var(--amber)');
+  if(!db){ showSyncStatus('⚠ Firebase 미연결', 'var(--amber)'); return; }
   db.ref('dashboard').on('value', function(snapshot) {
     var data = snapshot.val();
     if(data) {
+      // 데이터만 로컬에 저장 (화면 자동 갱신 없음 - 필터 유지)
+      var isFirst = !localStorage.getItem('4pl_wbs_v3');
       if(data.tasks)     { taskData = data.tasks;     localStorage.setItem('4pl_wbs_v3', JSON.stringify(taskData)); }
       if(data.milestones){ msData   = data.milestones; localStorage.setItem('4pl_ms_v3', JSON.stringify(msData)); }
       if(data.log)       { editLog  = data.log;        saveLog(); updateLogBadge(); }
-      renderFilters(); initOpenStates();
-      // 열린 폼이 없을 때만 자동 갱신 (폼 작성 중 방해 방지)
-      var openForms = document.querySelectorAll('.inline-form.open, .ms-inline-form.open');
-      if(!openForms.length) refreshAll();
+      if(isFirst) {
+        // 최초 로드 시에만 화면 갱신
+        renderFilters(); initOpenStates(); refreshAll();
+      }
       showSyncStatus('✓ 실시간 연결됨', 'var(--green)');
       updateTimestamp();
     } else {
-      // Firebase 비어있으면 로컬 데이터로 초기화
+      // Firebase 비어있으면 로컬 데이터로 초기화 후 저장
       showSyncStatus('✓ 초기 데이터 로드', 'var(--green)');
       saveData();
     }
@@ -789,6 +788,7 @@ function saveData() {
     if(isSyncing) return;
     isSyncing = true;
     showSyncStatus('☁ 저장 중...', 'var(--amber)');
+    if(!db){ isSyncing=false; return; }
     db.ref('dashboard').set({
       tasks: taskData,
       milestones: msData,
@@ -1827,14 +1827,17 @@ function refreshAll() {
   renderKPIs(); renderTaskGroups(); renderAlerts(); renderMilestones(); updateTabBadges();
 }
 function init() {
+  // Firebase SDK 로드 후 초기화
+  try {
+    firebase.initializeApp(firebaseConfig);
+    db = firebase.database();
+  } catch(e) {
+    console.warn('Firebase 초기화 실패:', e);
+  }
   loadData(); initOpenStates(); updateLogBadge();
   document.getElementById('current-week-badge').textContent='현재 주차: W'+getCurrentWeek();
   updateTimestamp(); renderFilters(); refreshAll();
-  setInterval(function(){
-    // 열린 폼 없을 때만 자동저장
-    var openForms = document.querySelectorAll('.inline-form.open, .ms-inline-form.open');
-    if(!openForms.length) saveData();
-  }, 30000);
+  // 자동저장 비활성화
 }
 
 document.addEventListener('keydown',function(e){
@@ -1846,7 +1849,9 @@ document.addEventListener('keydown',function(e){
   }
 });
 
-init();
+window.onload = init;
 </script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 </body>
 </html>
