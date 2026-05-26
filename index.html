@@ -226,6 +226,9 @@ code{font-family:monospace;font-size:11px;background:var(--surface);padding:1px 
 .save-toast{position:fixed;bottom:20px;right:20px;background:var(--green);color:#fff;font-size:12px;padding:8px 16px;border-radius:var(--radius);opacity:0;transition:opacity 0.3s;z-index:100;pointer-events:none;}
 .save-toast.show{opacity:1;}
 </style>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 </head>
 <body>
 <div class="page">
@@ -717,21 +720,87 @@ function statusPillHtml(est) {
 }
 
 // ── Storage ──
+// ── Firebase 초기화 ──
+var firebaseConfig = {
+  apiKey: "AIzaSyBB2MnLc1WoaVXmHiSKnQfJgjv5kFErWg8",
+  authDomain: "plwbs-d15ff.firebaseapp.com",
+  databaseURL: "https://plwbs-d15ff-default-rtdb.firebaseio.com",
+  projectId: "plwbs-d15ff",
+  storageBucket: "plwbs-d15ff.firebasestorage.app",
+  messagingSenderId: "1073510410024",
+  appId: "1:1073510410024:web:983fe65b0d7391cb62d21d"
+};
+firebase.initializeApp(firebaseConfig);
+var db = firebase.database();
+var isSyncing = false;
+var saveTimer = null;
+
+function showSyncStatus(msg, color) {
+  var el = document.getElementById('sync-status');
+  if(el){ el.textContent = msg; el.style.color = color||'var(--text3)'; }
+}
+
 function loadData() {
+  // 1) 로컬캐시 우선 즉시 렌더
   var st = localStorage.getItem('4pl_wbs_v3');
   var sm = localStorage.getItem('4pl_ms_v3');
   var lg = localStorage.getItem('4pl_edit_log');
   taskData = st ? JSON.parse(st) : RAW_TASKS.map(function(d,i){ return Object.assign({},d,{id:i,week:dateToWeek(d.targetDate)}); });
   msData   = sm ? JSON.parse(sm) : RAW_MILESTONES.map(function(d,i){ return Object.assign({},d,{id:i}); });
   editLog  = lg ? JSON.parse(lg) : [];
+
+  // 2) Firebase 실시간 리스너
+  showSyncStatus('☁ 연결 중...', 'var(--amber)');
+  db.ref('dashboard').on('value', function(snapshot) {
+    var data = snapshot.val();
+    if(data) {
+      if(data.tasks)     { taskData = data.tasks;     localStorage.setItem('4pl_wbs_v3', JSON.stringify(taskData)); }
+      if(data.milestones){ msData   = data.milestones; localStorage.setItem('4pl_ms_v3', JSON.stringify(msData)); }
+      if(data.log)       { editLog  = data.log;        saveLog(); updateLogBadge(); }
+      renderFilters(); initOpenStates(); refreshAll();
+      showSyncStatus('✓ 실시간 연결됨', 'var(--green)');
+      updateTimestamp();
+    } else {
+      // Firebase 비어있으면 로컬 데이터로 초기화
+      showSyncStatus('✓ 초기 데이터 로드', 'var(--green)');
+      saveData();
+    }
+  }, function(err) {
+    showSyncStatus('⚠ 오프라인 (로컬 데이터)', 'var(--amber)');
+    console.warn('Firebase 연결 실패:', err);
+  });
 }
+
 function saveData() {
+  // 로컬 즉시 저장
   localStorage.setItem('4pl_wbs_v3', JSON.stringify(taskData));
   localStorage.setItem('4pl_ms_v3', JSON.stringify(msData));
   localStorage.setItem('4pl_wbs_saved', new Date().toISOString());
   var t = document.getElementById('save-toast');
   if(t){ t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 2000); }
   updateTimestamp();
+
+  // Firebase 저장 (디바운스 1.5초)
+  if(saveTimer) clearTimeout(saveTimer);
+  saveTimer = setTimeout(function(){
+    if(isSyncing) return;
+    isSyncing = true;
+    showSyncStatus('☁ 저장 중...', 'var(--amber)');
+    db.ref('dashboard').set({
+      tasks: taskData,
+      milestones: msData,
+      log: editLog,
+      updatedAt: new Date().toISOString()
+    }).then(function(){
+      isSyncing = false;
+      showSyncStatus('✓ 저장됨', 'var(--green)');
+      setTimeout(function(){ showSyncStatus('✓ 실시간 연결됨', 'var(--green)'); }, 2000);
+    }).catch(function(err){
+      isSyncing = false;
+      showSyncStatus('⚠ 저장 실패 (로컬만)', 'var(--red)');
+      console.warn('Firebase 저장 실패:', err);
+    });
+  }, 1500);
 }
 function saveLog() {
   if(editLog.length>200) editLog = editLog.slice(-200);
