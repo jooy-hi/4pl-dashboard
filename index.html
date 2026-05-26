@@ -993,7 +993,7 @@ function saveTaskEdit(el) {
   if(nDate!==oldDate) addLog('date_change','일정 변경','"'+t.task+'" : '+(oldDate||'미설정')+' → '+(nDate||'미설정'), ctx);
   if(nTask&&nTask!==oldTask) addLog('task_edit','Task 수정', oldTask+' → '+nTask, ctx);
   var form = document.getElementById('tedit-'+id); if(form) form.classList.remove('open');
-  refreshAll(); saveData();
+  lightRefresh(); saveData();
 }
 function deleteTaskById(el) {
   var id = parseInt(el.getAttribute('data-id'));
@@ -1001,7 +1001,7 @@ function deleteTaskById(el) {
   if(!confirm('"'+t.task+'"을(를) 삭제하시겠습니까?')) return;
   addLog('task_delete','Task 삭제','"'+t.task+'"',(t.ws||'').replace('■ ','')+' > '+(t.action||''));
   taskData = taskData.filter(function(t){return t.id!==id;});
-  refreshAll(); saveData();
+  lightRefresh(); saveData();
 }
 
 function renderTaskGroups() {
@@ -1185,7 +1185,7 @@ function submitAddAction(el) {
   actionOpenState[ws+'__'+name]=true;
   if(inp) inp.value='';
   document.getElementById('aa-'+sid).classList.remove('open');
-  refreshAll(); saveData();
+  lightRefresh(); saveData();
 }
 function showActionEdit(el) {
   var sid = el.getAttribute('data-actsid');
@@ -1205,7 +1205,7 @@ function saveActionEdit(el) {
   taskData.forEach(function(t){ if(t.ws===ws&&t.action===oldAction) t.action=newName; });
   addLog('action_add','Action 수정','"'+oldAction+'" → "'+newName+'"',ws.replace('■ ',''));
   document.getElementById('ae-'+actsid).classList.remove('open');
-  refreshAll(); saveData();
+  lightRefresh(); saveData();
 }
 function deleteActionByEl(el) {
   var actsid = el.getAttribute('data-actsid');
@@ -1217,7 +1217,7 @@ function deleteActionByEl(el) {
   if(!confirm('"'+actionName+'" Action을 삭제할까요?\nTask '+cnt+'건도 함께 삭제됩니다.')) return;
   taskData = taskData.filter(function(t){return !(t.ws===ws&&t.action===actionName);});
   addLog('task_delete','Action 삭제','"'+actionName+'" (Task '+cnt+'건)',ws.replace('■ ',''));
-  refreshAll(); saveData();
+  lightRefresh(); saveData();
 }
 
 // ── Task add ──
@@ -1246,7 +1246,7 @@ function submitAddTask(el) {
   addLog('task_add','Task 추가','"'+task+'"',ws.replace('■ ','')+' > '+action);
   if(taskInp) taskInp.value='';
   document.getElementById('at-'+actsid).classList.remove('open');
-  refreshAll(); saveData();
+  lightRefresh(); saveData();
 }
 
 // ── Alerts ──
@@ -1789,7 +1789,7 @@ function saveRelatedTasks() {
     }
   });
   closeRelatedModal();
-  refreshAll(); saveData();
+  lightRefresh(); saveData();
   addLog('task_edit','연관 Task 설정',t.task.slice(0,20)+' → '+tempRelatedIds.length+'개 연결',(t.ws||'').replace('■ ',''));
 }
 
@@ -1823,8 +1823,24 @@ function scrollToTask(id) {
   }, 200);
 }
 
+
+function lightRefresh() {
+  // 스크롤 위치 저장
+  var scrollY = window.scrollY || document.documentElement.scrollTop;
+  renderKPIs(); renderTaskGroups(); updateTabBadges();
+  // 스크롤 위치 복원
+  window.scrollTo(0, scrollY);
+}
+
 function refreshAll() {
+  // 스크롤 위치 저장
+  var taskPanel = document.getElementById('task-groups');
+  var scrollY = window.scrollY || document.documentElement.scrollTop;
+
   renderKPIs(); renderTaskGroups(); renderAlerts(); renderMilestones(); updateTabBadges();
+
+  // 스크롤 위치 복원
+  window.scrollTo(0, scrollY);
 }
 function init() {
   // Firebase SDK 로드 후 초기화
