@@ -757,7 +757,10 @@ function loadData() {
       if(data.tasks)     { taskData = data.tasks;     localStorage.setItem('4pl_wbs_v3', JSON.stringify(taskData)); }
       if(data.milestones){ msData   = data.milestones; localStorage.setItem('4pl_ms_v3', JSON.stringify(msData)); }
       if(data.log)       { editLog  = data.log;        saveLog(); updateLogBadge(); }
-      renderFilters(); initOpenStates(); refreshAll();
+      renderFilters(); initOpenStates();
+      // 열린 폼이 없을 때만 자동 갱신 (폼 작성 중 방해 방지)
+      var openForms = document.querySelectorAll('.inline-form.open, .ms-inline-form.open');
+      if(!openForms.length) refreshAll();
       showSyncStatus('✓ 실시간 연결됨', 'var(--green)');
       updateTimestamp();
     } else {
@@ -1827,7 +1830,11 @@ function init() {
   loadData(); initOpenStates(); updateLogBadge();
   document.getElementById('current-week-badge').textContent='현재 주차: W'+getCurrentWeek();
   updateTimestamp(); renderFilters(); refreshAll();
-  setInterval(saveData, 30000);
+  setInterval(function(){
+    // 열린 폼 없을 때만 자동저장
+    var openForms = document.querySelectorAll('.inline-form.open, .ms-inline-form.open');
+    if(!openForms.length) saveData();
+  }, 30000);
 }
 
 document.addEventListener('keydown',function(e){
