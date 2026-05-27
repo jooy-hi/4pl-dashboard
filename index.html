@@ -826,19 +826,35 @@ function showSyncStatus(msg, color) {
 }
 
 function loadData() {
-  // CSV 업데이트 시 v4로 버전업 → 기존 localStorage 무효화, RAW_TASKS 강제 로드
-  var DATA_VERSION = '4pl_wbs_v4';
-  var st = localStorage.getItem(DATA_VERSION);
+  // RAW_TASKS를 항상 기준으로 로드
+  // localStorage에는 사용자 수정사항(status/assignee/targetDate/relatedIds/msId/comments)만 저장
+  var OVERRIDES_KEY = '4pl_overrides_v1';
+  var overrides = {};
+  try {
+    var raw = localStorage.getItem(OVERRIDES_KEY);
+    if(raw) overrides = JSON.parse(raw);
+  } catch(e) {}
+
+  // RAW_TASKS 기반으로 taskData 생성 후 override 머지
+  taskData = RAW_TASKS.map(function(d, i) {
+    var base = Object.assign({}, d, {id: i, week: d.week || dateToWeek(d.targetDate)});
+    var ov = overrides[i] || {};
+    // 사용자가 수정한 필드만 덮어씀
+    if(ov.status    !== undefined) base.status     = ov.status;
+    if(ov.assignee  !== undefined) base.assignee   = ov.assignee;
+    if(ov.targetDate!== undefined) { base.targetDate = ov.targetDate; base.week = dateToWeek(ov.targetDate)||base.week; }
+    if(ov.task      !== undefined) base.task       = ov.task;
+    if(ov.ws        !== undefined) base.ws         = ov.ws;
+    if(ov.initiative!== undefined) base.initiative = ov.initiative;
+    if(ov.action    !== undefined) base.action     = ov.action;
+    if(ov.msId      !== undefined) base.msId       = ov.msId;
+    if(ov.relatedIds!== undefined) base.relatedIds = ov.relatedIds;
+    if(ov.comments  !== undefined) base.comments   = ov.comments;
+    return base;
+  });
+
   var sm = localStorage.getItem('4pl_ms_v4');
   var lg = localStorage.getItem('4pl_edit_log');
-
-  if(st) {
-    taskData = JSON.parse(st);
-  } else {
-    // 최초 또는 버전 업: RAW_TASKS로 초기화
-    taskData = RAW_TASKS.map(function(d,i){ return Object.assign({},d,{id:i,week:d.week||dateToWeek(d.targetDate)}); });
-    localStorage.setItem(DATA_VERSION, JSON.stringify(taskData));
-  }
   msData  = sm ? JSON.parse(sm) : RAW_MILESTONES.map(function(d,i){ return Object.assign({},d,{id:i}); });
   editLog = lg ? JSON.parse(lg) : [];
 
@@ -871,8 +887,24 @@ function loadData() {
 }
 
 function saveData() {
-  // 로컬 즉시 저장
-  localStorage.setItem('4pl_wbs_v4', JSON.stringify(taskData));
+  // override만 저장 (RAW_TASKS와 다른 필드만)
+  var OVERRIDES_KEY = '4pl_overrides_v1';
+  var overrides = {};
+  var rawMap = {};
+  RAW_TASKS.forEach(function(d,i){ rawMap[i] = d; });
+  taskData.forEach(function(t) {
+    var raw = rawMap[t.id];
+    if(!raw) return;
+    var ov = {};
+    var fields = ['status','assignee','targetDate','task','ws','initiative','action','msId','relatedIds','comments'];
+    fields.forEach(function(f){
+      var tv = JSON.stringify(t[f] !== undefined ? t[f] : null);
+      var rv = JSON.stringify(raw[f] !== undefined ? raw[f] : null);
+      if(tv !== rv) ov[f] = t[f];
+    });
+    if(Object.keys(ov).length) overrides[t.id] = ov;
+  });
+  localStorage.setItem(OVERRIDES_KEY, JSON.stringify(overrides));
   localStorage.setItem('4pl_ms_v4', JSON.stringify(msData));
   localStorage.setItem('4pl_wbs_saved_v4', new Date().toISOString());
   var t = document.getElementById('save-toast');
