@@ -826,13 +826,21 @@ function showSyncStatus(msg, color) {
 }
 
 function loadData() {
-  // 1) 로컬캐시 우선 즉시 렌더
-  var st = localStorage.getItem('4pl_wbs_v3');
-  var sm = localStorage.getItem('4pl_ms_v3');
+  // CSV 업데이트 시 v4로 버전업 → 기존 localStorage 무효화, RAW_TASKS 강제 로드
+  var DATA_VERSION = '4pl_wbs_v4';
+  var st = localStorage.getItem(DATA_VERSION);
+  var sm = localStorage.getItem('4pl_ms_v4');
   var lg = localStorage.getItem('4pl_edit_log');
-  taskData = st ? JSON.parse(st) : RAW_TASKS.map(function(d,i){ return Object.assign({},d,{id:i,week:dateToWeek(d.targetDate)}); });
-  msData   = sm ? JSON.parse(sm) : RAW_MILESTONES.map(function(d,i){ return Object.assign({},d,{id:i}); });
-  editLog  = lg ? JSON.parse(lg) : [];
+
+  if(st) {
+    taskData = JSON.parse(st);
+  } else {
+    // 최초 또는 버전 업: RAW_TASKS로 초기화
+    taskData = RAW_TASKS.map(function(d,i){ return Object.assign({},d,{id:i,week:d.week||dateToWeek(d.targetDate)}); });
+    localStorage.setItem(DATA_VERSION, JSON.stringify(taskData));
+  }
+  msData  = sm ? JSON.parse(sm) : RAW_MILESTONES.map(function(d,i){ return Object.assign({},d,{id:i}); });
+  editLog = lg ? JSON.parse(lg) : [];
 
   // 2) Firebase 실시간 리스너
   showSyncStatus('☁ 연결 중...', 'var(--amber)');
@@ -841,9 +849,9 @@ function loadData() {
     var data = snapshot.val();
     if(data) {
       // 데이터만 로컬에 저장 (화면 자동 갱신 없음 - 필터 유지)
-      var isFirst = !localStorage.getItem('4pl_wbs_v3');
-      if(data.tasks)     { taskData = data.tasks;     localStorage.setItem('4pl_wbs_v3', JSON.stringify(taskData)); }
-      if(data.milestones){ msData   = data.milestones; localStorage.setItem('4pl_ms_v3', JSON.stringify(msData)); }
+      var isFirst = !localStorage.getItem('4pl_wbs_v4');
+      if(data.tasks)     { taskData = data.tasks;     localStorage.setItem('4pl_wbs_v4', JSON.stringify(taskData)); }
+      if(data.milestones){ msData   = data.milestones; localStorage.setItem('4pl_ms_v4', JSON.stringify(msData)); }
       if(data.log)       { editLog  = data.log;        saveLog(); updateLogBadge(); }
       if(isFirst) {
         // 최초 로드 시에만 화면 갱신
@@ -864,9 +872,9 @@ function loadData() {
 
 function saveData() {
   // 로컬 즉시 저장
-  localStorage.setItem('4pl_wbs_v3', JSON.stringify(taskData));
-  localStorage.setItem('4pl_ms_v3', JSON.stringify(msData));
-  localStorage.setItem('4pl_wbs_saved', new Date().toISOString());
+  localStorage.setItem('4pl_wbs_v4', JSON.stringify(taskData));
+  localStorage.setItem('4pl_ms_v4', JSON.stringify(msData));
+  localStorage.setItem('4pl_wbs_saved_v4', new Date().toISOString());
   var t = document.getElementById('save-toast');
   if(t){ t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 2000); }
   updateTimestamp();
