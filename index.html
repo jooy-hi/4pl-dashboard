@@ -864,19 +864,43 @@ function loadData() {
   db.ref('dashboard').on('value', function(snapshot) {
     var data = snapshot.val();
     if(data) {
-      // 데이터만 로컬에 저장 (화면 자동 갱신 없음 - 필터 유지)
-      var isFirst = !localStorage.getItem('4pl_wbs_v4');
-      if(data.tasks)     { taskData = data.tasks;     localStorage.setItem('4pl_wbs_v4', JSON.stringify(taskData)); }
-      if(data.milestones){ msData   = data.milestones; localStorage.setItem('4pl_ms_v4', JSON.stringify(msData)); }
-      if(data.log)       { editLog  = data.log;        saveLog(); updateLogBadge(); }
-      if(isFirst) {
-        // 최초 로드 시에만 화면 갱신
-        renderFilters(); initOpenStates(); refreshAll();
+      // Firebase에서 override와 milestone만 로드 (tasks 통째로 덮어쓰기 안 함)
+      if(data.overrides) {
+        localStorage.setItem('4pl_overrides_v1', JSON.stringify(data.overrides));
       }
+      if(data.milestones) {
+        msData = data.milestones;
+        localStorage.setItem('4pl_ms_v4', JSON.stringify(msData));
+      }
+      if(data.log) { editLog = data.log; saveLog(); updateLogBadge(); }
+
+      // override 머지 후 화면 갱신
+      var OVERRIDES_KEY = '4pl_overrides_v1';
+      var overrides = {};
+      try { var raw = localStorage.getItem(OVERRIDES_KEY); if(raw) overrides = JSON.parse(raw); } catch(e) {}
+      var rawMap = {};
+      RAW_TASKS.forEach(function(d,i){ rawMap[i]=d; });
+      taskData = RAW_TASKS.map(function(d,i){
+        var base = Object.assign({},d,{id:i,week:d.week||dateToWeek(d.targetDate)});
+        var ov = overrides[i]||{};
+        if(ov.status    !==undefined) base.status=ov.status;
+        if(ov.assignee  !==undefined) base.assignee=ov.assignee;
+        if(ov.targetDate!==undefined){base.targetDate=ov.targetDate;base.week=dateToWeek(ov.targetDate)||base.week;}
+        if(ov.task      !==undefined) base.task=ov.task;
+        if(ov.ws        !==undefined) base.ws=ov.ws;
+        if(ov.initiative!==undefined) base.initiative=ov.initiative;
+        if(ov.action    !==undefined) base.action=ov.action;
+        if(ov.msId      !==undefined) base.msId=ov.msId;
+        if(ov.relatedIds!==undefined) base.relatedIds=ov.relatedIds;
+        if(ov.comments  !==undefined) base.comments=ov.comments;
+        return base;
+      });
+
+      renderFilters(); initOpenStates(); refreshAll();
       showSyncStatus('✓ 실시간 연결됨', 'var(--green)');
       updateTimestamp();
     } else {
-      // Firebase 비어있으면 로컬 데이터로 초기화 후 저장
+      // Firebase 비어있으면 현재 override 저장
       showSyncStatus('✓ 초기 데이터 로드', 'var(--green)');
       saveData();
     }
@@ -918,8 +942,12 @@ function saveData() {
     isSyncing = true;
     showSyncStatus('☁ 저장 중...', 'var(--amber)');
     if(!db){ isSyncing=false; return; }
+    // override만 Firebase에 저장 (tasks 통째 저장 안 함)
+    var OVERRIDES_KEY2 = '4pl_overrides_v1';
+    var ovData = {};
+    try { var raw2 = localStorage.getItem(OVERRIDES_KEY2); if(raw2) ovData = JSON.parse(raw2); } catch(e) {}
     db.ref('dashboard').set({
-      tasks: taskData,
+      overrides: ovData,
       milestones: msData,
       log: editLog,
       updatedAt: new Date().toISOString()
