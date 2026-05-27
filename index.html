@@ -88,6 +88,13 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14
 .ws-stats{display:flex;gap:6px;align-items:center;}
 .ws-chevron{font-size:16px;color:var(--text3);transition:transform 0.2s;}
 .ws-chevron.open{transform:rotate(90deg);}
+.initiative-block{margin-left:12px;margin-bottom:8px;}
+.initiative-header{display:flex;align-items:center;gap:8px;padding:5px 10px;background:var(--surface);border-radius:var(--radius);margin-bottom:3px;cursor:pointer;border-left:3px solid var(--border2);}
+.initiative-header:hover{background:var(--surface2);}
+.initiative-label{font-size:12px;font-weight:600;color:var(--text);flex:1;white-space:normal;word-break:keep-all;}
+.initiative-chevron{font-size:13px;color:var(--text3);transition:transform 0.2s;flex-shrink:0;}
+.initiative-chevron.open{transform:rotate(90deg);}
+.initiative-stats{display:flex;gap:5px;align-items:center;}
 .action-block{margin-left:20px;margin-bottom:6px;}
 .action-header{display:flex;align-items:center;gap:8px;padding:5px 10px;background:var(--surface2);border-radius:var(--radius);margin-bottom:2px;cursor:pointer;}
 .action-header:hover{opacity:0.85;}
@@ -467,6 +474,89 @@ code{font-family:monospace;font-size:11px;background:var(--surface);padding:1px 
   </div>
 </div>
 
+<!-- Initiative Edit/Add Modal -->
+<div class="modal-backdrop" id="initiative-modal" onclick="if(event.target===this)closeInitiativeModal()">
+  <div class="modal" style="width:500px">
+    <h2 id="initiative-modal-title"><i class="ti ti-layers-subtract"></i> Initiative</h2>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div class="inline-row">
+        <span class="inline-label" style="min-width:90px">Workstream</span>
+        <select class="inline-select" id="im-ws" style="flex:1"></select>
+      </div>
+      <div class="inline-row">
+        <span class="inline-label" style="min-width:90px">Initiative명</span>
+        <input class="inline-input" id="im-name" placeholder="Initiative 이름">
+      </div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:20px;border-top:0.5px solid var(--border);padding-top:14px">
+      <button class="btn-del" id="im-del-btn" onclick="deleteInitiativeFromModal()" style="display:none"><i class="ti ti-trash"></i> 삭제</button>
+      <button class="btn-cancel" onclick="closeInitiativeModal()">취소</button>
+      <button class="btn-save" onclick="saveInitiativeModal()"><i class="ti ti-check"></i> 저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- Action Edit/Add Modal -->
+<div class="modal-backdrop" id="action-modal" onclick="if(event.target===this)closeActionModal()">
+  <div class="modal" style="width:520px">
+    <h2 id="action-modal-title"><i class="ti ti-folder-cog"></i> Action</h2>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div class="inline-row">
+        <span class="inline-label" style="min-width:90px">Workstream</span>
+        <select class="inline-select" id="am-ws" style="flex:1" onchange="onAmWsChange()"></select>
+      </div>
+      <div class="inline-row">
+        <span class="inline-label" style="min-width:90px">Initiative</span>
+        <select class="inline-select" id="am-initiative" style="flex:1"></select>
+      </div>
+      <div class="inline-row">
+        <span class="inline-label" style="min-width:90px">Action명</span>
+        <input class="inline-input" id="am-name" placeholder="Action 이름">
+      </div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:20px;border-top:0.5px solid var(--border);padding-top:14px">
+      <button class="btn-del" id="am-del-btn" onclick="deleteActionFromModal()" style="display:none"><i class="ti ti-trash"></i> 삭제</button>
+      <button class="btn-cancel" onclick="closeActionModal()">취소</button>
+      <button class="btn-save" onclick="saveActionModal()"><i class="ti ti-check"></i> 저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- Task Edit/Add Modal -->
+<div class="modal-backdrop" id="task-edit-modal" onclick="if(event.target===this)closeTaskModal()">
+  <div class="modal" style="width:560px">
+    <h2 id="task-modal-title"><i class="ti ti-pencil"></i> Task</h2>
+    <div style="background:var(--surface2);border-radius:var(--radius);padding:12px 14px;margin-bottom:14px">
+      <div style="font-size:11px;font-weight:600;color:var(--text2);margin-bottom:8px"><i class="ti ti-sitemap"></i> 상위 카테고리</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div class="inline-row"><span class="inline-label" style="min-width:90px">Workstream</span><select class="inline-select" id="te-ws" style="flex:1" onchange="onTeWsChange()"></select></div>
+        <div class="inline-row"><span class="inline-label" style="min-width:90px">Initiative</span><select class="inline-select" id="te-initiative" style="flex:1" onchange="onTeInitChange()"></select></div>
+        <div class="inline-row"><span class="inline-label" style="min-width:90px">Action</span><select class="inline-select" id="te-action" style="flex:1"></select></div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div class="inline-row"><span class="inline-label" style="min-width:90px">Task</span><input class="inline-input" id="te-task" placeholder="Task 내용"></div>
+      <div class="inline-row">
+        <span class="inline-label" style="min-width:90px">담당자</span><input class="inline-input" id="te-assignee" placeholder="이름" style="max-width:120px">
+        <span class="inline-label" style="margin-left:8px;min-width:30px">날짜</span><input class="inline-input" type="date" id="te-date" style="max-width:160px">
+      </div>
+      <div class="inline-row">
+        <span class="inline-label" style="min-width:90px">Status</span>
+        <select class="inline-select" id="te-status">
+          <option value="">— 미정</option><option value="예정">예정</option><option value="진행중">진행중</option><option value="완료">완료</option>
+        </select>
+        <span class="inline-label" style="margin-left:8px;min-width:50px">마일스톤</span>
+        <select class="inline-select" id="te-ms" style="flex:1;min-width:0"></select>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:20px;border-top:0.5px solid var(--border);padding-top:14px">
+      <button class="btn-del" id="te-del-btn" onclick="deleteTaskFromModal()" style="display:none"><i class="ti ti-trash"></i> 삭제</button>
+      <button class="btn-cancel" onclick="closeTaskModal()">취소</button>
+      <button class="btn-save" onclick="saveTaskModal()"><i class="ti ti-check"></i> 저장</button>
+    </div>
+  </div>
+</div>
+
 <!-- Comment Modal -->
 <div class="modal-backdrop" id="comment-modal" onclick="if(event.target===this)this.classList.remove('open')">
   <div class="modal">
@@ -540,98 +630,97 @@ const STATUS_STYLES = {
 };
 
 const RAW_TASKS=[
-  {ws:'■ Partnership & 3PL Contract',initiative:'4PL 핵심 파트너십 계약',action:'CJ대한통운 전략적 TF 운영 및 협상',task:'CJ TF 구성 요청 완료',targetDate:'',status:'예정',week:'',assignee:'최승범',msId:null,relatedIds:[]},
-  {ws:'■ Partnership & 3PL Contract',initiative:'4PL 핵심 파트너십 계약',action:'CJ대한통운 전략적 TF 운영 및 협상',task:'물동량 데이터 공유 기반 비즈니스 규모 확인 및 양사 투자 요소 정의',targetDate:'',status:'',week:'',assignee:'',msId:null,relatedIds:[]},
-  {ws:'■ Partnership & 3PL Contract',initiative:'4PL 핵심 파트너십 계약',action:'CJ대한통운 전략적 TF 운영 및 협상',task:'비즈니스 Risk(대리점 이슈, 택배사별 물량 이동 등) 및 비용 구조(본사, 지점, 대리점) 협상',targetDate:'',status:'',week:'',assignee:'',msId:null,relatedIds:[]},
-  {ws:'■ Partnership & 3PL Contract',initiative:'4PL 핵심 파트너십 계약',action:'Last Mile 3PL 파트너십 최종 체결',task:'Last Mile 3PL - CJ대한통운 직접 우선 협상 완료 및 SLA(도착보장율, 패널티) 협상',targetDate:'',status:'예정',week:'',assignee:'최승범',msId:null,relatedIds:[]},
-  {ws:'■ Partnership & 3PL Contract',initiative:'4PL 핵심 파트너십 계약',action:'Last Mile 3PL 파트너십 최종 체결',task:'최종 협의안 내부 승인 및 Last Mile 3PL 파트너 계약 최종 체결',targetDate:'',status:'',week:'',assignee:'강승구',msId:null,relatedIds:[]},
-  {ws:'■ Partnership & 3PL Contract',initiative:'4PL 핵심 파트너십 계약',action:'지방권 위탁 사업자 계약 기준 수립',task:'각 지역별 G마켓 조직 구축 및 택배사 소통 핫라인 확보',targetDate:'',status:'',week:'',assignee:'',msId:null,relatedIds:[]},
-  {ws:'■ Partnership & 3PL Contract',initiative:'4PL 핵심 파트너십 계약',action:'지방권 위탁 사업자 계약 기준 수립',task:'지방권 위탁사업자용 표준계약서, SLA, 정산 체계 및 계약 기준 수립',targetDate:'',status:'',week:'',assignee:'',msId:null,relatedIds:[]},
-  {ws:'■ First Mile 집하·간선 네트워크',initiative:'수도권 모델 구축 - 직접 집하',action:'1st mile 수도권 남부 Hub 구축 (동탄센터 활용 Pilot)',task:'남부 Hub 구축 상세 계획 수립 및 운송 협력사/설비 계약 완료',targetDate:'',status:'완료',week:'',assignee:'최무창',msId:null,relatedIds:[]},
-  {ws:'■ First Mile 집하·간선 네트워크',initiative:'수도권 모델 구축 - 직접 집하',action:'1st mile 수도권 남부 Hub 구축 (동탄센터 활용 Pilot)',task:'현장 인프라 세팅(철거, 설치, 집기 이동) 및 픽업/차량/Hub 운영 프로세스 설계',targetDate:'',status:'완료',week:'',assignee:'최무창',msId:null,relatedIds:[]},
-  {ws:'■ First Mile 집하·간선 네트워크',initiative:'수도권 모델 구축 - 직접 집하',action:'1st mile 수도권 동부 Hub 신규 인프라 구축 (이천/여주)',task:'거점 CAPA, 추정 비용을 포함한 동부 Hub 구축 상세 계획 수립',targetDate:'',status:'',week:'',assignee:'',msId:null,relatedIds:[]},
-  {ws:'■ First Mile 집하·간선 네트워크',initiative:'수도권 모델 구축 - 직접 집하',action:'1st mile 수도권 동부 Hub 신규 인프라 구축 (이천/여주)',task:'Hub 거점 확보, 운영 업체(3PL) 및 설비 검토/계약 완료',targetDate:'',status:'',week:'',assignee:'',msId:null,relatedIds:[]},
-  {ws:'■ First Mile 집하·간선 네트워크',initiative:'수도권 모델 구축 - 직접 집하',action:'1st mile 수도권 동부 Hub 신규 인프라 구축 (이천/여주)',task:'현장 인프라 세팅 및 Pilot Open 테스트 후 Grand Open',targetDate:'',status:'',week:'',assignee:'',msId:null,relatedIds:[]},
-  {ws:'■ First Mile 집하·간선 네트워크',initiative:'수도권 모델 구축 - 직접 집하',action:'1st mile 수도권 서부 Hub 신규 인프라 구축 (김포)',task:'거점 CAPA 및 물동량 기반 서부 Hub 구축 상세 계획 수립',targetDate:'',status:'',week:'',assignee:'',msId:null,relatedIds:[]},
-  {ws:'■ First Mile 집하·간선 네트워크',initiative:'수도권 모델 구축 - 직접 집하',action:'1st mile 수도권 서부 Hub 신규 인프라 구축 (김포)',task:'Hub 거점 확보, 운영 업체(3PL) 및 설비 검토/계약 완료',targetDate:'',status:'',week:'',assignee:'',msId:null,relatedIds:[]},
-  {ws:'■ First Mile 집하·간선 네트워크',initiative:'수도권 모델 구축 - 직접 집하',action:'1st mile 수도권 서부 Hub 신규 인프라 구축 (김포)',task:'현장 인프라 세팅 및 Pilot Open 테스트 후 Grand Open',targetDate:'',status:'',week:'',assignee:'',msId:null,relatedIds:[]},
-  {ws:'■ First Mile 집하·간선 네트워크',initiative:'수도권 모델 구축 - 직접 집하',action:'1st mile 수도권 북부 Hub 신규 인프라 구축',task:'북부 Hub 구축 상세 계획 수립 및 거점/운영업체 계약 체결',targetDate:'',status:'',week:'',assignee:'',msId:null,relatedIds:[]},
-  {ws:'■ First Mile 집하·간선 네트워크',initiative:'수도권 모델 구축 - 직접 집하',action:'1st mile 수도권 북부 Hub 신규 인프라 구축',task:'설비 계약, 현장 인프라 세팅 및 Pilot 테스트 거쳐 Grand Open',targetDate:'',status:'',week:'',assignee:'',msId:null,relatedIds:[]},
-  {ws:'■ First Mile 집하·간선 네트워크',initiative:'지방권 모델 구축 - 직접 집하',action:'지방권 네트워크 전략 및 배송 운영 프로세스 수립',task:'지방권 네트워크 전략(셀러 단가 제안, 집하 형태) 및 대리점 상생 방안 수립',targetDate:'',status:'',week:'',assignee:'',msId:null,relatedIds:[]},
-  {ws:'■ First Mile 집하·간선 네트워크',initiative:'지방권 모델 구축 - 직접 집하',action:'지방권 네트워크 전략 및 배송 운영 프로세스 수립',task:'집하점 정산 기준, 화물사고 대응 방안, 계약 준비사항 및 관련 FAQ 작성',targetDate:'',status:'',week:'',assignee:'',msId:null,relatedIds:[]},
-  {ws:'■ First Mile 집하·간선 네트워크',initiative:'지방권 모델 구축 - 직접 집하',action:'대전 권역 배송 서비스 개시',task:'대전 담당 대리점 리스트 확정, 현장 점검 및 G마켓-대리점 직접 계약 진행',targetDate:'',status:'',week:'',assignee:'',msId:null,relatedIds:[]},
-  {ws:'■ First Mile 집하·간선 네트워크',initiative:'지방권 모델 구축 - 직접 집하',action:'대전 권역 배송 서비스 개시',task:'CJ 연합회 의사결정 수렴 및 대전 권역 실제 출고(서비스 개시)',targetDate:'',status:'',week:'',assignee:'',msId:null,relatedIds:[]},
-  {ws:'■ First Mile 집하·간선 네트워크',initiative:'지방권 모델 구축 - 직접 집하',action:'부산 권역 배송 서비스 개시',task:'부산 담당 대리점 리스트 확정 및 현장 정밀 점검 진행',targetDate:'',status:'',week:'',assignee:'',msId:null,relatedIds:[]},
-  {ws:'■ First Mile 집하·간선 네트워크',initiative:'지방권 모델 구축 - 직접 집하',action:'부산 권역 배송 서비스 개시',task:'부산 권역 실제 출고(서비스 개시)',targetDate:'',status:'',week:'',assignee:'',msId:null,relatedIds:[]},
-  {ws:'■ First Mile 집하·간선 네트워크',initiative:'지방권 모델 구축 - 직접 집하',action:'지방권 운영 조직 구성 및 대리점 협의',task:'수수료 정산 기준 및 화물사고 기준(귀책 구분) 대리점 연합회 가이드 안내/협의',targetDate:'',status:'',week:'',assignee:'',msId:null,relatedIds:[]},
-  {ws:'■ First Mile 집하·간선 네트워크',initiative:'지방권 모델 구축 - 직접 집하',action:'지방권 운영 조직 구성 및 대리점 협의',task:'지방권 운영 조직 구성 및 타 택배사 확장/추가 지역 확장 고려',targetDate:'',status:'',week:'',assignee:'',msId:null,relatedIds:[]},
-  {ws:'■ First Mile 집하·간선 네트워크',initiative:'Flex 모델 구축 - 위탁 집하 (Flex Model Setup)',action:'Flex 서비스 범위 정의 및 택배사 협상',task:'데이터 분석 기반 권역별 물동량 분포 확인 및 Flex 서비스 대상 지역 정의',targetDate:'',status:'',week:'',assignee:'',msId:null,relatedIds:[]},
-  {ws:'■ First Mile 집하·간선 네트워크',initiative:'Flex 모델 구축 - 위탁 집하 (Flex Model Setup)',action:'Flex 서비스 범위 정의 및 택배사 협상',task:'택배사별 지역/셀러 분배 전략 수립 및 택배 단가 견적 회신/추가 협의 완료',targetDate:'',status:'',week:'',assignee:'',msId:null,relatedIds:[]},
-  {ws:'■ First Mile 집하·간선 네트워크',initiative:'Flex 모델 구축 - 위탁 집하 (Flex Model Setup)',action:'Flex 운영 프로세스 수립 및 권역별 확장 개시',task:'Flex 배송 운영 프로세스 수립 및 SLA(도착보장율, 패널티), 최종안 내부 승인',targetDate:'',status:'',week:'',assignee:'',msId:null,relatedIds:[]},
-  {ws:'■ First Mile 집하·간선 네트워크',initiative:'Flex 모델 구축 - 위탁 집하 (Flex Model Setup)',action:'Flex 운영 프로세스 수립 및 권역별 확장 개시',task:'서비스 이용 셀러 모집, 컷오프 협의, 시스템 세팅(ID/가이드) 및 배송 서비스 전면 개시',targetDate:'',status:'',week:'',assignee:'',msId:null,relatedIds:[]},
-  {ws:'■ First Mile 집하·간선 네트워크',initiative:'현장 운영 안정화 및 지표 관리',action:'1st mile 운영 안정화 및 라우팅 고도화',task:'권역별 집하 라우팅/배차 안정화 및 현장 SOP 기반 인력/차량 운영 체계 확립',targetDate:'',status:'',week:'',assignee:'',msId:null,relatedIds:[]},
-  {ws:'■ First Mile 집하·간선 네트워크',initiative:'현장 운영 안정화 및 지표 관리',action:'1st mile 운영 안정화 및 라우팅 고도화',task:'운영 KPI/SLA 측정, 실시간 모니터링 및 실물량 기반 CAPA 조정/권역 확장 의사결정',targetDate:'',status:'',week:'',assignee:'',msId:null,relatedIds:[]},
-  {ws:'■ First Mile 집하·간선 네트워크',initiative:'현장 운영 안정화 및 지표 관리',action:'1st mile 운영 안정화 및 라우팅 고도화',task:'CS 및 인프라 예외 처리 프로세스 고도화 정립',targetDate:'',status:'',week:'',assignee:'',msId:null,relatedIds:[]},
-  {ws:'■ First Mile 집하·간선 네트워크',initiative:'현장 운영 안정화 및 지표 관리',action:'Flex 위탁 집하 프로세스 안정화',task:'집하/리드타임 이슈 제어 및 도착보장율 등 택배사별 SLA/KPI 실시간 모니터링',targetDate:'',status:'',week:'',assignee:'',msId:null,relatedIds:[]},
-  {ws:'■ First Mile 집하·간선 네트워크',initiative:'현장 운영 안정화 및 지표 관리',action:'Flex 위탁 집하 프로세스 안정화',task:'CS 처리 프로세스 고도화 및 협상 전략 조정 검토 (단가 및 조건 재협상)',targetDate:'',status:'',week:'',assignee:'',msId:null,relatedIds:[]},
-  {ws:'■ TMS & Cutoff Extension',initiative:'Phase1. First Mile 매뉴얼 운영 및 기반 구축',action:'데이터 표준화 및 시스템 개발 요건 정의',task:'국내 Top 3 택배사 공통 데이터 스키마 표준 확정 및 LEX 시스템 다운로드',targetDate:'2026-05-30',status:'',week:'W23',assignee:'이욱재',msId:null,relatedIds:[]},
-  {ws:'■ TMS & Cutoff Extension',initiative:'Phase1. First Mile 매뉴얼 운영 및 기반 구축',action:'데이터 표준화 및 시스템 개발 요건 정의',task:'시스템 개발 요청사항(FM, 3PL 기능별) 작성 및 택배사 주문 연동 항목 정의',targetDate:'2026-07-24',status:'',week:'W30',assignee:'이욱재',msId:null,relatedIds:[]},
-  {ws:'■ TMS & Cutoff Extension',initiative:'Phase1. First Mile 매뉴얼 운영 및 기반 구축',action:'매뉴얼 가동 및 모니터링',task:'First Mile 매뉴얼 운영 가동 (MVP 기반 시스템 테스트 및 LOP 병행)',targetDate:'2026-09-30',status:'',week:'W40',assignee:'이욱재',msId:null,relatedIds:[]},
-  {ws:'■ TMS & Cutoff Extension',initiative:'Phase1. First Mile 매뉴얼 운영 및 기반 구축',action:'매뉴얼 가동 및 모니터링',task:'매뉴얼 운영 단계 실시간 모니터링 및 프로세스 개선 필요사항 수시 협의',targetDate:'',status:'',week:'',assignee:'이욱재',msId:null,relatedIds:[]},
-  {ws:'■ TMS & Cutoff Extension',initiative:'Phase 1.5. FM 글로벌 시스템 적용 및 운영 전환',action:'글로벌 시스템 한국 환경 최적화 및 연동 개발',task:'LEX 시스템 한국 환경 최적화 셋팅 완료',targetDate:'',status:'',week:'',assignee:'이욱재',msId:null,relatedIds:[]},
-  {ws:'■ TMS & Cutoff Extension',initiative:'Phase 1.5. FM 글로벌 시스템 적용 및 운영 전환',action:'글로벌 시스템 한국 환경 최적화 및 연동 개발',task:'택배사 주문 연동 개발 적용(주문, 정산, 트래킹 상태) 및 실시간 API 연동',targetDate:'',status:'',week:'',assignee:'이욱재',msId:null,relatedIds:[]},
-  {ws:'■ TMS & Cutoff Extension',initiative:'Phase 1.5. FM 글로벌 시스템 적용 및 운영 전환',action:'지방권 운영 시스템 연동 인프라 준비',task:'택배사-G마켓 대리점 코드 생성 및 SM APP 내 G마켓 코드 사용 권한 확보',targetDate:'',status:'',week:'',assignee:'이욱재',msId:null,relatedIds:[]},
-  {ws:'■ TMS & Cutoff Extension',initiative:'Phase 1.5. FM 글로벌 시스템 적용 및 운영 전환',action:'지방권 운영 시스템 연동 인프라 준비',task:'현장 전담조직용 스캔 관리 기준 수립 및 스캔 누락 시 수기 정산/보정 프로세스 구',targetDate:'',status:'',week:'',assignee:'이욱재',msId:null,relatedIds:[]},
-  {ws:'■ TMS & Cutoff Extension',initiative:'Phase 1.5. FM 글로벌 시스템 적용 및 운영 전환',action:'Phase 1.5 오픈 및 시스템 기반 운영 고도화',task:'시스템 현장 운영 적용(WEB/APP 실적 처리) 및 G마켓 커스터마이징 요건 정의',targetDate:'',status:'',week:'',assignee:'이욱재',msId:null,relatedIds:[]},
-  {ws:'■ TMS & Cutoff Extension',initiative:'Phase 1.5. FM 글로벌 시스템 적용 및 운영 전환',action:'Phase 1.5 오픈 및 시스템 기반 운영 고도화',task:'FM 시스템 가동 모니터링, 라우팅/물량 배분 로직 고도화 및 장애 대응 체계 구축',targetDate:'',status:'',week:'',assignee:'이욱재',msId:null,relatedIds:[]},
-  {ws:'■ TMS & Cutoff Extension',initiative:'Phase 2. G마켓 전용 4PL 통합 시스템 구축 및 안착',action:'G마켓 FM 시스템 현장 전면 적용',task:'FM 개선 요청사항 개발 완료 및 QA 검증',targetDate:'',status:'',week:'',assignee:'이욱재',msId:null,relatedIds:[]},
-  {ws:'■ TMS & Cutoff Extension',initiative:'Phase 2. G마켓 전용 4PL 통합 시스템 구축 및 안착',action:'G마켓 FM 시스템 현장 전면 적용',task:'고도화된 G마켓 FM 전용 시스템 현장 전면 적용',targetDate:'',status:'',week:'',assignee:'',msId:null,relatedIds:[]},
-  {ws:'■ TMS & Cutoff Extension',initiative:'Phase 2. G마켓 전용 4PL 통합 시스템 구축 및 안착',action:'4PL E2E 통합 시스템 및 Control Tower 구축',task:'4PL E2E 시스템 요청사항 작성 및 G마켓(ESM+)/LEX/CJ 간 연동 협의 완료',targetDate:'',status:'',week:'',assignee:'',msId:null,relatedIds:[]},
-  {ws:'■ TMS & Cutoff Extension',initiative:'Phase 2. G마켓 전용 4PL 통합 시스템 구축 및 안착',action:'4PL E2E 통합 시스템 및 Control Tower 구축',task:'4PL E2E 시스템 개발 및 UI/UX 테스트/QA 진행',targetDate:'',status:'',week:'',assignee:'',msId:null,relatedIds:[]},
-  {ws:'■ TMS & Cutoff Extension',initiative:'Phase 2. G마켓 전용 4PL 통합 시스템 구축 및 안착',action:'4PL E2E 통합 시스템 및 Control Tower 구축',task:'전체 통합 테스트(FM+4PL) 및 Control Tower v1 오픈 (실시간 가시화, 시스템 LTS)',targetDate:'',status:'',week:'',assignee:'',msId:null,relatedIds:[]},
-  {ws:'■ TMS & Cutoff Extension',initiative:'Phase 2. G마켓 전용 4PL 통합 시스템 구축 및 안착',action:'E2E 데이터 검증 체계 및 운영 자동화 확립',task:'E2E 데이터 흐름 정합성 검증 체계 구축 및 통합 시스템 모니터링 고도화',targetDate:'',status:'',week:'',assignee:'',msId:null,relatedIds:[]},
-  {ws:'■ TMS & Cutoff Extension',initiative:'Phase 2. G마켓 전용 4PL 통합 시스템 구축 및 안착',action:'E2E 데이터 검증 체계 및 운영 자동화 확립',task:'운영 KPI 대시보드 가시성 확보 및 시스템 기반 운영 자동화/확장 대응',targetDate:'',status:'',week:'',assignee:'',msId:null,relatedIds:[]},
-  {ws:'■ Gmarket Delivery Settlement & PG Integration',initiative:'판매자 과금 및 정산 인프라 구축',action:'정책수립',task:'원가 기반의 표준 과금 테이블 및 등급별 할인 규칙 설계',targetDate:'2026-05-21',status:'완료',week:'W21',assignee:'황병순',msId:null,relatedIds:[]},
-  {ws:'■ Gmarket Delivery Settlement & PG Integration',initiative:'판매자 과금 및 정산 인프라 구축',action:'정책수립',task:'판매자 손해배상 정책 수립 (회계,법무 협의)',targetDate:'2026-05-21',status:'완료',week:'W21',assignee:'유주연',msId:null,relatedIds:[60]},
-  {ws:'■ Gmarket Delivery Settlement & PG Integration',initiative:'판매자 과금 및 정산 인프라 구축',action:'BRD 작성',task:'현업 요구사항 반영한 과금 정책 및 일/정산 시스템 BRD 작성',targetDate:'2026-05-28',status:'진행중',week:'W22',assignee:'황병순',msId:null,relatedIds:[]},
-  {ws:'■ Gmarket Delivery Settlement & PG Integration',initiative:'판매자 과금 및 정산 인프라 구축',action:'BRD 작성',task:'일/정산 반영을 위한 배송사 데이터 연동 협의 완료',targetDate:'2026-05-28',status:'진행중',week:'W22',assignee:'황병순',msId:null,relatedIds:[]},
-  {ws:'■ Gmarket Delivery Settlement & PG Integration',initiative:'판매자 과금 및 정산 인프라 구축',action:'BRD 작성',task:'PX 요건 최종 접수',targetDate:'2026-05-29',status:'',week:'W22',assignee:'황병순',msId:null,relatedIds:[]},
-  {ws:'■ Seller Solution & Policy',initiative:'서비스 가입 및 상품 개발요건 정의',action:'가입, 상품 정책 개발 요건 정의',task:'가입/상품 정책 개발 요건사항 BRD v0.9리뷰 및 피드백 반영',targetDate:'2026-05-21',status:'완료',week:'W21',assignee:'유주연',msId:null,relatedIds:[]},
-  {ws:'■ Seller Solution & Policy',initiative:'서비스 가입 및 상품 개발요건 정의',action:'가입, 상품 정책 개발 요건 정의',task:'유관부서 합의 거진 가입 및 상품 정책 최종 BRD 접수',targetDate:'2026-05-27',status:'예정',week:'W22',assignee:'유주연',msId:11,relatedIds:[]},
-  {ws:'■ Seller Solution & Policy',initiative:'파일럿 및 공식 오픈 정책 가이드라인 수립',action:'파일럿 서비스 계약 구조 법무 검토 및 계약서확정',task:'파일럿 서비스 운영 표준 계약(신청) 초안 법무 검토',targetDate:'2026-05-28',status:'진행중',week:'W22',assignee:'유주연',msId:null,relatedIds:[77, 52, 62]},
-  {ws:'■ Seller Solution & Policy',initiative:'파일럿 및 공식 오픈 정책 가이드라인 수립',action:'파일럿 서비스 계약 구조 법무 검토 및 계약서확정',task:'LSS 검토 완료본 유관부서 배포',targetDate:'2026-05-29',status:'예정',week:'W22',assignee:'유주연',msId:null,relatedIds:[]},
-  {ws:'■ Seller Solution & Policy',initiative:'파일럿 및 공식 오픈 정책 가이드라인 수립',action:'배송 서비스 표준 운영 절차(SOP)제정',task:'파일럿 서비스 운영 위한 G마켓 배송서비스 SOP 확정',targetDate:'2026-05-29',status:'진행중',week:'W22',assignee:'김승훈',msId:null,relatedIds:[60, 98]},
-  {ws:'■ Seller Solution & Policy',initiative:'파일럿 및 공식 오픈 정책 가이드라인 수립',action:'판매자 SLA 기준 제도화 및 페널티 자동화',task:'판매자 성과 모니터링 대시보드 기획안 도출',targetDate:'2026-07-31',status:'예정',week:'W31',assignee:'김승훈',msId:22,relatedIds:[]},
-  {ws:'■ Seller Solution & Policy',initiative:'파일럿 및 공식 오픈 정책 가이드라인 수립',action:'판매자 SLA 기준 제도화 및 페널티 자동화',task:'페널티 자동화 어드민 기획안 도출',targetDate:'2026-07-15',status:'예정',week:'W29',assignee:'김승훈',msId:22,relatedIds:[]},
-  {ws:'■ Seller Solution & Policy',initiative:'파일럿 및 공식 오픈 정책 가이드라인 수립',action:'판매자 SLA 기준 제도화 및 페널티 자동화',task:'SLA 기반 페널티 표준 배송 정책 공식 제도화',targetDate:'2026-07-17',status:'예정',week:'W29',assignee:'김승훈',msId:22,relatedIds:[]},
-  {ws:'■ Seller Solution & Policy',initiative:'배송 서비스 그랜드 오픈',action:'G마켓 배송 서비스 공식 오픈 준비',task:'프로모션,시스템,과금 등 오픈 전 최종 체크리스트 점검',targetDate:'2026-09-30',status:'',week:'W40',assignee:'유주연',msId:null,relatedIds:[]},
-  {ws:'■ Seller Onboarding & Sales Expansion',initiative:'영업본부 KPI 세팅 및 얼라인먼트 세션진행',action:'영업본부 KPI 세팅 및 타겟 비중 확정',task:'KAM Manager(영업본부) 4PL 세일즈 KPI 세팅 완료',targetDate:'2026-04-30',status:'완료',week:'W18',assignee:'박준성',msId:null,relatedIds:[]},
-  {ws:'■ Seller Onboarding & Sales Expansion',initiative:'영업본부 KPI 세팅 및 얼라인먼트 세션진행',action:'영업본부 KPI 세팅 및 타겟 비중 확정',task:'카테고리별 유입 목표 비중 확정',targetDate:'2026-06-30',status:'진행중',week:'W27',assignee:'황병순',msId:null,relatedIds:[]},
-  {ws:'■ Seller Onboarding & Sales Expansion',initiative:'영업본부 KPI 세팅 및 얼라인먼트 세션진행',action:'영업 전략 플레이북 배포 및 얼라인먼트',task:'4PL 세일즈 가치 및 피치 가이드라인이 포함된 플레이북 제작',targetDate:'',status:'',week:'',assignee:'',msId:null,relatedIds:[]},
-  {ws:'■ Seller Onboarding & Sales Expansion',initiative:'영업본부 KPI 세팅 및 얼라인먼트 세션진행',action:'영업 전략 플레이북 배포 및 얼라인먼트',task:'KAM Manager 대상 4PL 영업 전략 공유 세션 및 내부 얼라인먼트 진행',targetDate:'',status:'',week:'',assignee:'',msId:null,relatedIds:[]},
-  {ws:'■ Seller Onboarding & Sales Expansion',initiative:'파일럿 셀러 온보딩 및 운영 검증',action:'파일럿 참여 셀러 계약 협의 및 완료',task:'파일럿 참여 셀러 계약 체결',targetDate:'2026-06-12',status:'',week:'W24',assignee:'윤현지',msId:null,relatedIds:[60]},
-  {ws:'■ Seller Onboarding & Sales Expansion',initiative:'파일럿 셀러 온보딩 및 운영 검증',action:'파일럿 타겟 셀러 발굴 및 온보딩 프로세스 수립',task:'판매자 스타배송 가입 프로세스 변경 (API 중단)',targetDate:'2026-05-18',status:'완료',week:'W21',assignee:'유주연',msId:null,relatedIds:[]},
-  {ws:'■ Seller Onboarding & Sales Expansion',initiative:'파일럿 셀러 온보딩 및 운영 검증',action:'파일럿 타겟 셀러 발굴 및 온보딩 프로세스 수립',task:'판매자 스타배송 신규 유입 셀러 대상 온보딩 프로세스 수립',targetDate:'2026-05-18',status:'완료',week:'W21',assignee:'김채원',msId:null,relatedIds:[]},
-  {ws:'■ Seller Onboarding & Sales Expansion',initiative:'파일럿 피드백 분석 및 가이드 정형화',action:'서비스 공식 오픈용 온보딩 패키지 확정',task:'파일럿 피드백 반영한 웰컴 가이드 및 온보딩 매뉴얼 고도화',targetDate:'',status:'',week:'',assignee:'',msId:null,relatedIds:[]},
-  {ws:'■ Seller Onboarding & Sales Expansion',initiative:'파일럿 피드백 분석 및 가이드 정형화',action:'서비스 공식 오픈용 온보딩 패키지 확정',task:'ESM 및 배송 시스템 화면 중심의 사용 가이드북 최종 문서화',targetDate:'',status:'',week:'',assignee:'',msId:null,relatedIds:[]},
-  {ws:'■ Seller Onboarding & Sales Expansion',initiative:'배송 서비스 그랜드 오픈 및 활성화',action:'판매자 대상 서비스 설명회 개최',task:'4PL 통합 서비스 소개 및 셀러 혜택 안내 장표 작성',targetDate:'',status:'',week:'',assignee:'',msId:null,relatedIds:[]},
-  {ws:'■ Seller Onboarding & Sales Expansion',initiative:'배송 서비스 그랜드 오픈 및 활성화',action:'판매자 대상 서비스 설명회 개최',task:'대상 판매자 모집 공지 및 온/오프라인 설명회 개최를 통한 유입 극대화',targetDate:'',status:'',week:'',assignee:'',msId:null,relatedIds:[]},
-  {ws:'■ Seller Onboarding & Sales Expansion',initiative:'배송 서비스 그랜드 오픈 및 활성화',action:'G마켓 배송 서비스 공식 오픈 및 런칭',task:'서비스 전면 오픈 실행 및 초기 안정화 단계 트래픽 모니터링',targetDate:'',status:'',week:'',assignee:'',msId:null,relatedIds:[]},
   {ws:'■ Buyer Front-end',initiative:'Buyer 배송 경험 개선',action:'풀필먼트 스타배송 무료배송 전면 도입',task:'1P 전면 무료배송 전환 OI 시뮬레이션 및 부서간 협의 도출',targetDate:'2026-05-22',status:'완료',week:'W21',assignee:'이태영',msId:null,relatedIds:[]},
-  {ws:'■ Buyer Front-end',initiative:'Buyer 배송 경험 개선',action:'스타배송 태그 단일 통합',task:'nan',targetDate:'',status:'',week:'',assignee:'',msId:null,relatedIds:[]},
-  {ws:'■ Buyer Front-end',initiative:'Buyer 배송 경험 개선',action:'스타배송 태그 단일 통합',task:'nan',targetDate:'',status:'',week:'',assignee:'',msId:null,relatedIds:[]},
-  {ws:'■ Seller Solution & Policy',initiative:'파일럿 및 공식 오픈 정책 가이드라인 수립',action:'판매자 SLA 기준 제도화 및 페널티 자동화',task:'판매자 성과 평가 핵심 KPI 지표 확정',targetDate:'2026-06-30',status:'예정',week:'W27',assignee:'김승훈',msId:22,relatedIds:[]},
-  {ws:'■ Seller Solution & Policy',initiative:'파일럿 및 공식 오픈 정책 가이드라인 수립',action:'판매자 SLA 기준 제도화 및 페널티 자동화',task:'판매자 성과 모니터링 대시보드 및 페널티 자동화 어드민 개발반영',targetDate:'2026-09-30',status:'',week:'W40',assignee:'김승훈',msId:22,relatedIds:[]},
+  {ws:'■ TMS & Cutoff Extension',initiative:'Phase 2. G마켓 전용 4PL 통합 시스템 구축 및 안착',action:'4PL E2E 통합 시스템 및 Control Tower 구축',task:'4PL E2E 시스템 개발 및 UI/UX 테스트/QA 진행',targetDate:'2026-11-13',status:'예정',week:'W46',assignee:'이욱재',msId:null,relatedIds:[]},
+  {ws:'■ TMS & Cutoff Extension',initiative:'Phase 2. G마켓 전용 4PL 통합 시스템 구축 및 안착',action:'4PL E2E 통합 시스템 및 Control Tower 구축',task:'4PL E2E 시스템 요청사항 작성 및 G마켓(ESM+)/LEX/CJ 간 연동 협의 완료',targetDate:'2026-10-02',status:'예정',week:'W40',assignee:'이욱재',msId:null,relatedIds:[]},
+  {ws:'■ Seller Onboarding & Sales Expansion',initiative:'영업본부 KPI 세팅 및 얼라인먼트 세션진행',action:'영업 전략 플레이북 배포 및 얼라인먼트',task:'4PL 세일즈 가치 및 피치 가이드라인이 포함된 플레이북 제작',targetDate:'',status:'',week:'',assignee:'김채원',msId:null,relatedIds:[]},
+  {ws:'■ Seller Onboarding & Sales Expansion',initiative:'배송 서비스 그랜드 오픈 및 활성화',action:'판매자 대상 서비스 설명회 개최',task:'4PL 통합 서비스 소개 및 셀러 혜택 안내 장표 작성',targetDate:'',status:'',week:'',assignee:'김채원',msId:null,relatedIds:[]},
+  {ws:'■ Partnership & 3PL Contract',initiative:'4PL 핵심 파트너십 계약',action:'CJ대한통운 전략적 TF 운영 및 협상',task:'CJ TF 구성 요청 완료',targetDate:'2026-01-30',status:'완료',week:'W5',assignee:'최승범',msId:null,relatedIds:[]},
+  {ws:'■ First Mile 집하·간선 네트워크',initiative:'지방권 모델 구축 - 직접 집하',action:'대전 권역 배송 서비스 개시',task:'CJ 연합회 의사결정 수렴 및 대전 권역 실제 출고(서비스 개시)',targetDate:'2026-06-19',status:'진행중',week:'W25',assignee:'강승구',msId:null,relatedIds:[]},
+  {ws:'■ Partnership & 3PL Contract',initiative:'4PL 핵심 파트너십 계약',action:'CJ대한통운 전략적 TF 운영 및 협상',task:'CJ대한통운 협상 진행 완료',targetDate:'2026-05-29',status:'진행중',week:'W22',assignee:'최승범',msId:null,relatedIds:[]},
+  {ws:'■ First Mile 집하·간선 네트워크',initiative:'현장 운영 안정화 및 지표 관리',action:'1st mile 운영 안정화 및 라우팅 고도화',task:'CS 및 인프라 예외 처리 프로세스 고도화 정립',targetDate:'W/I 4 weeks of launch',status:'진행중',week:'',assignee:'ALL',msId:null,relatedIds:[]},
+  {ws:'■ First Mile 집하·간선 네트워크',initiative:'현장 운영 안정화 및 지표 관리',action:'Flex 위탁 집하 프로세스 안정화',task:'CS 처리 프로세스 고도화 및 협상 전략 조정 검토 (단가 및 조건 재협상)',targetDate:'W/I 4 weeks of launch',status:'진행중',week:'',assignee:'ALL',msId:null,relatedIds:[]},
+  {ws:'■ TMS & Cutoff Extension',initiative:'Phase 2. G마켓 전용 4PL 통합 시스템 구축 및 안착',action:'E2E 데이터 검증 체계 및 운영 자동화 확립',task:'E2E 데이터 흐름 정합성 검증 체계 구축 및 통합 시스템 모니터링 고도화',targetDate:'2027-01-29',status:'예정',week:'W4',assignee:'이욱재',msId:null,relatedIds:[]},
+  {ws:'■ Seller Onboarding & Sales Expansion',initiative:'파일럿 피드백 분석 및 가이드 정형화',action:'서비스 공식 오픈용 온보딩 패키지 확정',task:'ESM 및 배송 시스템 화면 중심의 사용 가이드북 최종 문서화',targetDate:'',status:'',week:'',assignee:'김채원',msId:null,relatedIds:[]},
+  {ws:'■ TMS & Cutoff Extension',initiative:'Phase1. First Mile 매뉴얼 운영 및 기반 구축',action:'매뉴얼 가동 및 모니터링',task:'First Mile 매뉴얼 운영 가동 (MVP 기반 시스템 테스트 및 LOP 병행)',targetDate:'2026-09-30',status:'',week:'W40',assignee:'이욱재',msId:null,relatedIds:[]},
+  {ws:'■ TMS & Cutoff Extension',initiative:'Phase1. First Mile 매뉴얼 운영 및 기반 구축',action:'매뉴얼 가동 및 모니터링',task:'First Mile 매뉴얼 운영 시작 (MVP 기반 시스템 테스트 및 LOP 병행)',targetDate:'2026-05-29',status:'진행중',week:'W22',assignee:'이욱재',msId:null,relatedIds:[]},
+  {ws:'■ First Mile 집하·간선 네트워크',initiative:'Flex 모델 구축 - 위탁 집하 (Flex Model Setup)',action:'Flex 운영 프로세스 수립 및 권역별 확장 개시',task:'Flex 배송 운영 프로세스 수립 및 SLA(도착보장율, 패널티), 최종안 내부 승인',targetDate:'2026-06-12',status:'진행중',week:'W24',assignee:'유현천',msId:null,relatedIds:[]},
+  {ws:'■ TMS & Cutoff Extension',initiative:'Phase 2. G마켓 전용 4PL 통합 시스템 구축 및 안착',action:'G마켓 FM 시스템 현장 전면 적용',task:'FM 개선 요청사항 개발 완료 및 QA 검증',targetDate:'2026-08-14',status:'예정',week:'W33',assignee:'이욱재',msId:null,relatedIds:[]},
+  {ws:'■ TMS & Cutoff Extension',initiative:'Phase 1.5. FM 글로벌 시스템 적용 및 운영 전환',action:'Phase 1.5 오픈 및 시스템 기반 운영 고도화',task:'FM 시스템 가동 모니터링, 라우팅/물량 배분 로직 고도화 및 장애 대응 체계 구축',targetDate:'2026-08-28',status:'예정',week:'W35',assignee:'이욱재',msId:null,relatedIds:[]},
   {ws:'■ Seller Solution & Policy',initiative:'서비스 가입 및 상품 개발요건 정의',action:'가입, 상품 정책 개발 요건 정의',task:'G마켓 배송서비스 공식 오픈(가입/상품 반영)',targetDate:'2026-07-31',status:'예정',week:'W31',assignee:'유주연',msId:null,relatedIds:[]},
+  {ws:'■ Seller Onboarding & Sales Expansion',initiative:'파일럿 셀러 온보딩 및 운영 검증',action:'파일럿 타겟 셀러 발굴 및 온보딩 프로세스 수립',task:'G배송 셀러 세그먼트 확정 및 영업 방향성 수립',targetDate:'2026-06-26',status:'예정',week:'W26',assignee:'김채원',msId:null,relatedIds:[]},
+  {ws:'■ First Mile 집하·간선 네트워크',initiative:'수도권 모델 구축 - 직접 집하',action:'1st mile 수도권 동부 Hub 신규 인프라 구축 (이천/여주)',task:'Hub 거점 확보, 운영 업체(3PL) 및 설비 검토/계약 완료',targetDate:'2026-07-31',status:'예정',week:'W31',assignee:'최무창',msId:null,relatedIds:[]},
+  {ws:'■ Seller Onboarding & Sales Expansion',initiative:'영업본부 KPI 세팅 및 얼라인먼트 세션진행',action:'영업 전략 플레이북 배포 및 얼라인먼트',task:'KAM Manager 대상 4PL 영업 전략 공유 세션 및 내부 얼라인먼트 진행',targetDate:'',status:'',week:'',assignee:'박준성',msId:null,relatedIds:[]},
+  {ws:'■ Seller Onboarding & Sales Expansion',initiative:'영업본부 KPI 세팅 및 얼라인먼트 세션진행',action:'영업본부 KPI 세팅 및 타겟 비중 확정',task:'KAM Manager(영업본부) 4PL 세일즈 KPI 세팅 완료',targetDate:'2026-04-30',status:'완료',week:'W18',assignee:'박준성',msId:null,relatedIds:[]},
+  {ws:'■ Partnership & 3PL Contract',initiative:'4PL 핵심 파트너십 계약',action:'Last Mile 3PL 파트너십 최종 체결',task:'Last Mile 3PL - CJ대한통운 직접 우선 협상 완료 및 SLA(도착보장율, 패널티) 협상',targetDate:'2026-06-19',status:'예정',week:'W25',assignee:'최승범',msId:null,relatedIds:[]},
+  {ws:'■ TMS & Cutoff Extension',initiative:'Phase 1.5. FM 글로벌 시스템 적용 및 운영 전환',action:'글로벌 시스템 한국 환경 최적화 및 연동 개발',task:'LEX 시스템 한국 환경 최적화 셋팅 완료',targetDate:'2026-06-12',status:'예정',week:'W24',assignee:'이욱재',msId:null,relatedIds:[]},
+  {ws:'■ Seller Solution & Policy',initiative:'파일럿 및 공식 오픈 정책 가이드라인 수립',action:'파일럿 서비스 계약 구조 법무 검토 및 계약서확정',task:'LSS 검토 완료본 유관부서 배포',targetDate:'2026-05-29',status:'예정',week:'W22',assignee:'유주연',msId:null,relatedIds:[]},
+  {ws:'■ Gmarket Delivery Settlement & PG Integration',initiative:'판매자 과금 및 정산 인프라 구축',action:'BRD 작성',task:'PX 요건 최종 접수',targetDate:'2026-05-29',status:'',week:'W22',assignee:'황병순',msId:null,relatedIds:[]},
+  {ws:'■ Seller Solution & Policy',initiative:'파일럿 및 공식 오픈 정책 가이드라인 수립',action:'판매자 SLA 기준 제도화 및 페널티 자동화',task:'SLA 기반 페널티 표준 배송 정책 공식 제도화',targetDate:'2026-07-17',status:'예정',week:'W29',assignee:'김승훈',msId:22,relatedIds:[]},
   {ws:'■ Seller Solution & Policy',initiative:'서비스 가입 및 상품 개발요건 정의',action:'가입, 상품 정책 개발 요건 정의',task:'가입/상품 PRD 리뷰',targetDate:'2026-06-30',status:'',week:'W27',assignee:'유주연',msId:null,relatedIds:[]},
+  {ws:'■ Seller Solution & Policy',initiative:'서비스 가입 및 상품 개발요건 정의',action:'가입, 상품 정책 개발 요건 정의',task:'가입/상품 정책 개발 요건사항 BRD v0.9리뷰 및 피드백 반영',targetDate:'2026-05-21',status:'완료',week:'W21',assignee:'유주연',msId:null,relatedIds:[]},
+  {ws:'■ Partnership & 3PL Contract',initiative:'4PL 핵심 파트너십 계약',action:'지방권 위탁 사업자 계약 기준 수립',task:'각 지역별 G마켓 조직 구축 및 택배사 소통 핫라인 확보',targetDate:'2026-06-05',status:'진행중',week:'W23',assignee:'강승구',msId:null,relatedIds:[]},
+  {ws:'■ First Mile 집하·간선 네트워크',initiative:'수도권 모델 구축 - 직접 집하',action:'1st mile 수도권 서부 Hub 신규 인프라 구축 (김포)',task:'거점 CAPA 및 물동량 기반 서부 Hub 구축 상세 계획 수립',targetDate:'2026-09-05',status:'예정',week:'W36',assignee:'최무창',msId:null,relatedIds:[]},
+  {ws:'■ First Mile 집하·간선 네트워크',initiative:'수도권 모델 구축 - 직접 집하',action:'1st mile 수도권 동부 Hub 신규 인프라 구축 (이천/여주)',task:'거점 CAPA, 추정 비용을 포함한 동부 Hub 구축 상세 계획 수립',targetDate:'2026-07-03',status:'예정',week:'W27',assignee:'최무창',msId:null,relatedIds:[]},
+  {ws:'■ TMS & Cutoff Extension',initiative:'Phase 2. G마켓 전용 4PL 통합 시스템 구축 및 안착',action:'G마켓 FM 시스템 현장 전면 적용',task:'고도화된 G마켓 FM 전용 시스템 현장 전면 적용',targetDate:'2026-08-28',status:'예정',week:'W35',assignee:'이욱재',msId:null,relatedIds:[]},
+  {ws:'■ TMS & Cutoff Extension',initiative:'Phase1. First Mile 매뉴얼 운영 및 기반 구축',action:'데이터 표준화 및 시스템 개발 요건 정의',task:'국내 Top 3 택배사 공통 데이터 스키마 표준 확정 및 LEX 시스템 다운로드',targetDate:'2026-06-26',status:'예정',week:'W26',assignee:'이욱재',msId:null,relatedIds:[]},
+  {ws:'■ First Mile 집하·간선 네트워크',initiative:'현장 운영 안정화 및 지표 관리',action:'1st mile 운영 안정화 및 라우팅 고도화',task:'권역별 집하 라우팅/배차 안정화 및 현장 SOP 기반 인력/차량 운영 체계 확립',targetDate:'W/I 4 weeks of launch',status:'진행중',week:'',assignee:'ALL',msId:null,relatedIds:[]},
+  {ws:'■ First Mile 집하·간선 네트워크',initiative:'수도권 모델 구축 - 직접 집하',action:'1st mile 수도권 남부 Hub 구축 (동탄센터 활용 Pilot)',task:'남부 Hub 구축 상세 계획 수립 및 운송 협력사/설비 계약 완료',targetDate:'2026-03-13',status:'완료',week:'W11',assignee:'최무창',msId:null,relatedIds:[]},
+  {ws:'■ Seller Onboarding & Sales Expansion',initiative:'배송 서비스 그랜드 오픈 및 활성화',action:'판매자 대상 서비스 설명회 개최',task:'대상 판매자 모집 공지 및 온/오프라인 설명회 개최를 통한 유입 극대화',targetDate:'',status:'',week:'',assignee:'김채원',msId:null,relatedIds:[]},
+  {ws:'■ First Mile 집하·간선 네트워크',initiative:'지방권 모델 구축 - 직접 집하',action:'대전 권역 배송 서비스 개시',task:'대전 담당 대리점 리스트 확정, 현장 점검 및 G마켓-대리점 직접 계약 진행',targetDate:'2026-06-12',status:'진행중',week:'W24',assignee:'강승구',msId:null,relatedIds:[]},
+  {ws:'■ First Mile 집하·간선 네트워크',initiative:'Flex 모델 구축 - 위탁 집하 (Flex Model Setup)',action:'Flex 서비스 범위 정의 및 택배사 협상',task:'데이터 분석 기반 권역별 물동량 분포 확인 및 Flex 서비스 대상 지역 정의',targetDate:'2026-05-08',status:'완료',week:'W19',assignee:'유현천',msId:null,relatedIds:[]},
+  {ws:'■ TMS & Cutoff Extension',initiative:'Phase1. First Mile 매뉴얼 운영 및 기반 구축',action:'매뉴얼 가동 및 모니터링',task:'매뉴얼 운영 단계 실시간 모니터링 및 프로세스 개선 필요사항 수시 협의',targetDate:'2026-05-29',status:'진행중',week:'W22',assignee:'이욱재',msId:null,relatedIds:[]},
+  {ws:'■ Partnership & 3PL Contract',initiative:'4PL 핵심 파트너십 계약',action:'CJ대한통운 전략적 TF 운영 및 협상',task:'물동량 데이터 공유 기반 비즈니스 규모 확인 및 양사 투자 요소 정의',targetDate:'2026-03-27',status:'완료',week:'W13',assignee:'최승범',msId:null,relatedIds:[]},
   {ws:'■ Seller Solution & Policy',initiative:'서비스 가입 및 상품 개발요건 정의',action:'가입, 상품 정책 개발 요건 정의',task:'배송서비스 오픈 개발일정 확정',targetDate:'2026-06-30',status:'',week:'W27',assignee:'유주연',msId:null,relatedIds:[]},
-  {ws:'■ Seller Onboarding & Sales Expansion',initiative:'파일럿 셀러 온보딩 및 운영 검증',action:'파일럿 타겟 셀러 발굴 및 온보딩 프로세스 수립',task:'파일럿 셀러 대상 1:1 전용 실시간 소통 채널 개설',targetDate:'2026-05-27',status:'진행중',week:'W22',assignee:'김채원',msId:null,relatedIds:[]},
-  {ws:'■ Seller Onboarding & Sales Expansion',initiative:'파일럿 셀러 온보딩 및 운영 검증',action:'파일럿 타겟 셀러 발굴 및 온보딩 프로세스 수립',task:'판매자 스타배송 신규 유입 셀러 대상 OB모니터링 결과 리포팅 체계 구축',targetDate:'2026-05-22',status:'완료',week:'W21',assignee:'김채원',msId:null,relatedIds:[]},
-  {ws:'■ Seller Onboarding & Sales Expansion',initiative:'파일럿 셀러 온보딩 및 운영 검증',action:'파일럿 타겟 셀러 발굴 및 온보딩 프로세스 수립',task:'파일럿 셀러 대상 SOP 기반 온보딩 가이드 제작 및 배포',targetDate:'2026-06-05',status:'진행중',week:'W23',assignee:'김채원',msId:null,relatedIds:[62]},
-  {ws:'■ Seller Onboarding & Sales Expansion',initiative:'파일럿 셀러 온보딩 및 운영 검증',action:'파일럿 타겟 셀러 발굴 및 온보딩 프로세스 수립',task:'파일럿 셀러 초기 안착 위한 모니터링 수행 및 이슈 도출/정리',targetDate:'2026-06-15',status:'예정',week:'W25',assignee:'김승훈',msId:null,relatedIds:[]},
-  {ws:'■ Seller Onboarding & Sales Expansion',initiative:'파일럿 셀러 온보딩 및 운영 검증',action:'파일럿 참여 셀러 계약 협의 및 완료',task:'파일럿 대상 셀러 운영/계약 협의 (단가,운영방식 등)',targetDate:'2026-05-29',status:'진행중',week:'W22',assignee:'윤현지',msId:null,relatedIds:[]},
+  {ws:'■ First Mile 집하·간선 네트워크',initiative:'지방권 모델 구축 - 직접 집하',action:'부산 권역 배송 서비스 개시',task:'부산 권역 실제 출고(서비스 개시)',targetDate:'2026-07-06',status:'예정',week:'W28',assignee:'강승구',msId:null,relatedIds:[]},
+  {ws:'■ First Mile 집하·간선 네트워크',initiative:'지방권 모델 구축 - 직접 집하',action:'부산 권역 배송 서비스 개시',task:'부산 담당 대리점 리스트 확정 및 현장 정밀 점검 진행',targetDate:'2026-07-06',status:'예정',week:'W28',assignee:'강승구',msId:null,relatedIds:[]},
+  {ws:'■ First Mile 집하·간선 네트워크',initiative:'수도권 모델 구축 - 직접 집하',action:'1st mile 수도권 북부 Hub 신규 인프라 구축',task:'북부 Hub 구축 상세 계획 수립 및 거점/운영업체 계약 체결',targetDate:'2026-11-13',status:'예정',week:'W46',assignee:'최무창',msId:null,relatedIds:[]},
   {ws:'■ Seller Onboarding & Sales Expansion',initiative:'파일럿 셀러 온보딩 및 운영 검증',action:'파일럿 참여 셀러 계약 협의 및 완료',task:'북센 대상 판매자 스타배송 연동 방식 협의(w/3rd.party selling too)',targetDate:'2026-05-27',status:'진행중',week:'W22',assignee:'김승훈',msId:null,relatedIds:[]},
+  {ws:'■ Partnership & 3PL Contract',initiative:'4PL 핵심 파트너십 계약',action:'CJ대한통운 전략적 TF 운영 및 협상',task:'비즈니스 Risk(대리점 이슈, 택배사별 물량 이동 등) 및 비용 구조(본사, 지점, 대리점) 협상',targetDate:'2026-05-29',status:'진행중',week:'W22',assignee:'최승범',msId:null,relatedIds:[]},
+  {ws:'■ First Mile 집하·간선 네트워크',initiative:'Flex 모델 구축 - 위탁 집하 (Flex Model Setup)',action:'Flex 운영 프로세스 수립 및 권역별 확장 개시',task:'서비스 이용 셀러 모집, 컷오프 협의, 시스템 세팅(ID/가이드) 및 배송 서비스 전면 개시',targetDate:'2026-06-22',status:'예정',week:'W26',assignee:'유현천',msId:null,relatedIds:[]},
+  {ws:'■ First Mile 집하·간선 네트워크',initiative:'수도권 모델 구축 - 직접 집하',action:'1st mile 수도권 북부 Hub 신규 인프라 구축',task:'설비 계약, 현장 인프라 세팅 및 Pilot 테스트 거쳐 Grand Open',targetDate:'2026-12-23',status:'예정',week:'W52',assignee:'최무창',msId:null,relatedIds:[]},
+  {ws:'■ First Mile 집하·간선 네트워크',initiative:'지방권 모델 구축 - 직접 집하',action:'지방권 운영 조직 구성 및 대리점 협의',task:'수수료 정산 기준 및 화물사고 기준(귀책 구분) 대리점 연합회 가이드 안내/협의',targetDate:'2026-06-12',status:'예정',week:'W24',assignee:'강승구',msId:null,relatedIds:[]},
+  {ws:'■ TMS & Cutoff Extension',initiative:'Phase1. First Mile 매뉴얼 운영 및 기반 구축',action:'데이터 표준화 및 시스템 개발 요건 정의',task:'시스템 개발 요청사항(FM, 3PL 기능별) 작성 및 택배사 주문 연동 항목 정의',targetDate:'2026-07-24',status:'',week:'W30',assignee:'이욱재',msId:null,relatedIds:[]},
+  {ws:'■ TMS & Cutoff Extension',initiative:'Phase 1.5. FM 글로벌 시스템 적용 및 운영 전환',action:'Phase 1.5 오픈 및 시스템 기반 운영 고도화',task:'시스템 현장 운영 적용(WEB/APP 실적 처리) 및 G마켓 커스터마이징 요건 정의',targetDate:'2026-07-24',status:'예정',week:'W30',assignee:'이욱재',msId:null,relatedIds:[]},
+  {ws:'■ TMS & Cutoff Extension',initiative:'Phase 2. G마켓 전용 4PL 통합 시스템 구축 및 안착',action:'E2E 데이터 검증 체계 및 운영 자동화 확립',task:'운영 KPI 대시보드 가시성 확보 및 시스템 기반 운영 자동화/확장 대응',targetDate:'2027-01-29',status:'예정',week:'W4',assignee:'이욱재',msId:null,relatedIds:[]},
+  {ws:'■ First Mile 집하·간선 네트워크',initiative:'현장 운영 안정화 및 지표 관리',action:'1st mile 운영 안정화 및 라우팅 고도화',task:'운영 KPI/SLA 측정, 실시간 모니터링 및 실물량 기반 CAPA 조정/권역 확장 의사결정',targetDate:'W/I 4 weeks of launch',status:'진행중',week:'',assignee:'ALL',msId:null,relatedIds:[]},
+  {ws:'■ Gmarket Delivery Settlement & PG Integration',initiative:'판매자 과금 및 정산 인프라 구축',action:'정책수립',task:'원가 기반의 표준 과금 테이블 및 등급별 할인 규칙 설계',targetDate:'2026-05-21',status:'완료',week:'W21',assignee:'황병순',msId:null,relatedIds:[]},
+  {ws:'■ Seller Solution & Policy',initiative:'서비스 가입 및 상품 개발요건 정의',action:'가입, 상품 정책 개발 요건 정의',task:'유관부서 합의 거진 가입 및 상품 정책 최종 BRD 접수',targetDate:'2026-05-27',status:'예정',week:'W22',assignee:'유주연',msId:11,relatedIds:[]},
+  {ws:'■ Gmarket Delivery Settlement & PG Integration',initiative:'판매자 과금 및 정산 인프라 구축',action:'BRD 작성',task:'일/정산 반영을 위한 배송사 데이터 연동 협의 완료',targetDate:'2026-05-28',status:'진행중',week:'W22',assignee:'황병순',msId:null,relatedIds:[]},
+  {ws:'■ TMS & Cutoff Extension',initiative:'Phase 2. G마켓 전용 4PL 통합 시스템 구축 및 안착',action:'4PL E2E 통합 시스템 및 Control Tower 구축',task:'전체 통합 테스트(FM+4PL) 및 Control Tower v1 오픈 (실시간 가시화, 시스템 LTS)',targetDate:'2026-12-11',status:'예정',week:'W50',assignee:'이욱재',msId:null,relatedIds:[]},
+  {ws:'■ First Mile 집하·간선 네트워크',initiative:'지방권 모델 구축 - 직접 집하',action:'지방권 네트워크 전략 및 배송 운영 프로세스 수립',task:'지방권 네트워크 전략(셀러 단가 제안, 집하 형태) 및 대리점 상생 방안 수립',targetDate:'2026-04-27',status:'완료',week:'W18',assignee:'강승구',msId:null,relatedIds:[]},
+  {ws:'■ First Mile 집하·간선 네트워크',initiative:'지방권 모델 구축 - 직접 집하',action:'지방권 운영 조직 구성 및 대리점 협의',task:'지방권 운영 조직 구성 및 타 택배사 확장/추가 지역 확장 고려',targetDate:'2026-06-12',status:'예정',week:'W24',assignee:'강승구',msId:null,relatedIds:[]},
+  {ws:'■ Partnership & 3PL Contract',initiative:'4PL 핵심 파트너십 계약',action:'지방권 위탁 사업자 계약 기준 수립',task:'지방권 위탁사업자용 표준계약서, SLA, 정산 체계 및 계약 기준 수립',targetDate:'2026-06-05',status:'진행중',week:'W23',assignee:'강승구',msId:null,relatedIds:[]},
+  {ws:'■ First Mile 집하·간선 네트워크',initiative:'현장 운영 안정화 및 지표 관리',action:'Flex 위탁 집하 프로세스 안정화',task:'집하/리드타임 이슈 제어 및 도착보장율 등 택배사별 SLA/KPI 실시간 모니터링',targetDate:'W/I 4 weeks of launch',status:'진행중',week:'',assignee:'ALL',msId:null,relatedIds:[]},
+  {ws:'■ First Mile 집하·간선 네트워크',initiative:'지방권 모델 구축 - 직접 집하',action:'지방권 네트워크 전략 및 배송 운영 프로세스 수립',task:'집하점 정산 기준, 화물사고 대응 방안, 계약 준비사항 및 관련 FAQ 작성',targetDate:'2026-04-27',status:'완료',week:'W18',assignee:'강승구',msId:null,relatedIds:[]},
+  {ws:'■ Partnership & 3PL Contract',initiative:'4PL 핵심 파트너십 계약',action:'Last Mile 3PL 파트너십 최종 체결',task:'최종 협의안 내부 승인 및 Last Mile 3PL 파트너 계약 최종 체결',targetDate:'2026-06-26',status:'예정',week:'W26',assignee:'최승범',msId:null,relatedIds:[]},
+  {ws:'■ Seller Onboarding & Sales Expansion',initiative:'영업본부 KPI 세팅 및 얼라인먼트 세션진행',action:'영업본부 KPI 세팅 및 타겟 비중 확정',task:'카테고리별 유입 목표 비중 확정',targetDate:'2026-06-30',status:'진행중',week:'W27',assignee:'황병순',msId:null,relatedIds:[]},
+  {ws:'■ TMS & Cutoff Extension',initiative:'Phase 1.5. FM 글로벌 시스템 적용 및 운영 전환',action:'글로벌 시스템 한국 환경 최적화 및 연동 개발',task:'택배사 주문 연동 개발 적용(주문, 정산, 트래킹 상태) 및 실시간 API 연동',targetDate:'2026-06-19',status:'예정',week:'W25',assignee:'이욱재',msId:null,relatedIds:[]},
+  {ws:'■ TMS & Cutoff Extension',initiative:'Phase 1.5. FM 글로벌 시스템 적용 및 운영 전환',action:'지방권 운영 시스템 연동 인프라 준비',task:'택배사-G마켓 대리점 코드 생성 및 SM APP 내 G마켓 코드 사용 권한 확보',targetDate:'2026-06-19',status:'예정',week:'W25',assignee:'이욱재',msId:null,relatedIds:[]},
+  {ws:'■ First Mile 집하·간선 네트워크',initiative:'Flex 모델 구축 - 위탁 집하 (Flex Model Setup)',action:'Flex 서비스 범위 정의 및 택배사 협상',task:'택배사별 지역/셀러 분배 전략 수립 및 택배 단가 견적 회신/추가 협의 완료',targetDate:'2026-06-05',status:'진행중',week:'W23',assignee:'유현천',msId:null,relatedIds:[]},
+  {ws:'■ Seller Onboarding & Sales Expansion',initiative:'파일럿 셀러 온보딩 및 운영 검증',action:'파일럿 참여 셀러 계약 협의 및 완료',task:'파일럿 대상 셀러 운영/계약 협의 (단가,운영방식 등)',targetDate:'2026-05-29',status:'진행중',week:'W22',assignee:'윤현지',msId:null,relatedIds:[]},
+  {ws:'■ Seller Solution & Policy',initiative:'파일럿 및 공식 오픈 정책 가이드라인 수립',action:'배송 서비스 표준 운영 절차(SOP)제정',task:'파일럿 서비스 운영 위한 G마켓 배송서비스 SOP 확정',targetDate:'2026-05-29',status:'진행중',week:'W22',assignee:'김승훈',msId:null,relatedIds:[60, 98]},
+  {ws:'■ Seller Solution & Policy',initiative:'파일럿 및 공식 오픈 정책 가이드라인 수립',action:'파일럿 서비스 계약 구조 법무 검토 및 계약서확정',task:'파일럿 서비스 운영 표준 계약(신청) 초안 법무 검토',targetDate:'2026-05-28',status:'진행중',week:'W22',assignee:'유주연',msId:null,relatedIds:[77, 52, 62]},
+  {ws:'■ Seller Onboarding & Sales Expansion',initiative:'파일럿 셀러 온보딩 및 운영 검증',action:'파일럿 타겟 셀러 발굴 및 온보딩 프로세스 수립',task:'파일럿 셀러 대상 1:1 전용 실시간 소통 채널 개설',targetDate:'2026-05-27',status:'진행중',week:'W22',assignee:'김채원',msId:null,relatedIds:[]},
+  {ws:'■ Seller Onboarding & Sales Expansion',initiative:'파일럿 셀러 온보딩 및 운영 검증',action:'파일럿 타겟 셀러 발굴 및 온보딩 프로세스 수립',task:'파일럿 셀러 대상 SOP 기반 온보딩 가이드 제작 및 배포',targetDate:'2026-06-05',status:'진행중',week:'W23',assignee:'김채원',msId:null,relatedIds:[62]},
   {ws:'■ Seller Onboarding & Sales Expansion',initiative:'파일럿 셀러 온보딩 및 운영 검증',action:'파일럿 타겟 셀러 발굴 및 온보딩 프로세스 수립',task:'파일럿 셀러 온보딩 수행 위한 에이전시 프로세스 수립/확정',targetDate:'2026-05-29',status:'진행중',week:'W22',assignee:'김채원',msId:null,relatedIds:[]},
+  {ws:'■ Seller Onboarding & Sales Expansion',initiative:'파일럿 셀러 온보딩 및 운영 검증',action:'파일럿 타겟 셀러 발굴 및 온보딩 프로세스 수립',task:'파일럿 셀러 초기 안착 위한 모니터링 수행 및 이슈 도출/정리',targetDate:'2026-06-15',status:'예정',week:'W25',assignee:'김승훈',msId:null,relatedIds:[]},
+  {ws:'■ Seller Onboarding & Sales Expansion',initiative:'파일럿 셀러 온보딩 및 운영 검증',action:'파일럿 참여 셀러 계약 협의 및 완료',task:'파일럿 참여 셀러 계약 체결',targetDate:'2026-05-29',status:'예정',week:'W22',assignee:'최무창',msId:null,relatedIds:[60]},
+  {ws:'■ Seller Onboarding & Sales Expansion',initiative:'파일럿 피드백 분석 및 가이드 정형화',action:'서비스 공식 오픈용 온보딩 패키지 확정',task:'파일럿 피드백 반영한 웰컴 가이드 및 온보딩 매뉴얼 고도화',targetDate:'',status:'',week:'',assignee:'김채원',msId:null,relatedIds:[]},
+  {ws:'■ Seller Solution & Policy',initiative:'파일럿 및 공식 오픈 정책 가이드라인 수립',action:'판매자 SLA 기준 제도화 및 페널티 자동화',task:'판매자 성과 모니터링 대시보드 기획안 도출',targetDate:'2026-07-31',status:'예정',week:'W31',assignee:'김승훈',msId:22,relatedIds:[]},
+  {ws:'■ Seller Solution & Policy',initiative:'파일럿 및 공식 오픈 정책 가이드라인 수립',action:'판매자 SLA 기준 제도화 및 페널티 자동화',task:'판매자 성과 모니터링 대시보드 및 페널티 자동화 어드민 개발반영',targetDate:'2026-09-30',status:'',week:'W40',assignee:'김승훈',msId:22,relatedIds:[]},
+  {ws:'■ Seller Solution & Policy',initiative:'파일럿 및 공식 오픈 정책 가이드라인 수립',action:'판매자 SLA 기준 제도화 및 페널티 자동화',task:'판매자 성과 평가 핵심 KPI 지표 확정',targetDate:'2026-06-30',status:'예정',week:'W27',assignee:'김승훈',msId:22,relatedIds:[]},
+  {ws:'■ Gmarket Delivery Settlement & PG Integration',initiative:'판매자 과금 및 정산 인프라 구축',action:'정책수립',task:'판매자 손해배상 정책 수립 (회계,법무 협의)',targetDate:'2026-05-21',status:'완료',week:'W21',assignee:'유주연',msId:null,relatedIds:[60]},
+  {ws:'■ Seller Onboarding & Sales Expansion',initiative:'파일럿 셀러 온보딩 및 운영 검증',action:'파일럿 타겟 셀러 발굴 및 온보딩 프로세스 수립',task:'판매자 스타배송 가입 프로세스 변경 (API 중단)',targetDate:'2026-05-18',status:'완료',week:'W21',assignee:'유주연',msId:null,relatedIds:[]},
+  {ws:'■ Seller Onboarding & Sales Expansion',initiative:'파일럿 셀러 온보딩 및 운영 검증',action:'파일럿 타겟 셀러 발굴 및 온보딩 프로세스 수립',task:'판매자 스타배송 신규 유입 셀러 대상 OB모니터링 결과 리포팅 체계 구축',targetDate:'2026-05-22',status:'완료',week:'W21',assignee:'김채원',msId:null,relatedIds:[]},
+  {ws:'■ Seller Onboarding & Sales Expansion',initiative:'파일럿 셀러 온보딩 및 운영 검증',action:'파일럿 타겟 셀러 발굴 및 온보딩 프로세스 수립',task:'판매자 스타배송 신규 유입 셀러 대상 온보딩 프로세스 수립',targetDate:'2026-05-18',status:'완료',week:'W21',assignee:'김채원',msId:null,relatedIds:[]},
+  {ws:'■ Seller Solution & Policy',initiative:'파일럿 및 공식 오픈 정책 가이드라인 수립',action:'판매자 SLA 기준 제도화 및 페널티 자동화',task:'페널티 자동화 어드민 기획안 도출',targetDate:'2026-07-15',status:'예정',week:'W29',assignee:'김승훈',msId:22,relatedIds:[]},
+  {ws:'■ Seller Solution & Policy',initiative:'배송 서비스 그랜드 오픈',action:'G마켓 배송 서비스 공식 오픈 준비',task:'프로모션,시스템,과금 등 오픈 전 최종 체크리스트 점검',targetDate:'2026-09-30',status:'',week:'W40',assignee:'유주연',msId:null,relatedIds:[]},
+  {ws:'■ Gmarket Delivery Settlement & PG Integration',initiative:'판매자 과금 및 정산 인프라 구축',action:'BRD 작성',task:'현업 요구사항 반영한 과금 정책 및 일/정산 시스템 BRD 작성',targetDate:'2026-05-28',status:'진행중',week:'W22',assignee:'황병순',msId:null,relatedIds:[]},
+  {ws:'■ First Mile 집하·간선 네트워크',initiative:'수도권 모델 구축 - 직접 집하',action:'1st mile 수도권 동부 Hub 신규 인프라 구축 (이천/여주)',task:'현장 인프라 세팅 및 Pilot Open 테스트 후 Grand Open',targetDate:'2026-07-31',status:'예정',week:'W31',assignee:'최무창',msId:null,relatedIds:[]},
+  {ws:'■ First Mile 집하·간선 네트워크',initiative:'수도권 모델 구축 - 직접 집하',action:'1st mile 수도권 서부 Hub 신규 인프라 구축 (김포)',task:'현장 인프라 세팅 및 Pilot Open 테스트 후 Grand Open',targetDate:'2026-10-16',status:'예정',week:'W42',assignee:'최무창',msId:null,relatedIds:[]},
+  {ws:'■ First Mile 집하·간선 네트워크',initiative:'수도권 모델 구축 - 직접 집하',action:'1st mile 수도권 남부 Hub 구축 (동탄센터 활용 Pilot)',task:'현장 인프라 세팅(철거, 설치, 집기 이동) 및 픽업/차량/Hub 운영 프로세스 설계',targetDate:'2026-05-15',status:'완료',week:'W20',assignee:'최무창',msId:null,relatedIds:[]},
+  {ws:'■ TMS & Cutoff Extension',initiative:'Phase 1.5. FM 글로벌 시스템 적용 및 운영 전환',action:'지방권 운영 시스템 연동 인프라 준비',task:'현장 전담조직용 스캔 관리 기준 수립 및 스캔 누락 시 수기 정산/보정 프로세스 구성',targetDate:'2026-07-10',status:'예정',week:'W28',assignee:'이욱재',msId:null,relatedIds:[]},
 ];
 const RAW_MILESTONES=[
   {phase:'Phase 1',name:'1st Mile 직영 집하센터 남부(동탄센터 활용) Pilot 구축',nameEn:'Establishing 1st Mile Directly-Operated Collection Center (South): Pilot at Dongtan Center',date:'2026-04-01',status:'완료'},
@@ -944,24 +1033,8 @@ function buildTaskRowHtml(t) {
     +'</div>'
     +'</div>';
 
-  // 인라인 편집폼
-  var form = '<div class="inline-form" id="tedit-'+t.id+'">'
-    +'<div class="inline-row"><span class="inline-label">Task</span><input class="inline-input" id="ti-task-'+t.id+'" value="'+((t.task||'').replace(/"/g,'&quot;'))+'"></div>'
-    +'<div class="inline-row">'
-    +'<span class="inline-label">담당자</span><input class="inline-input" id="ti-assignee-'+t.id+'" value="'+(t.assignee||'')+'" style="max-width:110px" placeholder="이름">'
-    +'<span class="inline-label" style="margin-left:8px">날짜</span><input class="inline-input" type="date" id="ti-date-'+t.id+'" value="'+(t.targetDate||'')+'" style="max-width:150px">'
-    +'</div>'
-    +'<div class="inline-row">'
-    +'<span class="inline-label">Status</span><select class="inline-select" id="ti-status-'+t.id+'">'+buildStatusOpts(t.status)+'</select>'
-    +'<span class="inline-label" style="margin-left:8px">마일스톤</span><select class="inline-select" id="ti-ms-'+t.id+'" style="flex:1;min-width:0">'+buildMsOpts(t.msId)+'</select>'
-    +'</div>'
-    +'<div class="inline-actions">'
-    +'<button class="btn-del" data-id="'+t.id+'" onclick="deleteTaskById(this)"><i class="ti ti-trash"></i> 삭제</button>'
-    +'<button class="btn-cancel" data-id="'+t.id+'" onclick="closeTaskEdit(this)">취소</button>'
-    +'<button class="btn-save" data-id="'+t.id+'" onclick="saveTaskEdit(this)"><i class="ti ti-check"></i> 저장</button>'
-    +'</div></div>';
 
-  return row + form;
+  return row;
 }
 
 
@@ -1061,13 +1134,18 @@ function renderTaskGroups() {
       +'<span style="width:10px;height:10px;border-radius:2px;background:'+c.text+';flex-shrink:0;display:inline-block"></span>'
       +'<span class="ws-title" style="color:'+c.text+';font-size:12px">'+ws.replace('■ ','')+'</span>'
       +'<div class="ws-stats">'+stats+'</div>'
-      +'<button class="btn-add-action" onclick="event.stopPropagation();showAddAction(this)" data-wssid="'+wsSid+'" title="Action 추가"><i class="ti ti-plus"></i> Action 추가</button>'
+      +'<button class="btn" style="font-size:11px;padding:3px 8px;background:var(--teal-mid);color:#fff;border:none" data-ws="'+ws.replace(/"/g,'&quot;')+'" onclick="event.stopPropagation();openInitiativeModalByEl(this)" title="Initiative 추가"><i class="ti ti-plus"></i> Initiative</button>'
+      +'<button class="btn-add-action" data-ws="'+ws.replace(/"/g,'&quot;')+'" onclick="event.stopPropagation();openActionModalByEl(this,\'add\')" title="Action 추가"><i class="ti ti-plus"></i> Action 추가</button>'
       +'<i class="ti ti-chevron-right ws-chevron '+(isOpen?'open':'')+'" id="wsc-'+wsSid+'"></i>'
       +'</div>'
       +'<div id="ws-body-'+wsSid+'" style="display:'+(isOpen?'block':'none')+'">';
 
     // Add action form
     out += '<div class="inline-form" id="aa-'+wsSid+'" style="margin:4px 16px 6px">'
+      +'<div class="inline-row"><span class="inline-label">Initiative</span>'
+      +'<select class="inline-select" id="aa-init-'+wsSid+'" style="flex:1">'
+      +'<option value="">— 선택</option>'
+      +'</select></div>'
       +'<div class="inline-row"><span class="inline-label">Action명</span><input class="inline-input" id="aa-text-'+wsSid+'" placeholder="Action 이름 입력"></div>'
       +'<div class="inline-actions">'
       +'<button class="btn-cancel" data-wssid="'+wsSid+'" onclick="closeParentForm(this)">취소</button>'
@@ -1078,13 +1156,46 @@ function renderTaskGroups() {
       out += '<div style="padding:10px 16px;font-size:12px;color:var(--text3);display:flex;align-items:center;gap:6px"><i class="ti ti-mood-empty"></i> 조회된 Task 없음</div>';
     }
 
+    // Initiative 목록 (순서 유지)
+    var initiatives = [];
+    allWsTasks.forEach(function(t){
+      if(t.initiative && initiatives.indexOf(t.initiative)===-1) initiatives.push(t.initiative);
+    });
+
+    initiatives.forEach(function(initiative){
+      var initTasks = wsTasks.filter(function(t){return t.initiative===initiative;});
+      if(isFiltered && !initTasks.length) return;
+
+      var initKey = ws+'__init__'+initiative;
+      var initSid = safeId(initKey);
+      var isInitOpen = wsOpenState[initKey]!==false;
+      var initDone = initTasks.filter(function(t){return t.status==='완료';}).length;
+      var initDelayed = initTasks.filter(function(t){return effectiveStatus(t)==='지연';}).length;
+      var initStats = '<span class="s-pill s-완료" style="font-size:10px;padding:1px 5px">'+initDone+'완료</span>'
+        +(initDelayed?'<span class="s-pill s-지연" style="font-size:10px;padding:1px 5px">'+initDelayed+'지연</span>':'')
+        +'<span style="font-size:10px;color:var(--text3)">'+initTasks.length+'건</span>';
+      var wsc = getWsColor(ws);
+
+      out += '<div class="initiative-block">'
+        +'<div class="initiative-header" data-initsid="'+initSid+'" onclick="toggleInitByEl(this)" style="border-left-color:'+wsc.text+'">'
+        +'<i class="ti ti-chevron-right initiative-chevron '+(isInitOpen?'open':'')+'" id="initc-'+initSid+'"></i>'
+        +'<span style="font-size:9px;font-weight:600;padding:1px 6px;border-radius:3px;background:var(--surface2);color:var(--text3);flex-shrink:0;letter-spacing:0.3px;border:0.5px solid var(--border)">Initiative</span>'
+        +'<span class="initiative-label">'+initiative+'</span>'
+        +'<div class="initiative-stats">'+initStats+'</div>'
+        +'<button class="action-edit-btn" data-ws="'+ws.replace(/"/g,'&quot;')+'" data-initiative="'+initiative.replace(/"/g,'&quot;')+'" onclick="event.stopPropagation();openInitiativeModalByEl(this,\'edit\')" title="Initiative 수정"><i class="ti ti-pencil"></i></button>'
+        +'</div>'
+        +'<div id="init-body-'+initSid+'" style="display:'+(isInitOpen?'block':'none')+'">';
+
+    // Action 목록
     var actions = [];
-    allWsTasks.forEach(function(t){ if(t.action&&actions.indexOf(t.action)===-1) actions.push(t.action); });
+    allWsTasks.filter(function(t){return t.initiative===initiative;}).forEach(function(t){
+      if(t.action&&actions.indexOf(t.action)===-1) actions.push(t.action);
+    });
 
     actions.forEach(function(action){
-      var actTasks = wsTasks.filter(function(t){return t.action===action;});
+      var actTasks = wsTasks.filter(function(t){return t.initiative===initiative&&t.action===action;});
       if(isFiltered&&!actTasks.length) return;
-      var actKey = ws+'__'+action;
+      var actKey = ws+'__'+initiative+'__'+action;
       var actSid = safeId(actKey);
       var isActOpen = actionOpenState[actKey]!==false;
 
@@ -1093,9 +1204,10 @@ function renderTaskGroups() {
         +'<div class="action-header" data-actsid="'+actSid+'" onclick="toggleActionByEl(this)">'
         +'<i class="ti ti-grip-vertical drag-handle" title="드래그하여 순서 변경"></i>'
         +'<i class="ti ti-chevron-right action-chevron '+(isActOpen?'open':'')+'" id="ac-'+actSid+'"></i>'
+        +'<span style="font-size:9px;font-weight:600;padding:1px 6px;border-radius:3px;background:rgba(0,0,0,0.06);color:var(--text3);flex-shrink:0;letter-spacing:0.3px;border:0.5px solid var(--border)">Action</span>'
         +'<span class="action-label">'+action+'</span>'
         +'<span style="font-size:11px;color:var(--text3);margin-left:auto">'+actTasks.length+'건</span>'
-        +'<button class="action-edit-btn" onclick="event.stopPropagation();showActionEdit(this)" data-actsid="'+actSid+'" data-action="'+action.replace(/"/g,'&quot;')+'"><i class="ti ti-pencil"></i></button>'
+        +'<button class="action-edit-btn" data-ws="'+ws.replace(/"/g,'&quot;')+'" data-initiative="'+initiative.replace(/"/g,'&quot;')+'" data-action="'+action.replace(/"/g,'&quot;')+'" onclick="event.stopPropagation();openActionModalByEl(this,String.fromCharCode(101,100,105,116))" title="Action 수정"><i class="ti ti-pencil"></i></button>'
         +'</div>'
         +'<div id="act-body-'+actSid+'" style="display:'+(isActOpen?'block':'none')+'">'
         // Action edit form
@@ -1117,7 +1229,7 @@ function renderTaskGroups() {
       sorted.forEach(function(t){ out += buildTaskRowHtml(t); });
 
       out += '</div>'
-        +'<button class="btn-add-task" data-wssid="'+wsSid+'" data-actsid="'+actSid+'" data-action="'+action.replace(/"/g,'&quot;')+'" onclick="showAddTask(this)"><i class="ti ti-plus"></i> Task 추가</button>'
+        +'<button class="btn-add-task" data-ws="'+ws.replace(/"/g,'&quot;')+'" data-initiative="'+initiative.replace(/"/g,'&quot;')+'" data-action="'+action.replace(/"/g,'&quot;')+'" onclick="openTaskModalByEl(this,String.fromCharCode(97,100,100))"><i class="ti ti-plus"></i> Task 추가</button>'
         +'<div class="inline-form" id="at-'+actSid+'" style="margin:4px 0 6px 36px">'
         +'<div class="inline-row"><span class="inline-label">Task</span><input class="inline-input" id="at-text-'+actSid+'" placeholder="Task 내용"></div>'
         +'<div class="inline-row"><span class="inline-label">담당자</span><input class="inline-input" id="at-assignee-'+actSid+'" placeholder="이름" style="max-width:110px"><span class="inline-label" style="margin-left:8px">날짜</span><input class="inline-input" type="date" id="at-date-'+actSid+'" style="max-width:150px"></div>'
@@ -1127,9 +1239,12 @@ function renderTaskGroups() {
         +'<button class="btn-save" data-wssid="'+wsSid+'" data-actsid="'+actSid+'" data-action="'+action.replace(/"/g,'&quot;')+'" onclick="submitAddTask(this)"><i class="ti ti-check"></i> 추가</button>'
         +'</div></div>'
         +'</div></div>';
-    });
-    out += '</div></div>';
-  });
+    }); // end actions forEach
+    out += '</div></div>'; // init-body close
+    out += '</div>'; // initiative-block close
+    }); // end initiatives forEach
+    out += '</div></div>'; // ws-body + ws-block close
+  }); // end wsOrderList forEach
 
   if(!out) {
     container.innerHTML = '<div style="text-align:center;padding:40px 0;color:var(--text3)"><i class="ti ti-search" style="font-size:28px;opacity:0.4;display:block;margin-bottom:8px"></i><div style="font-size:13px">조회된 Task가 없습니다</div><div style="font-size:11px;margin-top:4px">필터 조건을 변경해보세요</div></div>';
@@ -1139,6 +1254,21 @@ function renderTaskGroups() {
 }
 
 // ── Toggle ──
+function toggleInitByEl(el) {
+  var sid  = el.getAttribute('data-initsid');
+  var body = document.getElementById('init-body-'+sid);
+  var chev = document.getElementById('initc-'+sid);
+  if(!body) return;
+  var open = body.style.display !== 'none';
+  body.style.display = open ? 'none' : 'block';
+  if(chev) chev.classList.toggle('open', !open);
+  taskData.forEach(function(t){
+    if(t.initiative && safeId(t.ws+'__init__'+t.initiative)===sid) {
+      wsOpenState[t.ws+'__init__'+t.initiative] = !open;
+    }
+  });
+}
+
 function toggleWsByEl(el) {
   var sid = el.getAttribute('data-wssid');
   var ws = taskData.map(function(t){return t.ws;}).filter(Boolean).find(function(w){return safeId(w)===sid;});
@@ -1165,10 +1295,31 @@ function toggleAllWs() {
 }
 
 // ── Action add/edit/delete ──
+function buildAaInitOpts(ws) {
+  var arr = [];
+  taskData.forEach(function(t){ if(t.ws===ws&&t.initiative&&arr.indexOf(t.initiative)===-1) arr.push(t.initiative); });
+  return '<option value="">— Initiative 선택</option>'
+    + arr.map(function(v){ return '<option value="'+v.replace(/"/g,'&quot;')+'">'+v+'</option>'; }).join('');
+}
+
+
 function showAddAction(el) {
   var sid = el.getAttribute('data-wssid');
   document.querySelectorAll('.inline-form.open').forEach(function(f){f.classList.remove('open');});
   var form = document.getElementById('aa-'+sid); if(!form) return;
+
+  // ws 역매핑
+  var ws = taskData.map(function(t){return t.ws;}).filter(Boolean).find(function(w){return safeId(w)===sid;})||'';
+
+  // Initiative 드롭다운 동적 생성
+  var initSel = document.getElementById('aa-init-'+sid);
+  if(initSel) {
+    var arr = [];
+    taskData.forEach(function(t){ if(t.ws===ws&&t.initiative&&arr.indexOf(t.initiative)===-1) arr.push(t.initiative); });
+    initSel.innerHTML = '<option value="">— Initiative 선택</option>'
+      + arr.map(function(v){ return '<option value="'+v.replace(/"/g,'&quot;')+'">'+v+'</option>'; }).join('');
+  }
+
   form.classList.add('open');
   var inp = document.getElementById('aa-text-'+sid); if(inp){ inp.value=''; inp.focus(); }
 }
@@ -1186,15 +1337,7 @@ function submitAddAction(el) {
   if(inp) inp.value='';
   document.getElementById('aa-'+sid).classList.remove('open');
   lightRefresh(); saveData();
-}
-function showActionEdit(el) {
-  var sid = el.getAttribute('data-actsid');
-  document.querySelectorAll('.inline-form.open').forEach(function(f){f.classList.remove('open');});
-  var form = document.getElementById('ae-'+sid); if(!form) return;
-  form.classList.add('open');
-  var inp = document.getElementById('ae-text-'+sid); if(inp) inp.focus();
-}
-function saveActionEdit(el) {
+}function saveActionEdit(el) {
   var actsid = el.getAttribute('data-actsid');
   var wssid  = el.getAttribute('data-wssid');
   var oldAction = el.getAttribute('data-oldaction');
@@ -1455,6 +1598,9 @@ function filterMsLinkList() {
 function saveMsLinks() {
   document.getElementById('ms-link-modal').classList.remove('open');
     document.getElementById('related-modal').classList.remove('open');
+    document.getElementById('task-edit-modal').classList.remove('open');
+    document.getElementById('action-modal').classList.remove('open');
+    document.getElementById('initiative-modal').classList.remove('open');
   msLinkId=null; refreshAll(); saveData();
 }
 
@@ -1559,11 +1705,10 @@ function renderFilters() {
 
 // ── Init ──
 function initOpenStates() {
-  taskData.map(function(t){return t.ws;}).filter(function(w,i,a){return w&&a.indexOf(w)===i;}).forEach(function(ws){
-    wsOpenState[ws]=true;
-    taskData.filter(function(t){return t.ws===ws;}).map(function(t){return t.action;}).filter(function(a,i,arr){return a&&arr.indexOf(a)===i;}).forEach(function(action){
-      actionOpenState[ws+'__'+action]=true;
-    });
+  taskData.forEach(function(t){
+    if(t.ws) wsOpenState[t.ws] = true;
+    if(t.ws && t.initiative) wsOpenState[t.ws+'__init__'+t.initiative] = true;
+    if(t.ws && t.initiative && t.action) actionOpenState[t.ws+'__'+t.initiative+'__'+t.action] = true;
   });
 }
 
@@ -1683,6 +1828,318 @@ document.addEventListener('dragend', function(){
 });
 
 
+var editingActionData = null;
+
+function onAeWsChange() {
+  var wsSid = document.getElementById('ae-ws').value;
+  var ws = taskData.map(function(t){return t.ws;}).filter(Boolean).find(function(w){return safeId(w)===wsSid;})||'';
+  var arr = [];
+  taskData.forEach(function(t){ if(t.ws===ws&&t.initiative&&arr.indexOf(t.initiative)===-1) arr.push(t.initiative); });
+  var curInit = editingActionData ? editingActionData.oldInit : '';
+  document.getElementById('ae-initiative').innerHTML = '<option value="">— 선택</option>'
+    + arr.map(function(v){ return '<option value="'+v.replace(/"/g,'&quot;')+'" '+(v===curInit?'selected':'')+'>'+v+'</option>'; }).join('');
+}
+
+
+function closeActionModal() {
+  document.getElementById('action-modal').classList.remove('open');
+    document.getElementById('initiative-modal').classList.remove('open');
+  editingActionData = null;
+}
+
+function saveActionModal() {
+  if(!editingActionData) return;
+  var oldWs     = editingActionData.oldWs;
+  var oldAction = editingActionData.oldAction;
+  var newWsSid  = document.getElementById('ae-ws').value;
+  var newWs     = taskData.map(function(t){return t.ws;}).filter(Boolean).find(function(w){return safeId(w)===newWsSid;})||oldWs;
+  var newInit   = document.getElementById('ae-initiative').value;
+  var newName   = document.getElementById('ae-name').value.trim();
+  if(!newName) return;
+  taskData.forEach(function(t){
+    if(t.ws===oldWs && t.action===oldAction) {
+      t.ws = newWs;
+      if(newInit) t.initiative = newInit;
+      t.action = newName;
+    }
+  });
+  addLog('action_add','Action 수정','"'+oldAction+'" → "'+newName+'"', oldWs.replace('■ ',''));
+  closeActionModal(); lightRefresh(); saveData();
+}
+
+function deleteActionFromModal() {
+  if(!editingActionData) return;
+  var oldWs = editingActionData.oldWs;
+  var oldAction = editingActionData.oldAction;
+  var cnt = taskData.filter(function(t){return t.ws===oldWs&&t.action===oldAction;}).length;
+  if(!confirm('"'+oldAction+'" Action을 삭제할까요?\nTask '+cnt+'건도 함께 삭제됩니다.')) return;
+  taskData = taskData.filter(function(t){return !(t.ws===oldWs&&t.action===oldAction);});
+  addLog('task_delete','Action 삭제','"'+oldAction+'" (Task '+cnt+'건)', oldWs.replace('■ ',''));
+  closeActionModal(); lightRefresh(); saveData();
+}
+
+
+var editingTaskId = null;
+
+
+// ── Category Helpers ──
+function getWsList() {
+  var list = WS_ORDER.slice();
+  taskData.forEach(function(t){ if(t.ws&&list.indexOf(t.ws)===-1) list.push(t.ws); });
+  return list;
+}
+function getInitList(ws) {
+  var arr = [];
+  taskData.forEach(function(t){ if(t.ws===ws&&t.initiative&&arr.indexOf(t.initiative)===-1) arr.push(t.initiative); });
+  return arr;
+}
+function getActionList(ws, initiative) {
+  var arr = [];
+  taskData.forEach(function(t){ if(t.ws===ws&&t.initiative===initiative&&t.action&&arr.indexOf(t.action)===-1) arr.push(t.action); });
+  return arr;
+}
+function buildWsOpts(sel) {
+  return getWsList().map(function(ws){
+    return '<option value="'+ws.replace(/"/g,'&quot;')+'" '+(ws===sel?'selected':'')+'>'+ws.replace('■ ','')+'</option>';
+  }).join('');
+}
+function buildInitOpts(ws, sel, placeholder) {
+  var arr = getInitList(ws);
+  var ph = placeholder||'— Initiative 선택';
+  return '<option value="">'+ph+'</option>'
+    + arr.map(function(v){ return '<option value="'+v.replace(/"/g,'&quot;')+'" '+(v===sel?'selected':'')+'>'+v+'</option>'; }).join('');
+}
+function buildActionOpts(ws, initiative, sel) {
+  var arr = getActionList(ws, initiative);
+  return '<option value="">— Action 선택</option>'
+    + arr.map(function(v){ return '<option value="'+v.replace(/"/g,'&quot;')+'" '+(v===sel?'selected':'')+'>'+v+'</option>'; }).join('');
+}
+
+// ── Initiative Modal ──
+var editingInitData = null;
+
+function openInitiativeModalByEl(el, mode) {
+  var ws   = el.getAttribute('data-ws')||'';
+  var name = el.getAttribute('data-initiative')||'';
+  openInitiativeModal(mode||'add', ws, name);
+}
+function openActionModalByEl(el, mode) {
+  var ws   = el.getAttribute('data-ws')||'';
+  var init = el.getAttribute('data-initiative')||'';
+  var act  = el.getAttribute('data-action')||'';
+  openActionModal(mode||'add', ws, init, act);
+}
+function openTaskModalByEl(el, mode) {
+  var ws   = el.getAttribute('data-ws')||'';
+  var init = el.getAttribute('data-initiative')||'';
+  var act  = el.getAttribute('data-action')||'';
+  openTaskModal(mode||'add', ws, init, act);
+}
+
+
+function openInitiativeModal(mode, ws, oldName) {
+  // mode: 'add' | 'edit'
+  editingInitData = {mode:mode, oldWs:ws||'', oldName:oldName||''};
+  document.getElementById('initiative-modal-title').innerHTML = '<i class="ti ti-layers-subtract"></i> Initiative '+(mode==='add'?'추가':'수정');
+  document.getElementById('im-ws').innerHTML = buildWsOpts(ws||'');
+  document.getElementById('im-name').value = mode==='edit' ? (oldName||'') : '';
+  document.getElementById('im-del-btn').style.display = mode==='edit' ? '' : 'none';
+  document.getElementById('initiative-modal').classList.add('open');
+  setTimeout(function(){ document.getElementById('im-name').focus(); }, 100);
+}
+function closeInitiativeModal() {
+  document.getElementById('initiative-modal').classList.remove('open');
+  editingInitData = null;
+}
+function saveInitiativeModal() {
+  if(!editingInitData) return;
+  var newWs   = document.getElementById('im-ws').value;
+  var newName = document.getElementById('im-name').value.trim();
+  if(!newName) { document.getElementById('im-name').focus(); return; }
+
+  if(editingInitData.mode==='add') {
+    // 새 Initiative - 플레이스홀더 task 추가
+    var newId = Math.max.apply(null, taskData.map(function(t){return t.id;}).concat([0]))+1;
+    taskData.push({id:newId, ws:newWs, initiative:newName, action:'', task:'(Action을 추가하세요)', assignee:'', targetDate:'', week:'', status:'', comments:[], msId:null, relatedIds:[]});
+    addLog('action_add','Initiative 추가', '"'+newName+'"', newWs.replace('■ ',''));
+  } else {
+    // 수정: 해당 Initiative의 모든 task 업데이트
+    taskData.forEach(function(t){
+      if(t.ws===editingInitData.oldWs && t.initiative===editingInitData.oldName) {
+        t.ws = newWs;
+        t.initiative = newName;
+      }
+    });
+    addLog('task_edit','Initiative 수정', '"'+editingInitData.oldName+'" → "'+newName+'"', newWs.replace('■ ',''));
+  }
+  closeInitiativeModal(); lightRefresh(); saveData();
+}
+function deleteInitiativeFromModal() {
+  if(!editingInitData) return;
+  var oldWs = editingInitData.oldWs, oldName = editingInitData.oldName;
+  var cnt = taskData.filter(function(t){return t.ws===oldWs&&t.initiative===oldName;}).length;
+  if(!confirm('"'+oldName+'" Initiative를 삭제할까요?\nAction/Task '+cnt+'건도 함께 삭제됩니다.')) return;
+  taskData = taskData.filter(function(t){return !(t.ws===oldWs&&t.initiative===oldName);});
+  addLog('task_delete','Initiative 삭제', '"'+oldName+'" ('+cnt+'건)', oldWs.replace('■ ',''));
+  closeInitiativeModal(); lightRefresh(); saveData();
+}
+
+// ── Action Modal ──
+var editingActionData = null;
+
+function onAmWsChange() {
+  var ws = document.getElementById('am-ws').value;
+  document.getElementById('am-initiative').innerHTML = buildInitOpts(ws, '');
+}
+function openActionModal(mode, ws, initiative, oldAction) {
+  editingActionData = {mode:mode, oldWs:ws||'', oldInit:initiative||'', oldAction:oldAction||''};
+  document.getElementById('action-modal-title').innerHTML = '<i class="ti ti-folder-cog"></i> Action '+(mode==='add'?'추가':'수정');
+  document.getElementById('am-ws').innerHTML = buildWsOpts(ws||'');
+  document.getElementById('am-initiative').innerHTML = buildInitOpts(ws||'', initiative||'');
+  document.getElementById('am-name').value = mode==='edit' ? (oldAction||'') : '';
+  document.getElementById('am-del-btn').style.display = mode==='edit' ? '' : 'none';
+  document.getElementById('action-modal').classList.add('open');
+  setTimeout(function(){ document.getElementById('am-name').focus(); }, 100);
+}
+function closeActionModal() {
+  document.getElementById('action-modal').classList.remove('open');
+  editingActionData = null;
+}
+function saveActionModal() {
+  if(!editingActionData) return;
+  var newWs   = document.getElementById('am-ws').value;
+  var newInit = document.getElementById('am-initiative').value;
+  var newName = document.getElementById('am-name').value.trim();
+  if(!newName) { document.getElementById('am-name').focus(); return; }
+  if(!newInit) { alert('Initiative를 선택해주세요.'); return; }
+
+  if(editingActionData.mode==='add') {
+    var newId = Math.max.apply(null, taskData.map(function(t){return t.id;}).concat([0]))+1;
+    taskData.push({id:newId, ws:newWs, initiative:newInit, action:newName, task:'(새 Task를 추가하세요)', assignee:'', targetDate:'', week:'', status:'', comments:[], msId:null, relatedIds:[]});
+    addLog('action_add','Action 추가', '"'+newName+'"', newWs.replace('■ ','')+' > '+newInit);
+  } else {
+    taskData.forEach(function(t){
+      if(t.ws===editingActionData.oldWs && t.initiative===editingActionData.oldInit && t.action===editingActionData.oldAction) {
+        t.ws = newWs; t.initiative = newInit; t.action = newName;
+      }
+    });
+    addLog('action_add','Action 수정', '"'+editingActionData.oldAction+'" → "'+newName+'"', newWs.replace('■ ',''));
+  }
+  closeActionModal(); lightRefresh(); saveData();
+}
+function deleteActionFromModal() {
+  if(!editingActionData) return;
+  var oldWs = editingActionData.oldWs, oldInit = editingActionData.oldInit, oldAction = editingActionData.oldAction;
+  var cnt = taskData.filter(function(t){return t.ws===oldWs&&t.initiative===oldInit&&t.action===oldAction;}).length;
+  if(!confirm('"'+oldAction+'" Action을 삭제할까요?\nTask '+cnt+'건도 함께 삭제됩니다.')) return;
+  taskData = taskData.filter(function(t){return !(t.ws===oldWs&&t.initiative===oldInit&&t.action===oldAction);});
+  addLog('task_delete','Action 삭제', '"'+oldAction+'" ('+cnt+'건)', oldWs.replace('■ ',''));
+  closeActionModal(); lightRefresh(); saveData();
+}
+
+// Task modal WS/Init/Action 연동
+function onTeWsChange() {
+  var ws = document.getElementById('te-ws').value;
+  document.getElementById('te-initiative').innerHTML = buildInitOpts(ws,'');
+  document.getElementById('te-action').innerHTML = buildActionOpts(ws,'','');
+}
+function onTeInitChange() {
+  var ws   = document.getElementById('te-ws').value;
+  var init = document.getElementById('te-initiative').value;
+  document.getElementById('te-action').innerHTML = buildActionOpts(ws, init, '');
+}
+
+
+var editingTaskId = null;
+
+function onTeWsChange() {
+  var ws = document.getElementById('te-ws').value;
+  document.getElementById('te-initiative').innerHTML = buildTeInitOpts(ws,'');
+  document.getElementById('te-action').innerHTML = buildTeActionOpts(ws,'','');
+}
+function onTeInitChange() {
+  var ws = document.getElementById('te-ws').value;
+  var init = document.getElementById('te-initiative').value;
+  document.getElementById('te-action').innerHTML = buildTeActionOpts(ws,init,'');
+}
+function openTaskModal(idOrMode, ws, initiative, action) {
+  var isAdd = (idOrMode === 'add');
+  editingTaskId = isAdd ? null : idOrMode;
+  var t = isAdd ? null : taskData.find(function(x){return x.id===idOrMode;});
+  if(!isAdd && !t) return;
+
+  document.getElementById('task-modal-title').innerHTML = '<i class="ti ti-pencil"></i> Task '+(isAdd?'추가':'수정');
+  document.getElementById('te-del-btn').style.display = isAdd ? 'none' : '';
+
+  var curWs   = isAdd ? (ws||'')         : (t.ws||'');
+  var curInit = isAdd ? (initiative||'') : (t.initiative||'');
+  var curAct  = isAdd ? (action||'')     : (t.action||'');
+
+  document.getElementById('te-ws').innerHTML         = buildWsOpts(curWs);
+  document.getElementById('te-initiative').innerHTML  = buildInitOpts(curWs, curInit);
+  document.getElementById('te-action').innerHTML      = buildActionOpts(curWs, curInit, curAct);
+  document.getElementById('te-task').value     = isAdd ? '' : (t.task||'');
+  document.getElementById('te-assignee').value = isAdd ? '' : (t.assignee||'');
+  document.getElementById('te-date').value     = isAdd ? '' : (t.targetDate||'');
+  document.getElementById('te-status').value   = isAdd ? '' : (t.status||'');
+  document.getElementById('te-ms').innerHTML   = buildMsOpts(isAdd ? null : t.msId);
+
+  document.getElementById('task-edit-modal').classList.add('open');
+  setTimeout(function(){ document.getElementById('te-task').focus(); }, 100);
+}
+
+function closeTaskModal() {
+  document.getElementById('task-edit-modal').classList.remove('open');
+    document.getElementById('action-modal').classList.remove('open');
+    document.getElementById('initiative-modal').classList.remove('open');
+  editingTaskId = null;
+}
+function saveTaskModal() {
+  var nWs   = document.getElementById('te-ws').value;
+  var nInit = document.getElementById('te-initiative').value;
+  var nAct  = document.getElementById('te-action').value;
+  var nTask = document.getElementById('te-task').value.trim();
+  var nAsgn = document.getElementById('te-assignee').value.trim();
+  var nDate = document.getElementById('te-date').value;
+  var nSt   = document.getElementById('te-status').value;
+  var nMs   = document.getElementById('te-ms').value;
+  if(!nTask) { document.getElementById('te-task').focus(); return; }
+
+  if(editingTaskId === null) {
+    // 추가 모드
+    var newId = Math.max.apply(null, taskData.map(function(t){return t.id;}).concat([0]))+1;
+    taskData.push({id:newId, ws:nWs, initiative:nInit, action:nAct, task:nTask,
+      assignee:nAsgn, targetDate:nDate, week:dateToWeek(nDate), status:nSt,
+      comments:[], msId:nMs?parseInt(nMs):null, relatedIds:[]});
+    addLog('task_add','Task 추가','"'+nTask+'"', nWs.replace('■ ','')+' > '+nAct);
+  } else {
+    // 수정 모드
+    var t = taskData.find(function(x){return x.id===editingTaskId;}); if(!t) return;
+    var oldTask=t.task, oldDate=t.targetDate, oldStatus=t.status;
+    var ctx = (t.ws||'').replace('■ ','')+' > '+(t.action||'');
+    if(nWs)   t.ws=nWs; if(nInit) t.initiative=nInit; if(nAct) t.action=nAct;
+    if(nTask) t.task=nTask;
+    t.assignee=nAsgn; t.targetDate=nDate; t.week=dateToWeek(nDate); t.status=nSt;
+    t.msId = nMs ? parseInt(nMs) : null;
+    if(nSt!==oldStatus)        addLog('status_change','상태 변경','"'+t.task+'" : '+(oldStatus||'미정')+' → '+(nSt||'미정'),ctx);
+    if(nDate!==oldDate)        addLog('date_change','일정 변경','"'+t.task+'" : '+(oldDate||'미설정')+' → '+(nDate||'미설정'),ctx);
+    if(nTask&&nTask!==oldTask) addLog('task_edit','Task 수정',oldTask+' → '+nTask,ctx);
+  }
+  closeTaskModal(); lightRefresh(); saveData();
+}
+function deleteTaskFromModal() {
+  var t = taskData.find(function(x){return x.id===editingTaskId;}); if(!t) return;
+  if(!confirm('"'+t.task+'"을(를) 삭제하시겠습니까?')) return;
+  addLog('task_delete','Task 삭제','"'+t.task+'"',(t.ws||'').replace('■ ','')+' > '+(t.action||''));
+  taskData = taskData.filter(function(x){return x.id!==editingTaskId;});
+  closeTaskModal(); lightRefresh(); saveData();
+}
+function openTaskEdit(id) { openTaskModal(id); }
+function closeTaskEdit(el) { closeTaskModal(); }
+function saveTaskEdit(el) { saveTaskModal(); }
+function deleteTaskById(el) { editingTaskId=parseInt(el.getAttribute('data-id')); deleteTaskFromModal(); }
+
+
 // ── Related Tasks ──
 var relatedTaskId = null;
 var tempRelatedIds = [];
@@ -1701,6 +2158,9 @@ function openRelatedModal(id) {
 
 function closeRelatedModal() {
   document.getElementById('related-modal').classList.remove('open');
+    document.getElementById('task-edit-modal').classList.remove('open');
+    document.getElementById('action-modal').classList.remove('open');
+    document.getElementById('initiative-modal').classList.remove('open');
   relatedTaskId = null; tempRelatedIds = [];
 }
 
@@ -1862,6 +2322,9 @@ document.addEventListener('keydown',function(e){
     document.getElementById('comment-modal').classList.remove('open');
     document.getElementById('ms-link-modal').classList.remove('open');
     document.getElementById('related-modal').classList.remove('open');
+    document.getElementById('task-edit-modal').classList.remove('open');
+    document.getElementById('action-modal').classList.remove('open');
+    document.getElementById('initiative-modal').classList.remove('open');
   }
 });
 
