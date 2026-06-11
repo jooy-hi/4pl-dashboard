@@ -1,0 +1,1817 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>4PL Key Battle 트래킹</title>
+<style>
+/* ── Toss-inspired light design system ── */
+:root{
+  --bg:#f5f6f8;--sf:#ffffff;--sf2:#f0f2f5;--sf3:#e8eaf0;
+  --bd:#e2e5ec;--bd2:#d0d4de;
+  --ac:#3182f6;--ac-h:#1b64da;--ac2:#6b4ef8;
+  --done:#00b493;--ot:#3182f6;--del:#f04452;--warn:#ff8c00;--pl:#8c96a8;
+  --tx:#191f28;--tx2:#6b7684;--tx3:#b0b8c1;
+  --p1c:#3182f6;--p15c:#6b4ef8;--p2c:#0ea5e9;
+  --ws-bg:#eef2ff;--ws-bd:#c7d4fb;--ws-tx:#1e40af;
+  --ac-bg:#f0f7ff;--ac-bd:#bfdbfe;--ac-tx:#1d4ed8;
+  --tk-bg:#ffffff;--tk-bd:#e2e5ec;--tk-tx:#374151;
+  --r:10px;--r2:6px;
+  --fnt:'Pretendard','Apple SD Gothic Neo','Noto Sans KR',sans-serif;
+  --hh:56px;--sh:56px;--th:48px;
+  --shadow:0 1px 4px rgba(0,0,0,.07),0 0 0 1px rgba(0,0,0,.04);
+  --shadow-md:0 4px 16px rgba(0,0,0,.1);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;overflow:hidden;}
+body{background:var(--bg);color:var(--tx);font-family:var(--fnt);font-size:13px;display:flex;flex-direction:column;}
+
+/* ── Header ── */
+.header{background:var(--sf);border-bottom:1px solid var(--bd);padding:0 28px;height:var(--hh);display:flex;align-items:center;gap:16px;flex-shrink:0;box-shadow:0 1px 0 var(--bd);}
+.logo{font-size:17px;font-weight:800;letter-spacing:-.5px;color:var(--tx);}
+.logo span{color:var(--ac);}
+.logo-pill{background:var(--ac);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:8px;letter-spacing:.3px;}
+.header-meta{margin-left:auto;font-size:12px;color:var(--tx2);background:var(--sf2);padding:4px 12px;border-radius:20px;border:1px solid var(--bd);}
+
+/* ── Summary Bar ── */
+.sbar{background:var(--sf);border-bottom:1px solid var(--bd);padding:0 28px;height:var(--sh);display:flex;gap:24px;align-items:center;flex-shrink:0;}
+.sblock{display:flex;align-items:center;gap:10px;}
+.snum{font-size:24px;font-weight:800;line-height:1;color:var(--tx);}
+.slbl{font-size:11px;color:var(--tx2);font-weight:500;}
+.sdiv{width:1px;height:28px;background:var(--bd);}
+.pwrap{margin-left:auto;display:flex;align-items:center;gap:10px;min-width:220px;}
+.plbl{font-size:12px;color:var(--tx2);white-space:nowrap;}
+.pbar{flex:1;height:6px;background:var(--sf2);border-radius:3px;overflow:hidden;border:1px solid var(--bd);}
+.pfill{height:100%;background:linear-gradient(90deg,var(--ac),var(--ac2));border-radius:3px;transition:width .5s cubic-bezier(.4,0,.2,1);}
+.ppct{font-size:13px;font-weight:700;color:var(--ac);min-width:36px;text-align:right;}
+
+/* ── Tabs ── */
+.tabs{background:var(--sf);border-bottom:1px solid var(--bd);padding:0 28px;display:flex;flex-shrink:0;height:var(--th);align-items:stretch;}
+.tbtn{padding:0 18px;font-size:13px;font-weight:600;color:var(--tx2);border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;transition:color .15s,border-color .15s;white-space:nowrap;letter-spacing:-.2px;}
+.tbtn:hover{color:var(--tx);}
+.tbtn.active{color:var(--ac);border-bottom-color:var(--ac);}
+.tbtn.charter-tab{color:var(--ac2);}
+.tbtn.charter-tab.active{color:var(--ac2);border-bottom-color:var(--ac2);}
+
+/* ── Tab Content ── */
+.tc{display:none;overflow-y:auto;padding:24px 28px;flex:1;}
+.tc.active{display:block;}
+
+/* ── Badges ── */
+.badge{display:inline-flex;align-items:center;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap;}
+.bd-done{background:#e6f9f5;color:var(--done);}
+.bd-ot{background:#e8f1ff;color:var(--ot);}
+.bd-del{background:#fff0f1;color:var(--del);}
+.bd-warn{background:#fff7e6;color:var(--warn);}
+.bd-pl{background:var(--sf2);color:var(--pl);}
+.bd-p1{background:#e8f1ff;color:var(--p1c);}
+.bd-p15{background:#f0ebff;color:var(--p15c);}
+.bd-p2{background:#e0f6ff;color:var(--p2c);}
+
+/* ── Table with hierarchy colors ── */
+.touter{border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);}
+.tscroll{overflow-x:auto;overflow-y:auto;max-height:calc(100vh - var(--hh) - var(--sh) - var(--th) - 104px);}
+table{width:100%;border-collapse:collapse;}
+thead{position:sticky;top:0;z-index:10;}
+thead tr{background:#f8f9fc;}
+th{padding:10px 14px;text-align:left;font-size:11px;font-weight:700;color:var(--tx2);white-space:nowrap;border-bottom:1px solid var(--bd);letter-spacing:.3px;text-transform:uppercase;}
+td{padding:8px 14px;border-bottom:1px solid var(--bd);vertical-align:middle;}
+
+/* WS row - 대분류 (진하게 - 진한 파란 배경, 흰 텍스트) */
+.wsr td{background:#1e40af;border-bottom:1px solid #1a37a0;font-weight:700;color:#ffffff;}
+.wsr:hover td{background:#1a37a0;}
+
+/* Action row - 중분류 (중간톤) */
+.acr td{background:var(--ac-bg);border-bottom:1px solid var(--ac-bd);font-weight:600;color:var(--ac-tx);}
+.acr:hover td{background:#ddeeff;}
+.acr.drag-over td{background:#bfdbfe!important;}
+.acr[draggable="true"]{cursor:grab;}
+.acr[draggable="true"]:active{cursor:grabbing;}
+.drag-handle{color:var(--tx3);font-size:13px;cursor:grab;padding:0 4px;user-select:none;}
+.drag-handle:hover{color:var(--tx2);}
+
+/* Task row - 세분류 (연하게) */
+.tkr td{background:var(--tk-bg);border-bottom:1px solid #f0f2f5;color:var(--tk-tx);}
+.tkr:hover td{background:#f8fbff;}
+.tkr:last-child td{border-bottom:none;}
+
+/* editable cells */
+.editable{cursor:pointer;padding:3px 7px;border-radius:var(--r2);border:1px solid transparent;transition:all .15s;display:inline-block;}
+.editable:hover{border-color:var(--bd2);background:var(--sf2);}
+input.di{background:#fff;border:1.5px solid var(--ac);color:var(--tx);padding:3px 7px;border-radius:var(--r2);font-size:12px;font-family:var(--fnt);outline:none;}
+select.si{background:#fff;border:1.5px solid var(--ac);color:var(--tx);padding:3px 7px;border-radius:var(--r2);font-size:12px;font-family:var(--fnt);cursor:pointer;outline:none;}
+
+/* ms link */
+.msl{font-size:11px;color:var(--ac2);font-weight:600;cursor:pointer;text-decoration:underline;text-decoration-color:rgba(107,78,248,.3);}
+.msl:hover{color:var(--ac-h);}
+
+/* delete btn */
+.dbtn{background:none;border:none;color:var(--tx3);cursor:pointer;font-size:13px;padding:3px 5px;border-radius:var(--r2);transition:all .15s;}
+.dbtn:hover{color:var(--del);background:#fff0f1;}
+
+/* ── Filter / Toolbar ── */
+.fbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+.fbtn{padding:5px 14px;border-radius:20px;border:1px solid var(--bd);background:var(--sf);color:var(--tx2);font-size:12px;cursor:pointer;transition:all .15s;font-weight:500;}
+.fbtn:hover{border-color:var(--ac);color:var(--ac);}
+.fbtn.active{background:var(--ac);border-color:var(--ac);color:#fff;font-weight:700;}
+.si2{padding:6px 14px;border-radius:20px;border:1px solid var(--bd);background:var(--sf);color:var(--tx);font-size:12px;outline:none;width:210px;transition:border-color .15s;}
+.si2:focus{border-color:var(--ac);}
+.tbar{display:flex;gap:8px;margin-bottom:16px;align-items:center;flex-wrap:wrap;}
+.bp{padding:7px 18px;background:var(--ac);color:#fff;border:none;border-radius:var(--r2);font-size:12px;font-weight:700;cursor:pointer;transition:background .15s;}
+.bp:hover{background:var(--ac-h);}
+.bs{padding:7px 14px;background:var(--sf);color:var(--tx2);border:1px solid var(--bd);border-radius:var(--r2);font-size:12px;cursor:pointer;transition:all .15s;}
+.bs:hover{border-color:var(--ac);color:var(--ac);}
+.sp{flex:1;}.cb{font-size:11px;color:var(--tx2);background:var(--sf2);padding:3px 10px;border-radius:20px;border:1px solid var(--bd);}
+
+/* ── Grid layouts ── */
+.s2{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start;}
+.s3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;align-items:start;}
+.s4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;align-items:start;}
+
+/* ── Block cards ── */
+.bc{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);}
+.bh{padding:12px 16px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:8px;background:var(--sf);}
+.bht{font-size:13px;font-weight:700;flex:1;color:var(--tx);}
+.bcnt{font-size:11px;color:var(--tx2);background:var(--sf2);border-radius:20px;padding:2px 10px;border:1px solid var(--bd);font-weight:600;}
+.bb{padding:12px;display:flex;flex-direction:column;gap:6px;min-height:60px;}
+
+/* ── Alert cards ── */
+.ac2{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r2);padding:10px 14px;display:flex;align-items:center;gap:10px;box-shadow:var(--shadow);}
+.ac2.delayed{border-left:3px solid var(--del);}
+.ac2.warning{border-left:3px solid var(--warn);}
+.adot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.adot-d{background:var(--del);}
+.adot-w{background:var(--warn);}
+.aws{font-size:10px;color:var(--tx2);margin-bottom:2px;}
+.atask{font-size:12px;font-weight:600;color:var(--tx);}
+.amet{margin-left:auto;text-align:right;flex-shrink:0;}
+.adate{font-size:11px;font-weight:700;}
+.apic{font-size:11px;color:var(--tx2);}
+.eblk{text-align:center;padding:24px;color:var(--tx3);font-size:12px;}
+
+/* ── Milestone cards ── */
+.msc{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r2);padding:11px 14px;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;gap:5px;box-shadow:var(--shadow);}
+.msc:hover{border-color:var(--ac);box-shadow:0 0 0 2px rgba(49,130,246,.15);}
+.mst{display:flex;align-items:center;gap:8px;}
+.msno{font-size:10px;font-weight:700;color:var(--tx2);background:var(--sf2);padding:1px 6px;border-radius:4px;}
+.msnm{font-size:12px;font-weight:600;flex:1;line-height:1.4;color:var(--tx);}
+.msb{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.msdt{font-size:11px;color:var(--tx2);}
+.msorg{font-size:10px;color:var(--tx3);}
+.mbh.p1{background:#e8f1ff;color:var(--p1c);}
+.mbh.p15{background:#f0ebff;color:var(--p15c);}
+.mbh.p2{background:#e0f6ff;color:var(--p2c);}
+
+/* ── WS cards ── */
+.wsc{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r2);padding:12px 14px;display:flex;flex-direction:column;gap:5px;box-shadow:var(--shadow);}
+.wsh{display:flex;align-items:flex-start;gap:8px;}
+.wsnb{width:24px;height:24px;border-radius:50%;background:var(--ac);color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0;}
+.wsn{font-size:12px;font-weight:700;flex:1;line-height:1.4;color:var(--tx);}
+.wsobj{font-size:11px;color:var(--tx2);line-height:1.6;margin-top:2px;}
+.wste{display:flex;align-items:center;gap:6px;margin-top:6px;padding-top:6px;border-top:1px solid var(--bd);}
+.wstle{font-size:10px;color:var(--tx3);font-weight:600;text-transform:uppercase;letter-spacing:.5px;}
+.wstv{font-size:12px;font-weight:600;cursor:pointer;padding:2px 7px;border-radius:var(--r2);border:1px solid transparent;color:var(--tx);}
+.wstv:hover{border-color:var(--bd);background:var(--sf2);}
+
+/* ── Modals ── */
+.mov{display:none;position:fixed;inset:0;background:rgba(25,31,40,.5);z-index:1000;align-items:center;justify-content:center;backdrop-filter:blur(2px);}
+.mov.open{display:flex;}
+.mo{background:var(--sf);border-radius:16px;width:580px;max-width:95vw;max-height:88vh;overflow-y:auto;box-shadow:var(--shadow-md);}
+.molg{width:700px;}
+.moh{padding:20px 24px 16px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:10px;}
+.mot{font-size:15px;font-weight:800;flex:1;color:var(--tx);}
+.mox{background:var(--sf2);border:1px solid var(--bd);color:var(--tx2);cursor:pointer;font-size:16px;padding:4px 8px;border-radius:var(--r2);line-height:1;}
+.mox:hover{background:var(--sf3);color:var(--tx);}
+.mob{padding:20px 24px;}
+.mof{padding:14px 24px;border-top:1px solid var(--bd);display:flex;justify-content:flex-end;gap:8px;}
+.mahr,.mahdr{display:grid;grid-template-columns:1fr 90px 100px 70px 32px;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--bd);font-size:12px;}
+.mahdr{font-size:11px;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:.3px;}
+.fr{display:flex;flex-direction:column;gap:5px;margin-bottom:14px;}
+.fl{font-size:12px;color:var(--tx2);font-weight:700;}
+.fi,.fsel,.fta{background:var(--sf);border:1.5px solid var(--bd);color:var(--tx);padding:8px 12px;border-radius:var(--r2);font-size:13px;font-family:var(--fnt);outline:none;width:100%;transition:border-color .15s;}
+.fi:focus,.fsel:focus,.fta:focus{border-color:var(--ac);}
+.fta{resize:vertical;min-height:70px;}
+.fg2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+
+/* ── Edit Log ── */
+.lw{border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);}
+.lr{display:grid;grid-template-columns:130px 90px 110px 110px 1fr 1fr;gap:10px;padding:10px 14px;border-bottom:1px solid var(--bd);font-size:12px;align-items:center;}
+.lrh{background:var(--sf2);}
+.lt{font-size:11px;color:var(--tx2);}
+.lf{font-size:11px;color:var(--ac);font-weight:700;}
+.lo{text-decoration:line-through;color:var(--tx3);font-size:11px;}
+.ln{color:var(--done);font-size:11px;font-weight:700;}
+
+/* ── Guide ── */
+.gs{margin-bottom:28px;}
+.gh{font-size:14px;font-weight:800;color:var(--tx);margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid var(--bd);}
+.gt{width:100%;border-collapse:collapse;border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);}
+.gt th{background:var(--sf2);padding:10px 14px;text-align:left;font-size:11px;font-weight:700;color:var(--tx2);border-bottom:1px solid var(--bd);text-transform:uppercase;letter-spacing:.3px;}
+.gt td{padding:10px 14px;border-bottom:1px solid var(--bd);font-size:12px;vertical-align:top;}
+.gt tr:last-child td{border-bottom:none;}
+.rm{color:var(--del);font-weight:700;}
+.ro{color:var(--ac);}
+.cd{background:var(--sf2);border:1px solid var(--bd);border-radius:4px;padding:1px 7px;font-family:monospace;font-size:11px;color:var(--warn);}
+.ua{border:2px dashed var(--bd);border-radius:var(--r);padding:28px;text-align:center;cursor:pointer;transition:all .15s;margin-bottom:14px;background:var(--sf);}
+.ua:hover{border-color:var(--ac);background:#f0f7ff;}
+.ubtn{padding:8px 20px;background:var(--ac);color:#fff;border:none;border-radius:var(--r2);font-size:13px;font-weight:700;cursor:pointer;}
+
+/* ── Charter Tab ── */
+.charter-hero{background:linear-gradient(135deg,var(--ac) 0%,var(--ac2) 100%);border-radius:var(--r);padding:28px 32px;color:#fff;margin-bottom:24px;position:relative;overflow:hidden;}
+.charter-hero::before{content:'';position:absolute;top:-40px;right:-40px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.08);}
+.charter-hero-title{font-size:20px;font-weight:800;margin-bottom:6px;}
+.charter-hero-sub{font-size:13px;opacity:.85;line-height:1.6;}
+.charter-upload-zone{background:var(--sf);border:2px dashed var(--bd2);border-radius:var(--r);padding:40px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:20px;}
+.charter-upload-zone:hover{border-color:var(--ac);background:#f0f7ff;}
+.charter-upload-zone.has-file{border-color:var(--done);background:#e6f9f5;}
+.charter-icon{font-size:40px;margin-bottom:12px;}
+.charter-upload-title{font-size:14px;font-weight:700;color:var(--tx);margin-bottom:4px;}
+.charter-upload-sub{font-size:12px;color:var(--tx2);}
+.charter-info-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:24px;}
+.charter-info-card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:16px 20px;box-shadow:var(--shadow);}
+.charter-info-label{font-size:11px;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;}
+.charter-info-val{font-size:13px;font-weight:600;color:var(--tx);}
+.charter-info-sub{font-size:11px;color:var(--tx2);margin-top:3px;}
+.charter-section{margin-bottom:24px;}
+.charter-section-title{font-size:13px;font-weight:800;color:var(--tx);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.charter-section-title::after{content:'';flex:1;height:1px;background:var(--bd);}
+.weekly-list{display:flex;flex-direction:column;gap:8px;}
+.weekly-card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);}
+.weekly-header{padding:12px 16px;background:var(--sf2);border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:10px;cursor:pointer;}
+.weekly-wk{font-size:11px;font-weight:800;color:var(--ac);background:#e8f1ff;padding:2px 8px;border-radius:20px;}
+.weekly-date{font-size:11px;color:var(--tx2);}
+.weekly-toggle{margin-left:auto;font-size:12px;color:var(--tx3);}
+.weekly-body{padding:16px;}
+.weekly-section{margin-bottom:14px;}
+.weekly-section-lbl{font-size:11px;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid var(--bd);}
+.weekly-item{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--sf2);font-size:12px;}
+.weekly-item:last-child{border-bottom:none;}
+.wi-status{flex-shrink:0;}
+.wi-task{flex:1;color:var(--tx);line-height:1.4;}
+.wi-meta{font-size:11px;color:var(--tx2);white-space:nowrap;}
+.wi-note{font-size:11px;color:var(--tx2);padding:4px 8px;background:var(--sf2);border-radius:4px;margin-top:3px;border-left:2px solid var(--bd2);}
+.add-weekly-btn{width:100%;padding:10px;border:2px dashed var(--bd);border-radius:var(--r);background:none;color:var(--tx2);font-size:12px;cursor:pointer;transition:all .15s;font-family:var(--fnt);font-weight:600;}
+.add-weekly-btn:hover{border-color:var(--ac);color:var(--ac);background:#f0f7ff;}
+.status-dot{width:7px;height:7px;border-radius:50%;margin-top:4px;flex-shrink:0;}
+.sdot-done{background:var(--done);}
+.sdot-ot{background:var(--ot);}
+.sdot-del{background:var(--del);}
+.sdot-pl{background:var(--pl);}
+.empty-state{text-align:center;padding:60px 20px;color:var(--tx2);}
+.empty-icon{font-size:48px;margin-bottom:12px;}
+.empty-title{font-size:14px;font-weight:700;color:var(--tx);margin-bottom:6px;}
+.empty-sub{font-size:12px;color:var(--tx2);line-height:1.6;}
+.weekly-edit-area{width:100%;min-height:80px;padding:10px 12px;border:1.5px solid var(--bd);border-radius:var(--r2);font-size:12px;font-family:var(--fnt);color:var(--tx);resize:vertical;outline:none;background:var(--sf);}
+.weekly-edit-area:focus{border-color:var(--ac);}
+.tag{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;}
+.tag-ws{background:#e8f1ff;color:var(--p1c);}
+.tag-ms{background:#f0ebff;color:var(--p15c);}
+.tag-done{background:#e6f9f5;color:var(--done);}
+.tag-del{background:#fff0f1;color:var(--del);}
+.tag-warn{background:#fff7e6;color:var(--warn);}
+
+/* scrollbar */
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:var(--sf2);}
+::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:3px;}
+::-webkit-scrollbar-thumb:hover{background:var(--tx3);}
+
+/* Gantt */
+#ganttWrap{border:1px solid var(--bd);border-radius:var(--r);background:var(--sf);box-shadow:var(--shadow);}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">4PL <span>Key Battle</span><span class="logo-pill">BETA</span></div>
+  <div class="header-meta" id="todayLbl"></div>
+</div>
+
+<div class="sbar">
+  <div class="sblock"><div><div class="snum" id="sTot">—</div><div class="slbl">전체 Task</div></div></div>
+  <div class="sdiv"></div>
+  <div class="sblock" style="gap:7px">
+    <span class="badge bd-done" id="sDone">완료 —</span>
+    <span class="badge bd-ot" id="sOt">진행중 —</span>
+    <span class="badge bd-del" id="sDel">지연 —</span>
+    <span class="badge bd-pl" id="sPl">예정 —</span>
+  </div>
+  <div class="sdiv"></div>
+  <div class="pwrap">
+    <span class="plbl">전체 진행률</span>
+    <div class="pbar"><div class="pfill" id="pFill" style="width:0%"></div></div>
+    <div class="ppct" id="pPct">0%</div>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tbtn active" data-tab="task">Task</button>
+  <button class="tbtn" data-tab="alert">Flags</button>
+  <button class="tbtn" data-tab="ms">Milestone</button>
+  <button class="tbtn" data-tab="gantt">Gantt</button>
+  <button class="tbtn" data-tab="ws">Workstream</button>
+  <button class="tbtn charter-tab" data-tab="charter">Charter</button>
+  <button class="tbtn" data-tab="log">Log</button>
+  <button class="tbtn" data-tab="guide">Guide</button>
+</div>
+
+<!-- ① Task -->
+<div class="tc active" id="tab-task">
+  <div class="tbar">
+    <input class="si2" type="text" id="tsrch" placeholder="🔍  Task 검색...">
+    <div class="fbar" style="gap:6px">
+      <button class="fbtn active" data-tf="all">전체</button>
+      <button class="fbtn" data-tf="Done">완료</button>
+      <button class="fbtn" data-tf="On Track">진행중</button>
+      <button class="fbtn" data-tf="delayed">지연</button>
+      <button class="fbtn" data-tf="planned">예정</button>
+    </div>
+    <select class="si2" id="picFilter" style="width:130px">
+      <option value="">담당자 전체</option>
+    </select>
+    <select class="si2" id="weekFilter" style="width:130px">
+      <option value="">주차 전체</option>
+      <option value="prev">지난주</option>
+      <option value="this">이번주</option>
+      <option value="next">다음주</option>
+    </select>
+    <div class="sp"></div>
+    <span class="cb" id="tcnt"></span>
+    <button class="bs" id="btnExpAll">전체 펼치기</button>
+    <button class="bs" id="btnColAll">전체 접기</button>
+    <button class="bs" id="btnDownloadXlsx" style="color:var(--done);border-color:var(--done)">⬇ XLSX 다운로드</button>
+    <button class="bp" id="btnAddTask">+ Task 추가</button>
+  </div>
+  <div class="touter"><div class="tscroll">
+    <table><thead><tr>
+      <th style="width:30px"></th>
+      <th>Workstream / Action / Task</th>
+      <th style="width:94px">Status</th>
+      <th style="width:112px">Target Date</th>
+      <th style="width:54px">Week</th>
+      <th style="width:88px">담당자</th>
+      <th style="width:90px">Phase</th>
+      <th style="width:88px">마일스톤</th>
+      <th style="width:34px"></th>
+    </tr></thead>
+    <tbody id="tbody"></tbody></table>
+  </div></div>
+</div>
+
+<!-- ② Alert -->
+<div class="tc" id="tab-alert">
+  <div class="fbar" style="margin-bottom:16px">
+    <button class="fbtn active" data-af="all">전체</button>
+    <button class="fbtn" data-af="물류사업기획">물류사업기획</button>
+    <button class="fbtn" data-af="서비스기획">서비스기획</button>
+  </div>
+  <div class="s2">
+    <div class="bc">
+      <div class="bh"><span style="font-size:18px">🔴</span><span class="bht">지연 Task</span><span class="bcnt" id="cntDel">0건</span></div>
+      <div class="bb" id="alertDel"></div>
+    </div>
+    <div class="bc">
+      <div class="bh"><span style="font-size:18px">🟡</span><span class="bht">7일 내 마감</span><span class="bcnt" id="cntWarn">0건</span></div>
+      <div class="bb" id="alertWarn"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ③ Milestone -->
+<div class="tc" id="tab-ms">
+  <div class="s3">
+    <div class="bc">
+      <div class="bh mbh p1"><span class="bht">Phase 1</span><span class="bcnt" id="msCnt1">0개</span></div>
+      <div class="bb" id="msBody1"></div>
+    </div>
+    <div class="bc">
+      <div class="bh mbh p15"><span class="bht">Phase 1.5</span><span class="bcnt" id="msCnt15">0개</span></div>
+      <div class="bb" id="msBody15"></div>
+    </div>
+    <div class="bc">
+      <div class="bh mbh p2"><span class="bht">Phase 2</span><span class="bcnt" id="msCnt2">0개</span></div>
+      <div class="bb" id="msBody2"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Gantt Tab -->
+<div class="tc" id="tab-gantt">
+  <div class="tbar">
+    <span style="font-size:12px;color:var(--tx2);font-weight:600">📊 Gantt Chart — 주단위 표기 / 상위: Milestone · 하위: Action</span>
+    <div class="sp"></div>
+    <button class="bs" id="btnGanttScrollNow">오늘로 이동</button>
+  </div>
+  <div id="ganttWrap" style="overflow-x:auto;overflow-y:auto;max-height:calc(100vh - var(--hh) - var(--sh) - var(--th) - 80px);position:relative;">
+    <div id="ganttInner"></div>
+  </div>
+</div>
+
+<!-- ④ Workstream -->
+<div class="tc" id="tab-ws">
+  <div class="tbar"><button class="bp" id="btnAddWs">+ 워크스트림 추가</button></div>
+  <div class="s4" id="wsCols"></div>
+</div>
+
+<!-- WS Tasks Modal -->
+<div class="mov" id="moWsTasks">
+  <div class="mo molg">
+    <div class="moh">
+      <div>
+        <div style="font-size:11px;color:var(--tx2);margin-bottom:3px" id="moWsNo"></div>
+        <div class="mot" id="moWsNm"></div>
+      </div>
+      <button class="mox" id="moWsTasksX">✕</button>
+    </div>
+    <div class="mob">
+      <div style="font-size:12px;color:var(--tx2);margin-bottom:12px" id="moWsObj"></div>
+      <div class="mahdr"><span>Task</span><span>담당자</span><span>Target Date</span><span>Status</span><span></span></div>
+      <div id="moWsTasksBody"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ⑤ Charter -->
+<div class="tc" id="tab-charter">
+  <div class="charter-hero">
+    <div class="charter-hero-title">📋 4PL Key Battle — Project Charter</div>
+    <div class="charter-hero-sub">워크스트림·액션·마일스톤 기반의 프로젝트 헌장 및 주간 업데이트 문서입니다.<br>Charter 문서를 업로드하면 모든 팀원이 확인할 수 있으며, 매주 업데이트 내역을 기록할 수 있습니다.</div>
+  </div>
+
+  <!-- Charter 문서 업로드 -->
+  <div class="charter-info-grid">
+    <div class="charter-info-card">
+      <div class="charter-info-label">Charter 문서</div>
+      <div class="charter-info-val" id="charterFileName">업로드 대기중</div>
+      <div class="charter-info-sub" id="charterFileDate">문서를 업로드해 주세요</div>
+    </div>
+    <div class="charter-info-card">
+      <div class="charter-info-label">최근 업데이트</div>
+      <div class="charter-info-val" id="charterLastUpdate">—</div>
+      <div class="charter-info-sub">주간 업데이트 기준</div>
+    </div>
+    <div class="charter-info-card">
+      <div class="charter-info-label">커버리지</div>
+      <div class="charter-info-val">WS 1~12 · MS 30개</div>
+      <div class="charter-info-sub">Phase 1 · 1.5 · 2</div>
+    </div>
+  </div>
+
+  <div class="charter-upload-zone" id="charterUploadZone" onclick="document.getElementById('charterFile').click()">
+    <div class="charter-icon" id="charterUploadIcon">📄</div>
+    <div class="charter-upload-title" id="charterUploadTitle">Charter 문서 업로드</div>
+    <div class="charter-upload-sub" id="charterUploadSub">.docx 또는 .pdf 파일을 클릭하거나 드래그해서 업로드하세요</div>
+  </div>
+  <input type="file" id="charterFile" accept=".docx,.pdf" style="display:none">
+
+  <!-- Charter 구조 요약 -->
+  <div class="charter-section">
+    <div class="charter-section-title">📌 Charter 구조 개요</div>
+    <div class="s3" style="gap:14px">
+      <div class="bc" style="padding:16px">
+        <div style="font-size:11px;font-weight:700;color:var(--tx2);margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px">Workstream</div>
+        <div id="charterWsList" style="display:flex;flex-direction:column;gap:5px"></div>
+      </div>
+      <div class="bc" style="padding:16px">
+        <div style="font-size:11px;font-weight:700;color:var(--tx2);margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px">Phase별 마일스톤</div>
+        <div id="charterMsList" style="display:flex;flex-direction:column;gap:5px"></div>
+      </div>
+      <div class="bc" style="padding:16px">
+        <div style="font-size:11px;font-weight:700;color:var(--tx2);margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px">이번 주 주요 마감</div>
+        <div id="charterThisWeek" style="display:flex;flex-direction:column;gap:5px"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 주간 업데이트 -->
+  <div class="charter-section">
+    <div class="charter-section-title">📅 주간 업데이트 (Weekly Update)</div>
+    <button class="add-weekly-btn" id="btnAddWeekly">+ 이번 주 업데이트 추가</button>
+    <div class="weekly-list" id="weeklyList"></div>
+  </div>
+</div>
+
+<!-- ⑥ Log -->
+<div class="tc" id="tab-log">
+  <div class="tbar">
+    <input class="si2" type="text" id="lsrch" placeholder="🔍  검색...">
+    <div class="sp"></div>
+    <button class="bs" id="btnClrLog">로그 초기화</button>
+  </div>
+  <div class="lw">
+    <div class="lr lrh">
+      <span>변경 시각</span><span>변경자</span><span>WBS</span><span>필드</span><span>이전값</span><span>변경값</span>
+    </div>
+    <div id="logBody"></div>
+  </div>
+</div>
+
+<!-- ⑦ Guide -->
+<div class="tc" id="tab-guide">
+  <div style="max-width:820px">
+    <div class="gs"><div class="gh">📂 데이터 업로드</div>
+      <div class="ua" id="uploadZone" onclick="document.getElementById('fi').click()">
+        <div style="font-size:32px;margin-bottom:8px" id="uploadIcon">📊</div>
+        <div style="font-size:14px;font-weight:700;margin-bottom:4px" id="uploadTitle">CSV 파일 업로드</div>
+        <div style="font-size:12px;color:var(--tx2)" id="uploadSub">Task 탭에서 다운로드한 CSV를 수정 후 다시 업로드하면 전체 탭에 반영됩니다</div>
+      </div>
+      <input type="file" id="fi" accept=".csv,.xlsx" style="display:none">
+      <div style="display:flex;gap:8px;margin-top:10px;align-items:center">
+        <button class="ubtn" onclick="document.getElementById('fi').click()">파일 선택하기</button>
+        <span id="uploadStatus" style="font-size:12px;color:var(--tx2)"></span>
+      </div>
+      <!-- preview -->
+      <div id="uploadPreview" style="display:none;margin-top:16px">
+        <div style="font-size:12px;font-weight:700;color:var(--tx2);margin-bottom:8px" id="previewMeta"></div>
+        <div style="overflow-x:auto;border:1px solid var(--bd);border-radius:var(--r2);max-height:220px;overflow-y:auto">
+          <table style="width:100%;border-collapse:collapse;font-size:11px" id="previewTable"></table>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:12px;justify-content:flex-end">
+          <button class="bs" id="btnUploadCancel">취소</button>
+          <button class="bp" id="btnUploadApply">✅ 이 데이터로 반영하기</button>
+        </div>
+      </div>
+    </div>
+    <div class="gs"><div class="gh">📋 Task 입력 규칙</div>
+      <table class="gt"><thead><tr><th>필드</th><th>필수</th><th>형식</th><th>설명</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Task명</strong></td><td><span class="rm">필수</span></td><td>텍스트</td><td>세분류 Task 상세 내용</td></tr>
+        <tr><td><strong>Target Date</strong></td><td><span class="rm">필수</span></td><td><span class="cd">YYYY-MM-DD</span></td><td>2026-07-31</td></tr>
+        <tr><td><strong>Status</strong></td><td><span class="ro">선택</span></td><td>고정값</td><td>Done / On Track / Delayed / (빈값=예정)</td></tr>
+        <tr><td><strong>담당자</strong></td><td><span class="ro">선택</span></td><td>드롭다운</td><td>인라인 드롭다운으로 수정 가능</td></tr>
+        <tr><td><strong>Week</strong></td><td>자동</td><td>자동계산</td><td>Target Date 기반 자동입력</td></tr>
+      </tbody></table>
+    </div>
+    <div class="gs"><div class="gh">🎨 계층별 색상 구분</div>
+      <table class="gt"><thead><tr><th>구분</th><th>색상</th><th>설명</th></tr></thead>
+      <tbody>
+        <tr><td><span style="background:var(--ws-bg);color:var(--ws-tx);padding:2px 10px;border-radius:4px;font-weight:700">대분류 Workstream</span></td><td>파란 배경</td><td>워크스트림 단위 — 가장 진하게 표시</td></tr>
+        <tr><td><span style="background:var(--ac-bg);color:var(--ac-tx);padding:2px 10px;border-radius:4px;font-weight:600">중분류 Action</span></td><td>연파랑 배경</td><td>액션 단위 — 드래그앤드롭으로 순서 변경</td></tr>
+        <tr><td><span style="background:var(--tk-bg);color:var(--tk-tx);padding:2px 10px;border-radius:4px">세분류 Task</span></td><td>흰 배경</td><td>세부 Task — 인라인 편집 가능</td></tr>
+      </tbody></table>
+    </div>
+    <div class="gs"><div class="gh">📋 Charter 탭 안내</div>
+      <table class="gt"><thead><tr><th>기능</th><th>설명</th></tr></thead>
+      <tbody>
+        <tr><td>문서 업로드</td><td>.docx / .pdf Charter 파일을 업로드하여 팀과 공유</td></tr>
+        <tr><td>구조 요약</td><td>현재 WS·MS 데이터 기반으로 Charter 구조 자동 요약 표시</td></tr>
+        <tr><td>주간 업데이트</td><td>매주 WS/Action/MS별 진행 내용·이슈·다음 주 계획을 기록</td></tr>
+      </tbody></table>
+    </div>
+  </div>
+</div>
+
+<!-- MS Modal -->
+<div class="mov" id="moMs">
+  <div class="mo molg">
+    <div class="moh">
+      <div><div style="font-size:11px;color:var(--tx2);margin-bottom:3px" id="moMsNo"></div><div class="mot" id="moMsNm"></div></div>
+      <button class="mox" id="moMsX">✕</button>
+    </div>
+    <div class="mob">
+      <div style="display:flex;gap:16px;margin-bottom:16px;font-size:12px;color:var(--tx2)">
+        <span>목표일: <strong id="moMsDt" style="color:var(--tx)"></strong></span>
+        <span>소유조직: <strong id="moMsOrg" style="color:var(--tx)"></strong></span>
+        <span id="moMsSt"></span>
+      </div>
+      <div class="mahdr"><span>Task</span><span>담당자</span><span>Target Date</span><span>Status</span><span></span></div>
+      <div id="moMsActs"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Task Modal -->
+<div class="mov" id="moAddTask">
+  <div class="mo">
+    <div class="moh"><div class="mot">Task 추가</div><button class="mox" id="moAddTaskX">✕</button></div>
+    <div class="mob">
+      <div class="fr"><label class="fl">Workstream</label><select class="fsel" id="atWs"></select></div>
+      <div class="fr"><label class="fl">Action</label><input class="fi" id="atAct" placeholder="Action 명칭 입력"></div>
+      <div class="fr"><label class="fl">Task명 *</label><input class="fi" id="atTask" placeholder="Task 상세 내용 입력"></div>
+      <div class="fg2">
+        <div class="fr"><label class="fl">Target Date *</label><input class="fi" type="date" id="atDate"></div>
+        <div class="fr"><label class="fl">담당자</label><select class="fsel" id="atPic"></select></div>
+      </div>
+      <div class="fg2">
+        <div class="fr"><label class="fl">Phase</label>
+          <select class="fsel" id="atPhase"><option>Phase 1</option><option>Phase 1.5</option><option>Phase 2</option></select>
+        </div>
+        <div class="fr"><label class="fl">Status</label>
+          <select class="fsel" id="atSt"><option value="">예정</option><option>On Track</option><option>Done</option><option>Delayed</option></select>
+        </div>
+      </div>
+      <div class="fr"><label class="fl">연결 마일스톤</label><select class="fsel" id="atMs"></select></div>
+    </div>
+    <div class="mof">
+      <button class="bs" id="moAddTaskCan">취소</button>
+      <button class="bp" id="moAddTaskOk">추가</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add WS Modal -->
+<div class="mov" id="moAddWs">
+  <div class="mo">
+    <div class="moh"><div class="mot">워크스트림 추가</div><button class="mox" id="moAddWsX">✕</button></div>
+    <div class="mob">
+      <div class="fr"><label class="fl">워크스트림명 *</label><input class="fi" id="wnNm" placeholder="예: New Delivery Strategy"></div>
+      <div class="fr"><label class="fl">목적/설명</label><textarea class="fta" id="wnObj" placeholder="워크스트림의 목적을 입력하세요"></textarea></div>
+      <div class="fg2">
+        <div class="fr"><label class="fl">담당팀 *</label>
+          <select class="fsel" id="wnTeam">
+            <option>물류사업기획</option><option>서비스기획</option>
+            <option>물류사업기획/서비스기획</option><option>개발조직</option><option>공동</option>
+          </select>
+        </div>
+        <div class="fr"><label class="fl">Phase</label>
+          <select class="fsel" id="wnPhase"><option>Phase 1</option><option>Phase 1.5</option><option>Phase 2</option></select>
+        </div>
+      </div>
+    </div>
+    <div class="mof">
+      <button class="bs" id="moAddWsCan">취소</button>
+      <button class="bp" id="moAddWsOk">추가</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Weekly Modal -->
+<div class="mov" id="moAddWeekly">
+  <div class="mo">
+    <div class="moh"><div class="mot">주간 업데이트 추가</div><button class="mox" id="moAddWeeklyX">✕</button></div>
+    <div class="mob">
+      <div class="fg2">
+        <div class="fr"><label class="fl">대상 주차 (Week)</label><input class="fi" id="wkWk" placeholder="예: W25"></div>
+        <div class="fr"><label class="fl">업데이트 날짜</label><input class="fi" type="date" id="wkDate"></div>
+      </div>
+      <div class="fr"><label class="fl">📌 이번 주 완료 / 진행 내용</label>
+        <textarea class="weekly-edit-area" id="wkDone" placeholder="완료된 Task, 진행중인 내용을 입력하세요&#10;예) MS-03 CJ 협상 완료 (최승범)&#10;     WS2 서북부 Hub 세부계획 작성 중"></textarea>
+      </div>
+      <div class="fr"><label class="fl">⚠️ 이슈 / 지연 항목</label>
+        <textarea class="weekly-edit-area" id="wkIssue" placeholder="이슈 또는 지연된 항목을 입력하세요&#10;예) 1.2.3 계약서 법무검토 지연 → 1주 후 재검토 예정"></textarea>
+      </div>
+      <div class="fr"><label class="fl">📅 다음 주 예정 항목</label>
+        <textarea class="weekly-edit-area" id="wkNext" placeholder="다음 주에 완료 예정인 Task를 입력하세요&#10;예) MS-03-1 3PL 파트너 계약 체결 (최승범)"></textarea>
+      </div>
+      <div class="fr"><label class="fl">🗒 기타 메모</label>
+        <textarea class="weekly-edit-area" id="wkMemo" placeholder="리더십 공유 사항, 협의 필요 항목 등"></textarea>
+      </div>
+    </div>
+    <div class="mof">
+      <button class="bs" id="moAddWeeklyCan">취소</button>
+      <button class="bp" id="moAddWeeklyOk">저장</button>
+    </div>
+  </div>
+</div>
+
+<script>
+
+// ── DATA (preserved from previous version) ──
+let WS = [
+  {no:1,name:'Partnership & 3PL Contract',obj:'통합 물동량 기반 Last Mile 협상 전략을 수립하고, 주요 3PL 및 Hub 센터와의 파트너십 계약을 통해 안정적인 배송 네트워크를 구축한다.',team:'물류사업기획'},
+  {no:2,name:'First Mile Collection & Line-Haul Network',obj:'First Mile 네트워크(픽업·집하센터·간선)의 설계·구축은 지마켓 직영으로 수행하되, 지방권 등 직접 이행이 어려운 권역은 위탁사업자 모델로 전환하여 전국 확장성을 확보.',team:'물류사업기획'},
+  {no:3,name:'TMS & Cutoff Extension (AIDC Joint Dev)',obj:'First Mile 통제의 이점을 살려 주문 마감 시간 연장과 D+1 안정화를 IT 시스템으로 뒷받침하되, TMS는 AIDC와 공동 개발한다.',team:'물류사업기획'},
+  {no:4,name:'Gmarket Delivery Settlement & PG Integration',obj:'서비스 이용요금을 거래 발생 시점에 차감·정산하는 실시간 정산 구조를 개발하여 셀러 미정산 이슈를 보완개선하고 과금 투명성을 확보.',team:'서비스기획'},
+  {no:5,name:'Seller Solution & Policy',obj:'4PL 서비스 이용에 필요한 셀러 가입·주문·운영 전 단계의 프로세스를 통합 설계하여, 판매자가 서비스를 원활하게 도입하고 안정적으로 운영할 수 있는 기반을 구축.',team:'서비스기획'},
+  {no:6,name:'Seller Performance & Compliance Policy',obj:'E2E 기반 셀러 배송 성과 관리 시스템 반영. 배송 데이터 기반 판매자 평가 지표 정의 및 페널티 자동화 체계 구축.',team:'서비스기획'},
+  {no:7,name:'Seller Onboarding & 4PL Pilot Verification',obj:'자연 유입 셀러 온보딩 경험 최적화 및 4PL 파일럿 매뉴얼 운영 기반의 정책 세부화를 통한 서비스 공식 오픈 안정성 확보.',team:'서비스기획'},
+  {no:8,name:'Strategic Target Sales & Expansion',obj:'데이터 기반 핵심 셀러 발굴 및 세그먼트별 맞춤형 세일즈 프로모션 설계를 통한 아웃바운드 유치 성과 창출.',team:'서비스기획'},
+  {no:9,name:'Buyer Front-end & Short-Term Integration',obj:'27Q4 관리 물량 40% 달성을 위한 프론트엔드 기반 구축 및 구매자향 배송 메시지·정책·UI 일원화를 통한 배송 서비스 전반의 확대.',team:'서비스기획'},
+  {no:10,name:'E2E System & Control Tower',obj:'국내 주요 택배사 배송 데이터를 표준화·실시간 연동하고 탐색부터 CS 전 구간을 하나의 시스템으로 묶는 E2E 구조를 구축하여 실시간 물류 가시성을 확보한다.',team:'물류사업기획/서비스기획'},
+  {no:11,name:'Buyer Experience (Precise ETA & Proactive CS)',obj:'ETA(도착예정시간)를 설계·운영하여 구매자에게 시간 단위 도착 정보를 제공하고, 판매자의 배송 이행을 관리하며, 지연·이상 발생 시 선제적으로 CS 대응한다.',team:'서비스기획'},
+  {no:12,name:'Brand Renewal & Dynamic Tag Transition',obj:'FY27 Q4 관리 물량 40% 달성 시점에 기존 스타배송을 리뉴얼 런칭한다. 전 상품 무료배송 정책을 강제하며, 빠른배송(D+1) 커뮤니케이션과 동적 Tag 부여 체계를 병행한다.',team:'서비스기획'},
+];
+
+let MS = [
+  {no:'MS-01',phase:'Phase 1',name:'First Mile 직영 집하센터 남부(동탄센터 활용) Pilot 구축 완료',startDate:'',date:'2026-04-01',status:'Done',org:'물류사업기획팀'},
+  {no:'MS-02',phase:'Phase 1',name:'First Mile 매뉴얼 운영 셀러 대상 영업·운영 개시',startDate:'',date:'2026-05-18',status:'Done',org:'물류사업기획팀'},
+  {no:'MS-03',phase:'Phase 1',name:'Last Mile 3PL — CJ대한통운 직접 우선 협상 완료',startDate:'',date:'2026-05-29',status:'On Track',org:'물류사업기획팀'},
+  {no:'MS-03-2',phase:'Phase 1',name:'AIDC TMS MVP ver. 개발 요청 사항 접수 완료',startDate:'',date:'2026-05-22',status:'On Track',org:'물류사업기획팀'},
+  {no:'MS-03-1',phase:'Phase 1',name:'Last Mile 3PL 파트너 계약 체결 완료',startDate:'',date:'2026-06-19',status:'',org:'물류사업기획팀'},
+  {no:'MS-04',phase:'Phase 1',name:'4PL 아웃바운드 영업 공식 개시',startDate:'',date:'2026-06-22',status:'On Track',org:'물류사업기획팀'},
+  {no:'MS-05',phase:'Phase 1',name:'서비스 일단위 정산 모델 개발요건 확정',startDate:'',date:'2026-06-19',status:'On Track',org:'물류사업기획팀'},
+  {no:'MS-06',phase:'Phase 1',name:'First Mile 집하센터 입지·구축·운영 설계 완료 및 확장 전략 확정',startDate:'',date:'2026-07-21',status:'On Track',org:'물류사업기획팀'},
+  {no:'MS-07',phase:'Phase 1',name:'First Mile 직영 집하센터 서북부 오픈 완료',startDate:'',date:'2026-07-31',status:'On Track',org:'물류사업기획팀'},
+  {no:'MS-08',phase:'Phase 1',name:'서비스 요율표 확정 및 판매자 공시',startDate:'',date:'2026-07-31',status:'On Track',org:'서비스기획팀'},
+  {no:'MS-09',phase:'Phase 1',name:'판매자 이용정책 및 개발요건 확정 (가입·상품·CS)',startDate:'',date:'2026-07-30',status:'On Track',org:'서비스기획팀'},
+  {no:'MS-10',phase:'Phase 1',name:'배송 데이터 기반 판매자 평가 관리지표 확정',startDate:'',date:'2026-07-31',status:'On Track',org:'서비스기획팀'},
+  {no:'MS-11',phase:'Phase 1',name:'TMS MVP 운영 반영 및 서비스 가동 개시',startDate:'',date:'2026-07-31',status:'On Track',org:'개발조직'},
+  {no:'MS-12',phase:'Phase 1',name:'G마켓 배송서비스 beta 오픈',startDate:'',date:'2026-07-31',status:'On Track',org:'개발조직'},
+  {no:'MS-13',phase:'Phase 1.5',name:'레거시 셀러 마이그레이션 영업 개시',startDate:'',date:'2026-09-01',status:'',org:'서비스기획팀'},
+  {no:'MS-14',phase:'Phase 1.5',name:'Flex 모델 도입 위한 택배사 협상 완료 (SLA, 단가)',startDate:'',date:'2026-09-18',status:'On Track',org:'서비스기획팀'},
+  {no:'MS-15',phase:'Phase 1.5',name:'First Mile 제휴 집하협력사 3개 권역 계약 체결 완료 (대전, 부산, 서울)',startDate:'',date:'2026-09-30',status:'On Track',org:'기획팀'},
+  {no:'MS-16',phase:'Phase 1.5',name:'집하 기사 운영 시스템 구축 완료 및 현장 배포',startDate:'',date:'2026-09-30',status:'',org:'개발조직'},
+  {no:'MS-17',phase:'Phase 1.5',name:'MVP(TMS) 개발 완료 및 현장 배포',startDate:'',date:'2026-09-25',status:'',org:'개발조직'},
+  {no:'MS-18',phase:'Phase 1.5',name:'스타배송 태그 단일 통합 및 장바구니 정책 설계 및 방향 확정',startDate:'',date:'2026-06-19',status:'',org:'기획팀'},
+  {no:'MS-19',phase:'Phase 1.5',name:'스타배송 도착보장 상품 리스팅 탐색 강화 BRD 접수 완료',startDate:'',date:'2026-10-23',status:'',org:'기획팀'},
+  {no:'MS-20',phase:'Phase 1.5',name:'지마켓 배송 서비스 공식 오픈 (스타배송 태그 통합 및 Seller향 서비스 개편)',startDate:'',date:'2026-09-30',status:'',org:'개발조직'},
+  {no:'MS-21',phase:'Phase 1.5',name:'Star Delivery / 4PL Order PH1 35% 달성',startDate:'',date:'2026-09-30',status:'',org:'공동'},
+  {no:'MS-22',phase:'Phase 2',name:'First Mile 직영 집하센터 동북부 오픈 완료',startDate:'',date:'2026-11-06',status:'',org:'기획팀'},
+  {no:'MS-23',phase:'Phase 2',name:'ETA 기반 구매자 배송 경험 설계 완료 및 개발 요건 확정',startDate:'',date:'2026-12-30',status:'',org:'기획팀'},
+  {no:'MS-24',phase:'Phase 2',name:'판매자 배송점수 기반 페널티 자동화 개발 요건 확정',startDate:'',date:'2027-01-29',status:'',org:'기획팀'},
+  {no:'MS-25',phase:'Phase 2',name:'4PL E2E 시스템·Control Tower v1 오픈',startDate:'',date:'2027-01-29',status:'',org:'개발조직'},
+  {no:'MS-26',phase:'Phase 2',name:'동적 Tag(Dynamic Tag) 노출 규칙 정의 및 BRD 확정',startDate:'',date:'2027-02-05',status:'',org:'기획팀'},
+  {no:'MS-27',phase:'Phase 2',name:'배송서비스 리뉴얼 방향성 수립',startDate:'',date:'2027-02-05',status:'',org:'기획팀'},
+  {no:'MS-28',phase:'Phase 2',name:'Star Delivery / 4PL Order 40% 이상 달성',startDate:'',date:'2027-02-05',status:'',org:'공동'},
+  {no:'MS-29',phase:'Phase 2',name:'TMS G마켓 전용 통합 시스템 구축 완료',startDate:'',date:'2027-02-28',status:'',org:'개발조직'},
+  {no:'MS-30',phase:'Phase 2',name:'판매자 대시보드·지능형 제안 v1 배포',startDate:'',date:'2027-04-30',status:'',org:'개발조직'},
+];
+
+let TASKS = [
+  // WS1
+  {id:'1.1.1',wsNo:1,ano:'B',action:'Last Mile 직접 우선 협상 완료',task:'CJ TF 구성 요청 완료',date:'2026-01-31',wk:'W5',pic:'최승범',phase:'Phase 1',st:'Done',ms:'MS-03'},
+  {id:'1.1.2',wsNo:1,ano:'B',action:'Last Mile 직접 우선 협상 완료',task:'판매자별 개별 물량 통합 가능 물동량 파악 (택배사 협상 카드 물량 확인)',date:'2026-03-27',wk:'W13',pic:'최승범',phase:'Phase 1',st:'Done',ms:'MS-03'},
+  {id:'1.1.3',wsNo:1,ano:'B',action:'Last Mile 직접 우선 협상 완료',task:'비즈니스 Risk 및 비용 구조 협상 완료 (대리점 이슈, 택배사별 물량이동 등)',date:'2026-05-29',wk:'W22',pic:'최승범',phase:'Phase 1',st:'On Track',ms:'MS-03'},
+  {id:'1.1.4',wsNo:1,ano:'B',action:'Last Mile 직접 우선 협상 완료',task:'Last Mile 협상 결과 요약 및 내부 보고 (리더십 공유)',date:'2026-06-05',wk:'W23',pic:'최승범',phase:'Phase 1',st:'',ms:'MS-03'},
+  {id:'1.3.1',wsNo:1,ano:'C',action:'3PL 파트너십 계약 체결',task:'Last Mile 3PL - 직영 FM 우선 협상 협력사 선정 완료',date:'2026-06-05',wk:'W23',pic:'최승범',phase:'Phase 1',st:'',ms:'MS-03-1'},
+  {id:'1.3.2',wsNo:1,ano:'C',action:'3PL 파트너십 계약 체결',task:'Last Mile 3PL - 최종 단가 및 SLA(도착보장율, 패널티) 협상 완료',date:'2026-06-19',wk:'W25',pic:'최승범',phase:'Phase 1',st:'',ms:'MS-03-1'},
+  {id:'1.3.3',wsNo:1,ano:'C',action:'3PL 파트너십 계약 체결',task:'Last Mile 3PL - 최종 협의안 내부 검토 및 승인 (리더십&구매/회계/법무)',date:'2026-06-26',wk:'W26',pic:'최승범',phase:'Phase 1',st:'',ms:'MS-03-1'},
+  {id:'1.3.4',wsNo:1,ano:'C',action:'3PL 파트너십 계약 체결',task:'Last Mile 3PL 파트너 계약 최종 체결',date:'2026-06-30',wk:'W27',pic:'최승범',phase:'Phase 1',st:'',ms:'MS-03-1'},
+  {id:'1.2.1',wsNo:1,ano:'D',action:'제휴 FM 협력사 계약 체결',task:'제휴 FM 협력사 표준계약서 초안 작성 (SLA, 정산 기준 등)',date:'2026-05-29',wk:'W22',pic:'강승구',phase:'Phase 1',st:'',ms:'MS-15'},
+  {id:'1.2.2',wsNo:1,ano:'D',action:'제휴 FM 협력사 계약 체결',task:'제휴 FM 협력사 표준계약서 최종본 확정 (법무검토 포함)',date:'2026-06-05',wk:'W23',pic:'강승구',phase:'Phase 1',st:'',ms:'MS-15'},
+  {id:'1.2.3',wsNo:1,ano:'D',action:'제휴 FM 협력사 계약 체결',task:'G마켓 자체 제휴 FM 협력사 선정 기준 수립 (계약기간, 인프라 조건 등)',date:'2026-06-05',wk:'W23',pic:'강승구',phase:'Phase 1',st:'',ms:'MS-15'},
+  {id:'1.2.4',wsNo:1,ano:'D',action:'제휴 FM 협력사 계약 체결',task:'제휴 FM 시행 지역별 협력사 핫라인 확보',date:'2026-06-08',wk:'W24',pic:'강승구',phase:'Phase 1',st:'',ms:'MS-15'},
+  {id:'1.2.5',wsNo:1,ano:'D',action:'제휴 FM 협력사 계약 체결',task:'제휴 FM 협력사 표준 계약조건 최종 협의 (정산 기준 등)',date:'2026-06-12',wk:'W24',pic:'강승구',phase:'Phase 1',st:'',ms:'MS-15'},
+  // WS2
+  {id:'2.1.1',wsNo:2,ano:'B',action:'지마켓 전담 픽업(집하) 운영체계 설계',task:'거점 구축을 위한 물동량 Data 및 Cluster 분석',date:'2026-05-15',wk:'W20',pic:'최승범',phase:'Phase 1',st:'',ms:'MS-06'},
+  {id:'2.1.2',wsNo:2,ano:'B',action:'지마켓 전담 픽업(집하) 운영체계 설계',task:'Cluster 분포 기준 거점 권역 설정 및 입지 선정 분석',date:'2026-05-29',wk:'W22',pic:'최승범',phase:'Phase 1',st:'',ms:'MS-06'},
+  {id:'2.1.3',wsNo:2,ano:'B',action:'지마켓 전담 픽업(집하) 운영체계 설계',task:'인프라 구축 Plan - 거점별 운영 필요 CAPA 및 거점 규모 산정',date:'2026-05-29',wk:'W22',pic:'최승범',phase:'Phase 1',st:'',ms:'MS-06'},
+  {id:'2.1.4',wsNo:2,ano:'B',action:'지마켓 전담 픽업(집하) 운영체계 설계',task:'인프라 구축 Plan - 집하/간선 차량 운영 전략 수립',date:'2026-05-29',wk:'W22',pic:'최승범',phase:'Phase 1',st:'',ms:'MS-06'},
+  {id:'2.1.5',wsNo:2,ano:'B',action:'지마켓 전담 픽업(집하) 운영체계 설계',task:'권역별 진입 순서와 방식(직영/제휴) 로드맵 확정',date:'2026-07-10',wk:'W28',pic:'최승범',phase:'Phase 1',st:'',ms:'MS-06'},
+  {id:'2.2.1',wsNo:2,ano:'C',action:'지마켓 전담 픽업(집하) 모델 비용설계',task:'운영 모델 Concept별 비용 체계 구조화 (직영/제휴)',date:'2026-06-05',wk:'W23',pic:'최승범',phase:'Phase 1',st:'',ms:'MS-06'},
+  {id:'2.2.2',wsNo:2,ano:'C',action:'지마켓 전담 픽업(집하) 모델 비용설계',task:'상세 비용 항목별 기준 단가 수립 및 비용 시뮬레이션',date:'2026-06-19',wk:'W25',pic:'최승범',phase:'Phase 1',st:'',ms:'MS-06'},
+  {id:'2.2.3',wsNo:2,ano:'C',action:'지마켓 전담 픽업(집하) 모델 비용설계',task:'예산 확정을 위한 최종 예산안 내부 검토 및 승인 (리더십&구매/회계)',date:'2026-06-26',wk:'W26',pic:'최승범',phase:'Phase 1',st:'',ms:'MS-06'},
+  {id:'2.4.1',wsNo:2,ano:'D',action:'지마켓 직영 집하센터 권역별 인프라 설계 및 단계별 구축',task:'남부 - 협력사/설비 계약 완료',date:'2026-03-13',wk:'W11',pic:'최무창',phase:'Phase 1',st:'Done',ms:'MS-01'},
+  {id:'2.4.2',wsNo:2,ano:'D',action:'지마켓 직영 집하센터 권역별 인프라 설계 및 단계별 구축',task:'남부 - 운영 프로세스 설계',date:'2026-04-30',wk:'W18',pic:'최무창',phase:'Phase 1',st:'Done',ms:'MS-01'},
+  {id:'2.4.3',wsNo:2,ano:'D',action:'지마켓 직영 집하센터 권역별 인프라 설계 및 단계별 구축',task:'남부 - 현장 인프라 세팅 및 그랜드 오픈',date:'2026-04-01',wk:'W14',pic:'최무창',phase:'Phase 1',st:'Done',ms:'MS-01'},
+  {id:'2.4.4',wsNo:2,ano:'D',action:'지마켓 직영 집하센터 권역별 인프라 설계 및 단계별 구축',task:'서북부 Hub - 세부 계획 수립 (거점 Capa, 추정비용 등)',date:'2026-06-19',wk:'W25',pic:'최무창',phase:'Phase 1',st:'',ms:'MS-07'},
+  {id:'2.4.5',wsNo:2,ano:'D',action:'지마켓 직영 집하센터 권역별 인프라 설계 및 단계별 구축',task:'서북부 Hub - 거점 확보 및 3PL 설비검토/계약완료',date:'2026-07-10',wk:'W28',pic:'최무창',phase:'Phase 1',st:'',ms:'MS-07'},
+  {id:'2.4.6',wsNo:2,ano:'D',action:'지마켓 직영 집하센터 권역별 인프라 설계 및 단계별 구축',task:'서북부 Hub - 현장 인프라 세팅 및 그랜드 오픈',date:'2026-07-30',wk:'W31',pic:'최무창',phase:'Phase 1',st:'',ms:'MS-07'},
+  {id:'2.4.7',wsNo:2,ano:'D',action:'지마켓 직영 집하센터 권역별 인프라 설계 및 단계별 구축',task:'동북부 Hub - 세부 계획 수립 (거점 Capa, 추정비용 등)',date:'2026-09-18',wk:'W38',pic:'최무창',phase:'Phase 1.5',st:'',ms:'MS-22'},
+  {id:'2.4.8',wsNo:2,ano:'D',action:'지마켓 직영 집하센터 권역별 인프라 설계 및 단계별 구축',task:'동북부 Hub - 거점 확보 및 3PL 설비검토/계약완료',date:'2026-10-23',wk:'W43',pic:'최무창',phase:'Phase 1.5',st:'',ms:'MS-22'},
+  {id:'2.4.9',wsNo:2,ano:'D',action:'지마켓 직영 집하센터 권역별 인프라 설계 및 단계별 구축',task:'동북부 Hub - 현장 인프라 세팅 및 그랜드 오픈',date:'2026-11-06',wk:'W44',pic:'최무창',phase:'Phase 1.5',st:'',ms:'MS-22'},
+  {id:'2.5.1',wsNo:2,ano:'E',action:'지마켓 제휴 집하 운영체계 설계 및 단계별 구축',task:'지방권 네트워크 전략 및 대리점 상생 방안 수립',date:'2026-04-27',wk:'W18',pic:'강승구',phase:'Phase 1',st:'Done',ms:'MS-15'},
+  {id:'2.5.2',wsNo:2,ano:'E',action:'지마켓 제휴 집하 운영체계 설계 및 단계별 구축',task:'집하점 정산 기준, 화물사고 대응 방안, 계약 준비사항 및 관련 FAQ 작성',date:'2026-04-27',wk:'W18',pic:'강승구',phase:'Phase 1',st:'Done',ms:'MS-15'},
+  {id:'2.5.3',wsNo:2,ano:'E',action:'지마켓 제휴 집하 운영체계 설계 및 단계별 구축',task:'제휴 FM 협력사 운영 가이드 안내 (정산, 화물사고 등)',date:'2026-06-08',wk:'W24',pic:'강승구',phase:'Phase 1',st:'',ms:'MS-15'},
+  {id:'2.5.4',wsNo:2,ano:'E',action:'지마켓 제휴 집하 운영체계 설계 및 단계별 구축',task:'제휴 FM 추가 지역 확장 검토',date:'2026-06-30',wk:'W27',pic:'강승구',phase:'Phase 1',st:'',ms:'MS-15'},
+  {id:'2.6.1',wsNo:2,ano:'E',action:'지마켓 제휴 집하 운영체계 설계 및 단계별 구축',task:'대전 권역 협력사 계약 체결 완료',date:'2026-06-30',wk:'W27',pic:'강승구',phase:'Phase 1',st:'',ms:'MS-15'},
+  {id:'2.6.2',wsNo:2,ano:'E',action:'지마켓 제휴 집하 운영체계 설계 및 단계별 구축',task:'부산 권역 협력사 계약 체결 완료',date:'2026-08-14',wk:'W33',pic:'강승구',phase:'Phase 1.5',st:'',ms:'MS-15'},
+  {id:'2.6.3',wsNo:2,ano:'E',action:'지마켓 제휴 집하 운영체계 설계 및 단계별 구축',task:'서울 권역 협력사 계약 체결 완료',date:'2026-09-30',wk:'W40',pic:'강승구',phase:'Phase 1.5',st:'',ms:'MS-15'},
+  {id:'2.7.1',wsNo:2,ano:'F',action:'지마켓 Flex 모델 운영체계 설계',task:'데이터 분석 기반 권역별 물동량 분포 확인 및 Flex 서비스 대상 지역 정의',date:'2026-05-08',wk:'W19',pic:'유현천',phase:'Phase 1.5',st:'Done',ms:'MS-14'},
+  {id:'2.7.2',wsNo:2,ano:'F',action:'지마켓 Flex 모델 운영체계 설계',task:'서비스 본격 도입 전 1차 택배 단가 인하 견적 회신/추가 협의 완료',date:'2026-06-05',wk:'W23',pic:'유현천',phase:'Phase 1.5',st:'',ms:'MS-14'},
+  {id:'2.7.3',wsNo:2,ano:'F',action:'지마켓 Flex 모델 운영체계 설계',task:'서비스 고도화에 따른 PILOT 기준 수립',date:'2026-06-12',wk:'W24',pic:'유현천',phase:'Phase 1.5',st:'',ms:'MS-14'},
+  {id:'2.7.4',wsNo:2,ano:'F',action:'지마켓 Flex 모델 운영체계 설계',task:'PILOT 결과 및 택배사 협의를 통해 Flex 배송 고도화 운영 프로세스 수립 및 2차 단가 인하 기준 협의',date:'2026-09-11',wk:'W37',pic:'유현천',phase:'Phase 1.5',st:'',ms:'MS-14'},
+  {id:'2.7.5',wsNo:2,ano:'F',action:'지마켓 Flex 모델 운영체계 설계',task:'택배사별 지역 분배 전략 수립',date:'2026-09-18',wk:'W38',pic:'유현천',phase:'Phase 1.5',st:'',ms:'MS-14'},
+  // WS3
+  {id:'3.1.1',wsNo:3,ano:'A',action:'Phase 1. First Mile 매뉴얼 운영 체계 설계',task:'AIDC 공동 개발 체계 구성 — 공동 로드맵·모듈 분담·품질 기준 정의',date:'2026-06-05',wk:'W23',pic:'이욱재',phase:'Phase 1',st:'',ms:'MS-03-2'},
+  {id:'3.1.2',wsNo:3,ano:'A',action:'Phase 1. First Mile 매뉴얼 운영 체계 설계',task:'G마켓 MVP 모델을 적용한 First Mile 운영 Business 요구사항(BRD) 정의',date:'2026-06-05',wk:'W23',pic:'이욱재',phase:'Phase 1',st:'',ms:'MS-03-2'},
+  {id:'3.2.1',wsNo:3,ano:'B',action:'Phase 1.5. First Mile MVP 시스템 구축',task:'Phase 1 MVP 모델 Scope 확정 (Data 연동, WEB/APP 필수 기능 구현 및 국내 환경 구축)',date:'2026-06-05',wk:'W23',pic:'이욱재',phase:'Phase 1',st:'',ms:'MS-11'},
+  {id:'3.2.2',wsNo:3,ano:'B',action:'Phase 1.5. First Mile MVP 시스템 구축',task:'Phase 1 PRD(제품요구사항) 리뷰를 통한 Product 요구사항 정의 확정',date:'2026-06-19',wk:'W25',pic:'이욱재',phase:'Phase 1',st:'',ms:'MS-11'},
+  {id:'3.2.3',wsNo:3,ano:'B',action:'Phase 1.5. First Mile MVP 시스템 구축',task:'FM, 3PL, 4PL 기능별 AIDC 시스템 현지화 및 G마켓 Customized 4PL 시스템 기능/연동 개발 완료',date:'2026-07-10',wk:'W28',pic:'이욱재',phase:'Phase 1',st:'',ms:'MS-11'},
+  {id:'3.2.4',wsNo:3,ano:'B',action:'Phase 1.5. First Mile MVP 시스템 구축',task:'시스템 통합 테스트(SIT) 진행 및 웹/앱 실적 처리 품질 검증',date:'2026-07-17',wk:'W29',pic:'이욱재',phase:'Phase 1',st:'',ms:'MS-11'},
+  {id:'3.2.5',wsNo:3,ano:'B',action:'Phase 1.5. First Mile MVP 시스템 구축',task:'Phase 1 UAT(사용자 수용 테스트) 진행 및 운영 현장 테스트 실행 (사용자 가이드 배포)',date:'2026-07-17',wk:'W29',pic:'이욱재',phase:'Phase 1',st:'',ms:'MS-11'},
+  {id:'3.2.6',wsNo:3,ano:'B',action:'Phase 1.5. First Mile MVP 시스템 구축',task:'Phase 1 LIVE 배포 완료 — 시스템 기반 실제 서비스 가동 개시',date:'2026-07-31',wk:'W31',pic:'이욱재',phase:'Phase 1',st:'',ms:'MS-11'},
+  {id:'3.3.1',wsNo:3,ano:'C',action:'현장 오퍼레이션 최적화를 위한 TMS 및 집하 기사 운영 시스템 구축',task:'동선 최적화 및 픽업 효율을 위한 TMS 시스템 비즈니스 요구사항 수립',date:'2026-08-07',wk:'W32',pic:'이욱재',phase:'Phase 1.5',st:'',ms:'MS-17'},
+  {id:'3.3.2',wsNo:3,ano:'C',action:'현장 오퍼레이션 최적화를 위한 TMS 및 집하 기사 운영 시스템 구축',task:'집하 기사 전용 운영 시스템 및 현장 장비 인프라 구축 완료',date:'2026-09-12',wk:'W37',pic:'이욱재',phase:'Phase 1.5',st:'',ms:'MS-17'},
+  {id:'3.3.3',wsNo:3,ano:'C',action:'현장 오퍼레이션 최적화를 위한 TMS 및 집하 기사 운영 시스템 구축',task:'구축 완료된 집하 기사 운영 시스템 및 장비 현장 배포·적용',date:'2026-09-30',wk:'W40',pic:'이욱재',phase:'Phase 1.5',st:'',ms:'MS-17'},
+  {id:'3.4.1',wsNo:3,ano:'D',action:'Phase 2. G마켓 전용 통합 시스템 설계',task:'G마켓 커스터마이징 개발 요건사항 정의',date:'2026-11-30',wk:'W49',pic:'이욱재',phase:'Phase 2',st:'',ms:'MS-29'},
+  {id:'3.4.2',wsNo:3,ano:'D',action:'Phase 2. G마켓 전용 통합 시스템 설계',task:'버전업 G마켓 FM 전용 시스템 현장 전면 적용',date:'2027-02-28',wk:'W10',pic:'이욱재',phase:'Phase 2',st:'',ms:'MS-29'},
+  {id:'3.4.3',wsNo:3,ano:'D',action:'Phase 2. G마켓 전용 통합 시스템 설계',task:'Phase 2 시스템 안정화 모니터링 및 현장 운영 피드백 수렴 (1개월)',date:'2027-03-31',wk:'W14',pic:'이욱재',phase:'Phase 2',st:'',ms:'MS-29'},
+  // WS4
+  {id:'4.1.1',wsNo:4,ano:'A',action:'원가 기반 일단위 정산 모델 설계안 도출',task:'배송 원가 항목 정의 및 단가 기준표 초안 작성',date:'2026-05-15',wk:'W20',pic:'황병순',phase:'Phase 1',st:'Done',ms:'MS-05'},
+  {id:'4.1.2',wsNo:4,ano:'A',action:'원가 기반 일단위 정산 모델 설계안 도출',task:'일단위 정산 로직 설계 및 유관부서(회계/재무) 협의',date:'2026-05-22',wk:'W21',pic:'황병순',phase:'Phase 1',st:'Done',ms:'MS-05'},
+  {id:'4.1.3',wsNo:4,ano:'A',action:'원가 기반 일단위 정산 모델 설계안 도출',task:'정산 모델 최종안 내부 검토 및 승인',date:'2026-05-29',wk:'W22',pic:'황병순',phase:'Phase 1',st:'',ms:'MS-05'},
+  {id:'4.2.1',wsNo:4,ano:'B',action:'서비스 요율표 확정 및 판매자 공시',task:'경쟁사 대비 서비스 요율 벤치마킹 및 초안 도출',date:'2026-06-19',wk:'W25',pic:'황병순',phase:'Phase 1',st:'',ms:'MS-08'},
+  {id:'4.2.2',wsNo:4,ano:'B',action:'서비스 요율표 확정 및 판매자 공시',task:'서비스 요율표 유관부서(리더십/영업/마케팅) 검토 및 확정',date:'2026-06-30',wk:'W27',pic:'황병순',phase:'Phase 1',st:'',ms:'MS-08'},
+  {id:'4.2.3',wsNo:4,ano:'B',action:'서비스 요율표 확정 및 판매자 공시',task:'판매자 공시 채널 확정 및 공지 배포',date:'2026-07-30',wk:'W31',pic:'황병순',phase:'Phase 1',st:'',ms:'MS-08'},
+  // WS5
+  {id:'5.1.1',wsNo:5,ano:'A',action:'회원가입 정책 설계 및 개발요건 정의',task:'서비스 가입 플로우 및 회원관리 정책 설계',date:'2026-05-15',wk:'W20',pic:'유주연',phase:'Phase 1',st:'Done',ms:'MS-09'},
+  {id:'5.1.2',wsNo:5,ano:'A',action:'회원가입 정책 설계 및 개발요건 정의',task:'회원 정책 최종안 확정 및 BRD 작성',date:'2026-05-29',wk:'W22',pic:'유주연',phase:'Phase 1',st:'Done',ms:'MS-09'},
+  {id:'5.1.3',wsNo:5,ano:'A',action:'회원가입 정책 설계 및 개발요건 정의',task:'BRD 개발 접수 및 개발 일정 확인',date:'2026-06-19',wk:'W25',pic:'유주연',phase:'Phase 1',st:'',ms:'MS-09'},
+  {id:'5.2.1',wsNo:5,ano:'B',action:'상품·주문 관리 정책 설계 및 개발요건 정의',task:'상품등록 변경구조안 도출 (스타배송 태그 통합 대응)',date:'2026-06-19',wk:'W25',pic:'유주연',phase:'Phase 1',st:'',ms:'MS-09'},
+  {id:'5.2.2',wsNo:5,ano:'B',action:'상품·주문 관리 정책 설계 및 개발요건 정의',task:'상품등록 변경구조안 개발 BRD 작성 및 접수',date:'2026-06-26',wk:'W27',pic:'유주연',phase:'Phase 1',st:'',ms:'MS-09'},
+  {id:'5.4.1',wsNo:5,ano:'C',action:'판매자 CS 프로세스 및 보상 정책 체계 수립',task:'판매자 CS 유입 채널별 대응 프로세스 및 표준 시나리오 설계',date:'2026-06-30',wk:'W27',pic:'김승훈',phase:'Phase 1',st:'',ms:'MS-09'},
+  {id:'5.4.2',wsNo:5,ano:'C',action:'판매자 CS 프로세스 및 보상 정책 체계 수립',task:'파손/분실/배송 지연 등 상황별·책임소재별 판매자 보상 기준 수립',date:'2026-06-30',wk:'W27',pic:'김승훈',phase:'Phase 1',st:'',ms:'MS-09'},
+  {id:'5.4.3',wsNo:5,ano:'C',action:'판매자 CS 프로세스 및 보상 정책 체계 수립',task:'판매자 CS 프로세스 유관부서 협의 및 최종 승인',date:'2026-07-15',wk:'W29',pic:'김승훈',phase:'Phase 1',st:'',ms:'MS-09'},
+  {id:'5.5.1',wsNo:5,ano:'D',action:'G마켓 배송서비스 beta 오픈 (판매자 스타배송)',task:'판매자 운영정책 초안 수립',date:'2026-05-29',wk:'W22',pic:'김승훈',phase:'Phase 1',st:'Done',ms:'MS-12'},
+  {id:'5.5.2',wsNo:5,ano:'D',action:'G마켓 배송서비스 beta 오픈 (판매자 스타배송)',task:'판매자 서비스 운영정책 도출 (법무검토완료 포함)',date:'2026-06-30',wk:'W27',pic:'유주연',phase:'Phase 1',st:'',ms:'MS-12'},
+  {id:'5.5.3',wsNo:5,ano:'D',action:'G마켓 배송서비스 beta 오픈 (판매자 스타배송)',task:'판매자 서비스 안내 페이지 신설',date:'2026-07-15',wk:'W29',pic:'김채원',phase:'Phase 1',st:'',ms:'MS-12'},
+  // WS6
+  {id:'6.1.1',wsNo:6,ano:'A',action:'배송 데이터 기반의 판매자 평가 관리지표 정의',task:'주요 배송 KPI 항목 정의 (당일발송율, 도착보장율, 취소율 등)',date:'2026-06-15',wk:'W25',pic:'김승훈',phase:'Phase 1',st:'',ms:'MS-10'},
+  {id:'6.1.2',wsNo:6,ano:'A',action:'배송 데이터 기반의 판매자 평가 관리지표 정의',task:'매뉴얼 모니터링 체계 수립',date:'2026-06-12',wk:'W24',pic:'김승훈',phase:'Phase 1',st:'',ms:'MS-10'},
+  {id:'6.1.3',wsNo:6,ano:'A',action:'배송 데이터 기반의 판매자 평가 관리지표 정의',task:'매뉴얼 모니터링 결과 도출',date:'2026-07-12',wk:'W29',pic:'김승훈',phase:'Phase 1',st:'',ms:'MS-10'},
+  {id:'6.1.4',wsNo:6,ano:'A',action:'배송 데이터 기반의 판매자 평가 관리지표 정의',task:'모니터링 데이터 기반 판매자 성과 등급 체계 설계 (등급별 기준 및 혜택/제재 연계)',date:'2026-07-30',wk:'W31',pic:'김승훈',phase:'Phase 1',st:'',ms:'MS-10'},
+  {id:'6.1.5',wsNo:6,ano:'A',action:'배송 데이터 기반의 판매자 평가 관리지표 정의',task:'지표 정의 최종안 내부 승인',date:'2026-07-31',wk:'W31',pic:'김승훈',phase:'Phase 1',st:'',ms:'MS-10'},
+  {id:'6.2.1',wsNo:6,ano:'B',action:'서비스 및 운영단계별 판매자 페널티 정책 공식 규정화',task:'판매자 스타배송 운영 데이터 기반 당일발송 관리 체계 수립',date:'2026-06-30',wk:'W27',pic:'김승훈',phase:'Phase 1',st:'',ms:'MS-20'},
+  {id:'6.2.2',wsNo:6,ano:'B',action:'서비스 및 운영단계별 판매자 페널티 정책 공식 규정화',task:'페널티 정책 매뉴얼 관리 ver 최종안 내부 검토 및 공식 배포',date:'2026-09-30',wk:'W40',pic:'김승훈',phase:'Phase 1',st:'',ms:'MS-20'},
+  {id:'6.3.1',wsNo:6,ano:'C',action:'판매자 배송점수 기반 페널티 자동화 프로그램 설계',task:'페널티 자동화 로직 설계 및 예외 케이스 정의',date:'2026-12-31',wk:'W53',pic:'김승훈',phase:'Phase 2',st:'',ms:'MS-24'},
+  {id:'6.3.2',wsNo:6,ano:'C',action:'판매자 배송점수 기반 페널티 자동화 프로그램 설계',task:'페널티 자동화 기획안 유관부서(개발/법무) 검토 및 확정',date:'2027-01-29',wk:'W5',pic:'김승훈',phase:'Phase 2',st:'',ms:'MS-24'},
+  {id:'6.4.1',wsNo:6,ano:'D',action:'판매자 성과 모니터링 대시보드 및 페널티 자동화 어드민 개발 반영',task:'모니터링 대시보드 개발 BRD 작성 및 접수',date:'2027-01-30',wk:'W5',pic:'김승훈',phase:'Phase 2',st:'',ms:'MS-30'},
+  {id:'6.4.2',wsNo:6,ano:'D',action:'판매자 성과 모니터링 대시보드 및 페널티 자동화 어드민 개발 반영',task:'대시보드 및 어드민 개발 완료 후 QA/UAT 진행',date:'2027-04-16',wk:'W16',pic:'김승훈',phase:'Phase 2',st:'',ms:'MS-30'},
+  // WS7
+  {id:'7.2.1',wsNo:7,ano:'A',action:'Phase1 매뉴얼 운영 대상 셀러 발굴·계약 및 운영 준비 완료',task:'매뉴얼 운영 대상 셀러 선정 기준 수립 (월 출고량·지역·집하 환경 등)',date:'2026-06-19',wk:'W25',pic:'김채원',phase:'Phase 1',st:'Done',ms:'MS-02'},
+  {id:'7.2.3',wsNo:7,ano:'A',action:'Phase1 매뉴얼 운영 대상 셀러 발굴·계약 및 운영 준비 완료',task:'매뉴얼 운영 1차 참여 셀러 운영·단가 조건 협의',date:'2026-06-19',wk:'W25',pic:'윤현지',phase:'Phase 1',st:'Done',ms:'MS-02'},
+  {id:'7.2.5',wsNo:7,ano:'A',action:'Phase1 매뉴얼 운영 대상 셀러 발굴·계약 및 운영 준비 완료',task:'파일럿 참여 셀러 최종 확정 및 일정 공지',date:'2026-06-26',wk:'W27',pic:'박준성',phase:'Phase 1',st:'',ms:'MS-02'},
+  {id:'7.2.2',wsNo:7,ano:'A',action:'Phase1 매뉴얼 운영 대상 셀러 발굴·계약 및 운영 준비 완료',task:'매뉴얼 운영 2차 타겟 셀러 선별 (CM 영업 조직 연계)',date:'2026-06-26',wk:'W27',pic:'박준성',phase:'Phase 1',st:'',ms:'MS-02'},
+  {id:'7.1.1',wsNo:7,ano:'B',action:'Phase1 셀러 온보딩 프로세스 설계 및 운영 안정화',task:'판매자 스타배송 가입단계 기반 First mile 사전 영업 전환 요건 정의',date:'2026-04-30',wk:'W18',pic:'김채원',phase:'Phase 1',st:'Done',ms:'MS-02'},
+  {id:'7.1.2',wsNo:7,ano:'B',action:'Phase1 셀러 온보딩 프로세스 설계 및 운영 안정화',task:'컨설팅 후 승인 방식 온보딩 프로세스 설계',date:'2026-05-16',wk:'W20',pic:'김채원',phase:'Phase 1',st:'Done',ms:'MS-02'},
+  {id:'7.1.3',wsNo:7,ano:'B',action:'Phase1 셀러 온보딩 프로세스 설계 및 운영 안정화',task:'전환된 온보딩 프로세스 PX 반영 완료',date:'2026-05-18',wk:'W21',pic:'김채원',phase:'Phase 1',st:'Done',ms:'MS-02'},
+  {id:'7.1.4',wsNo:7,ano:'B',action:'Phase1 셀러 온보딩 프로세스 설계 및 운영 안정화',task:'온보딩 프로세스 전환 후 1개월 운영 모니터링 및 개선점 도출',date:'2026-06-18',wk:'W25',pic:'김채원',phase:'Phase 1',st:'',ms:'MS-02'},
+  {id:'7.4.1',wsNo:7,ano:'C',action:'판매자 SOP 수립 및 온보딩 가이드라인 문서화',task:'파일럿 운영 배송·운영 프로세스 수립 및 SOP v0.1 도출 완료',date:'2026-05-29',wk:'W22',pic:'김승훈',phase:'Phase 1',st:'Done',ms:'MS-02'},
+  {id:'7.4.2',wsNo:7,ano:'C',action:'판매자 SOP 수립 및 온보딩 가이드라인 문서화',task:'SOP 기반 파일럿 버전 판매자용 온보딩 가이드라인 문서화',date:'2026-06-08',wk:'W24',pic:'김채원',phase:'Phase 1',st:'',ms:'MS-02'},
+  {id:'7.4.3',wsNo:7,ano:'C',action:'판매자 SOP 수립 및 온보딩 가이드라인 문서화',task:'온보딩 가이드라인 파일럿 셀러 대상 배포 및 안내',date:'2026-06-10',wk:'W24',pic:'김채원',phase:'Phase 1',st:'',ms:'MS-02'},
+  {id:'7.4.4',wsNo:7,ano:'C',action:'판매자 SOP 수립 및 온보딩 가이드라인 문서화',task:'공식 오픈 대비 SOP v1.0 고도화 (파일럿 운영 결과 반영)',date:'2026-07-30',wk:'W31',pic:'김승훈',phase:'Phase 1',st:'',ms:'MS-02'},
+  {id:'7.6.2',wsNo:7,ano:'D',action:'Phase1 매뉴얼 운영 실행 및 결과 분석',task:'매뉴얼 공식 운영 개시 (파일럿 기간: 26년 6월~8월)',date:'2026-06-15',wk:'W25',pic:'김채원',phase:'Phase 1',st:'',ms:'MS-02'},
+  {id:'7.6.1',wsNo:7,ano:'D',action:'Phase1 매뉴얼 운영 실행 및 결과 분석',task:'매뉴얼 운영 데이터 모니터링 체계 수립',date:'2026-06-27',wk:'W27',pic:'김승훈',phase:'Phase 1',st:'',ms:'MS-02'},
+  {id:'7.6.3',wsNo:7,ano:'D',action:'Phase1 매뉴얼 운영 실행 및 결과 분석',task:'매뉴얼 운영 중간 점검 (4주차 기준 리뷰)',date:'2026-07-10',wk:'W28',pic:'김승훈',phase:'Phase 1',st:'',ms:'MS-02'},
+  {id:'7.6.4',wsNo:7,ano:'D',action:'Phase1 매뉴얼 운영 실행 및 결과 분석',task:'매뉴얼 운영 최종 데이터 리뷰 및 개선사항 도출',date:'2026-07-30',wk:'W31',pic:'김승훈',phase:'Phase 1',st:'',ms:'MS-02'},
+  {id:'7.6.5',wsNo:7,ano:'D',action:'Phase1 매뉴얼 운영 실행 및 결과 분석',task:'매뉴얼 결과 기반 세부 운영 정책 고도화 및 리스크 보완점 확정',date:'2026-07-30',wk:'W31',pic:'김승훈',phase:'Phase 1',st:'',ms:'MS-02'},
+  {id:'7.6.6',wsNo:7,ano:'D',action:'Phase1 매뉴얼 운영 실행 및 결과 분석',task:'매뉴얼 결과 기반 오픈 Go/No-Go 의사결정 보고',date:'2026-08-07',wk:'W32',pic:'김승훈',phase:'Phase 1',st:'',ms:'MS-02'},
+  // WS8
+  {id:'8.1.1',wsNo:8,ano:'A',action:'신규 우선 타겟 셀러 발굴 및 세일즈 실행 플랜 수립',task:'G마켓 판매자 데이터 수집 및 분석 기준 정의 (집하지/물동량/출고형태 기반)',date:'2026-06-05',wk:'W23',pic:'김채원',phase:'Phase 1',st:'',ms:'MS-04'},
+  {id:'8.1.2',wsNo:8,ano:'A',action:'신규 우선 타겟 셀러 발굴 및 세일즈 실행 플랜 수립',task:'영업 우선 타겟 선정 기준 수립 및 최종 타겟 리스트업',date:'2026-06-12',wk:'W24',pic:'김채원',phase:'Phase 1',st:'',ms:'MS-04'},
+  {id:'8.1.3',wsNo:8,ano:'A',action:'신규 우선 타겟 셀러 발굴 및 세일즈 실행 플랜 수립',task:'셀러 세그먼트 맞춤 온보딩 전략 수립 및 세일즈 킷(Sales Kit) 제작',date:'2026-06-19',wk:'W25',pic:'김채원',phase:'Phase 1',st:'',ms:'MS-04'},
+  {id:'8.1.4',wsNo:8,ano:'A',action:'신규 우선 타겟 셀러 발굴 및 세일즈 실행 플랜 수립',task:'내부 영업 전략 수립 및 영업본부 대상 실행 얼라인먼트 세션 진행',date:'2026-06-12',wk:'W24',pic:'박준성',phase:'Phase 1',st:'',ms:'MS-04'},
+  {id:'8.1.5',wsNo:8,ano:'A',action:'신규 우선 타겟 셀러 발굴 및 세일즈 실행 플랜 수립',task:'셀러별 담당자 지정, 영업 액션 플랜 수립 및 운영 프로세스 확정',date:'2026-06-19',wk:'W25',pic:'박준성',phase:'Phase 1',st:'',ms:'MS-04'},
+  {id:'8.1.6',wsNo:8,ano:'A',action:'신규 우선 타겟 셀러 발굴 및 세일즈 실행 플랜 수립',task:'우선 타겟 셀러 대상 본격 아웃바운드 영업 시작',date:'2026-06-22',wk:'W26',pic:'박준성',phase:'Phase 1',st:'',ms:'MS-04'},
+  {id:'8.2.1',wsNo:8,ano:'B',action:'기존 레거시 셀러 마이그레이션 전략 및 영업 개시',task:'레거시 전환 타겟 리스트 확정 및 마이그레이션 대상 데이터 정리',date:'2026-07-31',wk:'W31',pic:'김준혜',phase:'Phase 1.5',st:'',ms:'MS-13'},
+  {id:'8.2.2',wsNo:8,ano:'B',action:'기존 레거시 셀러 마이그레이션 전략 및 영업 개시',task:'레거시 셀러 맞춤형 전환 유인 정책(혜택/프로모션) 및 소통 시나리오 수립',date:'2026-08-14',wk:'W33',pic:'김준혜',phase:'Phase 1.5',st:'',ms:'MS-13'},
+  {id:'8.2.3',wsNo:8,ano:'B',action:'기존 레거시 셀러 마이그레이션 전략 및 영업 개시',task:'영업본부 내 레거시 전환 전담 담당자 얼라인먼트 및 운영 프로세스 확정',date:'2026-08-21',wk:'W34',pic:'김준혜',phase:'Phase 1.5',st:'',ms:'MS-13'},
+  {id:'8.2.4',wsNo:8,ano:'B',action:'기존 레거시 셀러 마이그레이션 전략 및 영업 개시',task:'기존 레거시 셀러 대상 마이그레이션 전환 영업 개시',date:'2026-09-01',wk:'W36',pic:'김준혜',phase:'Phase 1.5',st:'',ms:'MS-13'},
+  // WS9
+  {id:'9.1.1',wsNo:9,ano:'A',action:'스타배송 단일 Tag 통합 및 변경 반영',task:'스타배송/판매자 스타배송 태그 통합 개발 방향 협의 완료',date:'2026-06-05',wk:'W23',pic:'이태영',phase:'Phase 1.5',st:'',ms:'MS-18'},
+  {id:'9.1.2',wsNo:9,ano:'A',action:'스타배송 단일 Tag 통합 및 변경 반영',task:'스타배송 태그 통합 개발 완료',date:'2026-09-30',wk:'W40',pic:'이태영',phase:'Phase 1.5',st:'',ms:'MS-18'},
+  {id:'9.1.3',wsNo:9,ano:'A',action:'스타배송 단일 Tag 통합 및 변경 반영',task:'통합 변경 Buyer 안내 커뮤니케이션 및 캠페인 실행',date:'2026-09-30',wk:'W40',pic:'이태영',phase:'Phase 1.5',st:'',ms:'MS-18'},
+  {id:'9.2.1',wsNo:9,ano:'B',action:'스타배송 장바구니 구조 및 정책 개편',task:'풀필먼트 스타배송 장바구니 정책 변경안 수립 완료',date:'2026-06-19',wk:'W25',pic:'이태영',phase:'Phase 1.5',st:'',ms:'MS-18'},
+  {id:'9.2.2',wsNo:9,ano:'B',action:'스타배송 장바구니 구조 및 정책 개편',task:'풀필먼트 그루핑 및 합산 해체 적용을 위한 장바구니 기능 요구사항 및 화면 가이드라인 정의',date:'2026-06-30',wk:'W27',pic:'이태영',phase:'Phase 1.5',st:'',ms:'MS-18'},
+  {id:'9.2.3',wsNo:9,ano:'B',action:'스타배송 장바구니 구조 및 정책 개편',task:'장바구니 개편에 따른 정책·UX 통합 BRD 작성 및 개발 접수 완료',date:'2026-07-31',wk:'W31',pic:'이태영',phase:'Phase 1.5',st:'',ms:'MS-18'},
+  {id:'9.3.1',wsNo:9,ano:'C',action:'스타배송 도착보장 상품 리스팅 탐색 강화',task:'배송 가점 기반 상품 정렬 가점 로직 변경 및 리스팅 정책 수립',date:'2026-09-30',wk:'W40',pic:'이태영',phase:'Phase 1.5',st:'',ms:'MS-19'},
+  {id:'9.3.2',wsNo:9,ano:'C',action:'스타배송 도착보장 상품 리스팅 탐색 강화',task:'HM 모듈 및 개인화 추천 영역 내 스타배송 태그 노출 UI/UX 요구사항 정의',date:'2026-08-31',wk:'W36',pic:'이태영',phase:'Phase 1.5',st:'',ms:'MS-19'},
+  {id:'9.3.3',wsNo:9,ano:'C',action:'스타배송 도착보장 상품 리스팅 탐색 강화',task:'배송 가점 기반 상품 리스팅 탐색 통합 개발요건 BRD 작성 및 접수 완료',date:'2026-09-15',wk:'W38',pic:'이태영',phase:'Phase 1.5',st:'',ms:'MS-19'},
+  {id:'9.3.4',wsNo:9,ano:'C',action:'스타배송 도착보장 상품 리스팅 탐색 강화',task:'리스팅 탐색 강화 개발 완료 후 QA 및 효과 측정 기준 수립',date:'2026-09-30',wk:'W40',pic:'이태영',phase:'Phase 1.5',st:'',ms:'MS-19'},
+  // WS10
+  {id:'10.1.1',wsNo:10,ano:'A',action:'4PL E2E 통합 시스템 비즈니스 요구사항 정의 및 검증 협업',task:'4PL E2E 개발 착수 킥오프 준비',date:'2026-09-04',wk:'W36',pic:'이욱재',phase:'Phase 2',st:'',ms:'MS-25'},
+  {id:'10.1.2',wsNo:10,ano:'A',action:'4PL E2E 통합 시스템 비즈니스 요구사항 정의 및 검증 협업',task:'4PL E2E 시스템 연동 비즈니스 요구사항(BRD) 정의 및 요청사항 작성',date:'2026-09-25',wk:'W39',pic:'이욱재',phase:'Phase 2',st:'',ms:'MS-25'},
+  {id:'10.1.3',wsNo:10,ano:'A',action:'4PL E2E 통합 시스템 비즈니스 요구사항 정의 및 검증 협업',task:'4PL E2E 시스템 구축 개발 프로세스 모니터링 및 기획 싱크 조율 시작',date:'2026-11-13',wk:'W46',pic:'이욱재',phase:'Phase 2',st:'',ms:'MS-25'},
+  {id:'10.1.4',wsNo:10,ano:'A',action:'4PL E2E 통합 시스템 비즈니스 요구사항 정의 및 검증 협업',task:'4PL E2E 시스템 기능 테스트(QA) 및 FM+4PL 통합 연동 테스트 시나리오 검증',date:'2026-12-11',wk:'W50',pic:'이욱재',phase:'Phase 2',st:'',ms:'MS-25'},
+  {id:'10.2.1',wsNo:10,ano:'B',action:'Control Tower 오픈 및 운영 가시성 고도화',task:'Control Tower v1 공식 오픈 (실시간 통합 물류 가시성 확보 및 시스템 LTS 가동)',date:'2026-12-23',wk:'W52',pic:'이욱재',phase:'Phase 2',st:'',ms:'MS-25'},
+  {id:'10.2.2',wsNo:10,ano:'B',action:'Control Tower 오픈 및 운영 가시성 고도화',task:'E2E 배송 데이터 흐름 정합성 검증 체계 구축 및 통합 모니터링 고도화',date:'2027-01-29',wk:'W5',pic:'이욱재',phase:'Phase 2',st:'',ms:'MS-25'},
+  {id:'10.2.3',wsNo:10,ano:'B',action:'Control Tower 오픈 및 운영 가시성 고도화',task:'주요 KPI 대시보드 가시성 확보 및 가동 자동 알림(Alerting) 인프라 셋업',date:'2027-01-29',wk:'W5',pic:'이욱재',phase:'Phase 2',st:'',ms:'MS-25'},
+  {id:'10.2.4',wsNo:10,ano:'B',action:'Control Tower 오픈 및 운영 가시성 고도화',task:'Control Tower 운영 안정화 점검 및 Phase 2 시스템 피드백 반영',date:'2027-02-28',wk:'W10',pic:'이욱재',phase:'Phase 2',st:'',ms:'MS-25'},
+  // WS11
+  {id:'11.1.1',wsNo:11,ano:'A',action:'ETA 기반 구매자 배송 경험 설계',task:'ETA 산출 로직 설계 (배송 구간별 시간 기준 정의)',date:'2026-11-28',wk:'W48',pic:'이태영',phase:'Phase 2',st:'',ms:'MS-23'},
+  {id:'11.1.2',wsNo:11,ano:'A',action:'ETA 기반 구매자 배송 경험 설계',task:'구매자향 ETA 노출 UI/UX 요구사항 정의',date:'2026-12-05',wk:'W49',pic:'이태영',phase:'Phase 2',st:'',ms:'MS-23'},
+  {id:'11.1.3',wsNo:11,ano:'A',action:'ETA 기반 구매자 배송 경험 설계',task:'ETA 기반 배송 커뮤니케이션 BRD 작성 및 개발 접수',date:'2026-12-30',wk:'W53',pic:'이태영',phase:'Phase 2',st:'',ms:'MS-23'},
+  {id:'11.2.1',wsNo:11,ano:'B',action:'Proactive CS 프로세스 수립',task:'배송 지연·이상 감지 트리거 기준 정의 (지연/분실/오배송 룰셋)',date:'2026-12-15',wk:'W51',pic:'이태영',phase:'Phase 2',st:'',ms:'MS-23'},
+  {id:'11.2.2',wsNo:11,ano:'B',action:'Proactive CS 프로세스 수립',task:'선제적 CS 대응 프로세스 설계 (자동 알림·CS 인입 전 선대응)',date:'2027-01-15',wk:'W3',pic:'이태영',phase:'Phase 2',st:'',ms:'MS-23'},
+  {id:'11.2.3',wsNo:11,ano:'B',action:'Proactive CS 프로세스 수립',task:'Proactive CS 개발 안건 도출 및 BRD 접수',date:'2027-01-30',wk:'W5',pic:'이태영',phase:'Phase 2',st:'',ms:'MS-23'},
+  // WS12
+  {id:'12.1.1',wsNo:12,ano:'A',action:'Star Delivery / 4PL Order 40% 달성 추적 및 전환 기준 관리',task:'Star Delivery 40% 달성을 위한 물량 모니터링 체계 수립',date:'2026-06-27',wk:'W27',pic:'이태영',phase:'Phase 2',st:'',ms:'MS-28'},
+  {id:'12.1.2',wsNo:12,ano:'A',action:'Star Delivery / 4PL Order 40% 달성 추적 및 전환 기준 관리',task:'목표 달성률 주간 추적 및 갭 분석 보고',date:'2026-07-30',wk:'W31',pic:'이태영',phase:'Phase 2',st:'',ms:'MS-28'},
+  {id:'12.2.1',wsNo:12,ano:'B',action:'동적 Tag(Dynamic Tag) 노출 규칙 정의',task:'Dynamic Tag 부여 기준 설계 (배송 성과·속도·보장 여부 기반)',date:'2027-01-15',wk:'W3',pic:'이태영',phase:'Phase 2',st:'',ms:'MS-26'},
+  {id:'12.2.2',wsNo:12,ano:'B',action:'동적 Tag(Dynamic Tag) 노출 규칙 정의',task:'Dynamic Tag 노출 규칙 최종 확정 및 개발 BRD 작성',date:'2027-02-05',wk:'W6',pic:'이태영',phase:'Phase 2',st:'',ms:'MS-26'},
+  {id:'12.3.1',wsNo:12,ano:'C',action:'배송서비스 리뉴얼 방향성 수립',task:'스타배송 브랜드 현황 분석 및 리뉴얼 필요성 정의',date:'2026-12-30',wk:'W53',pic:'이태영',phase:'Phase 2',st:'',ms:'MS-27'},
+  {id:'12.3.2',wsNo:12,ano:'C',action:'배송서비스 리뉴얼 방향성 수립',task:'리뉴얼 방향성 수립 및 내부 리더십 승인',date:'2027-01-30',wk:'W5',pic:'이태영',phase:'Phase 2',st:'',ms:'MS-27'},
+  {id:'12.3.3',wsNo:12,ano:'C',action:'배송서비스 리뉴얼 방향성 수립',task:'배송서비스 리뉴얼 개발 요건 접수',date:'2027-02-05',wk:'W6',pic:'이태영',phase:'Phase 2',st:'',ms:'MS-27'},
+];
+
+let LOGS = [];
+let WEEKLY = [];
+const CUR_USER = '관리자';
+const PERSONS = ['최승범','강승구','최무창','이욱재','황병순','유주연','김승훈','유현천','이태영','하지은','김채원','김준혜','박준성','윤현지'];
+const TODAY = new Date('2026-06-10');
+let taskFilter='all', alertFilter='all', picFilter='', weekFilter='';
+let expWs=new Set([1,2,3,4,5,6,7,8,9,10,11,12]);
+let colAct=new Set();
+// drag state
+let dragSrcKey=null, dragSrcWsNo=null;
+
+// ── utils ──
+function pd(s){if(!s)return null;const d=new Date(s);return isNaN(d)?null:d;}
+function fd(s){if(!s)return'—';const d=pd(s);if(!d)return s;return`${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`;}
+function w2n(s){const d=pd(s);if(!d)return'—';const j=new Date(d.getFullYear(),0,1);return'W'+Math.ceil(((d-j)/86400000+j.getDay()+1)/7);}
+function isDel(t){return t.st!=='Done'&&pd(t.date)&&pd(t.date)<TODAY;}
+function isWarn(t){if(t.st==='Done')return false;const d=pd(t.date);if(!d)return false;const df=(d-TODAY)/86400000;return df>=0&&df<=7;}
+function sbadge(s,t){
+  if(t&&isDel(t)&&s!=='Done')return'<span class="badge bd-del">지연</span>';
+  if(s==='Done')return'<span class="badge bd-done">완료</span>';
+  if(s==='On Track')return'<span class="badge bd-ot">진행중</span>';
+  if(s==='Delayed')return'<span class="badge bd-del">지연</span>';
+  return'<span class="badge bd-pl">예정</span>';
+}
+function pbadge(p){
+  if(!p)return'';
+  if(p.includes('1.5'))return`<span class="badge bd-p15">${p}</span>`;
+  if(p==='Phase 1')return`<span class="badge bd-p1">${p}</span>`;
+  return`<span class="badge bd-p2">${p}</span>`;
+}
+function sdot(s,t){
+  if(t&&isDel(t)&&s!=='Done')return'<span class="status-dot sdot-del"></span>';
+  if(s==='Done')return'<span class="status-dot sdot-done"></span>';
+  if(s==='On Track')return'<span class="status-dot sdot-ot"></span>';
+  return'<span class="status-dot sdot-pl"></span>';
+}
+function addLog(id,field,ov,nv){
+  const n=new Date();
+  const ts=`${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')} ${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}`;
+  LOGS.unshift({ts,user:CUR_USER,id,field,ov:ov||'(없음)',nv:nv||'(없음)'});
+}
+
+// ── Summary ──
+function updateSummary(){
+  const done=TASKS.filter(t=>t.st==='Done').length;
+  const ot=TASKS.filter(t=>t.st==='On Track').length;
+  const del=TASKS.filter(t=>isDel(t)).length;
+  const pl=TASKS.filter(t=>!t.st&&!isDel(t)).length;
+  const tot=TASKS.length,pct=tot?Math.round(done/tot*100):0;
+  document.getElementById('sTot').textContent=tot;
+  document.getElementById('sDone').textContent='완료 '+done;
+  document.getElementById('sOt').textContent='진행중 '+ot;
+  document.getElementById('sDel').textContent='지연 '+del;
+  document.getElementById('sPl').textContent='예정 '+pl;
+  document.getElementById('pFill').style.width=pct+'%';
+  document.getElementById('pPct').textContent=pct+'%';
+}
+
+// ── Tab 1: Tasks with drag-and-drop on Action rows ──
+function renderTasks(){
+  const q=document.getElementById('tsrch').value.toLowerCase();
+  const tb=document.getElementById('tbody');tb.innerHTML='';
+  const grp={};
+  WS.forEach(w=>grp[w.no]={ws:w,acts:{}});
+  TASKS.forEach(t=>{
+    if(!grp[t.wsNo])return;
+    const k=t.wsNo+'_'+t.ano;
+    if(!grp[t.wsNo].acts[k])grp[t.wsNo].acts[k]={action:t.action,no:t.ano,tasks:[],wsNo:t.wsNo};
+    grp[t.wsNo].acts[k].tasks.push(t);
+  });
+  let vis=0;
+  WS.forEach(w=>{
+    const g=grp[w.no];if(!g)return;
+    const acts=Object.values(g.acts);if(!acts.length)return;
+    let hasVis=false;
+    acts.forEach(a=>a.tasks.forEach(t=>{if(mT(t,q)&&mF(t))hasVis=true;}));
+    if(!hasVis)return;
+    const exp=expWs.has(w.no);
+    // WS row — 대분류 (진한 파란 배경)
+    const wr=document.createElement('tr');wr.className='wsr';
+    wr.innerHTML=`<td style="text-align:center;cursor:pointer" data-wstog="${w.no}">${exp?'▾':'▸'}</td>
+      <td colspan="8" style="cursor:pointer" data-wstog="${w.no}">
+        <span style="font-size:10px;font-weight:800;margin-right:6px;opacity:.7">WS${w.no}</span>
+        <strong>${w.name}</strong>
+        <span style="font-size:10px;margin-left:8px;opacity:.7">${w.team}</span>
+      </td>`;
+    tb.appendChild(wr);
+    if(!exp)return;
+
+    // sort acts by order
+    const actList=acts.sort((a,b)=>{
+      const oa=w.actOrder?w.actOrder.indexOf(a.no):-1;
+      const ob=w.actOrder?w.actOrder.indexOf(b.no):-1;
+      if(oa===-1&&ob===-1)return a.no<b.no?-1:1;
+      if(oa===-1)return 1;if(ob===-1)return -1;
+      return oa-ob;
+    });
+
+    actList.forEach(a=>{
+      const ak=w.no+'_'+a.no;
+      const aexp=!colAct.has(ak);
+      let aHas=false;a.tasks.forEach(t=>{if(mT(t,q)&&mF(t))aHas=true;});
+      if(!aHas)return;
+      // Action row — 중분류 (연파랑, draggable)
+      const ar=document.createElement('tr');ar.className='acr';
+      ar.setAttribute('draggable','true');
+      ar.dataset.dragkey=ak;ar.dataset.dragwsno=w.no;ar.dataset.dragano=a.no;
+      ar.innerHTML=`
+        <td style="text-align:center;cursor:pointer" data-actog="${ak}">
+          <span class="drag-handle" title="드래그하여 순서 변경">⠿</span>
+        </td>
+        <td colspan="8" style="cursor:pointer" data-actog="${ak}">
+          <span style="font-size:10px;opacity:.7;margin-right:5px">Action ${a.no}</span>
+          <span style="font-weight:600">${a.action}</span>
+          ${aexp?'<span style="font-size:10px;margin-left:6px;opacity:.5">▾</span>':'<span style="font-size:10px;margin-left:6px;opacity:.5">▸</span>'}
+        </td>`;
+      // drag events
+      ar.addEventListener('dragstart',e=>{
+        dragSrcKey=ak;dragSrcWsNo=w.no;dragSrcAno=a.no;
+        e.dataTransfer.effectAllowed='move';
+        ar.style.opacity='.5';
+      });
+      ar.addEventListener('dragend',()=>{ar.style.opacity='1';});
+      ar.addEventListener('dragover',e=>{
+        e.preventDefault();e.dataTransfer.dropEffect='move';
+        ar.classList.add('drag-over');
+      });
+      ar.addEventListener('dragleave',()=>ar.classList.remove('drag-over'));
+      ar.addEventListener('drop',e=>{
+        e.preventDefault();ar.classList.remove('drag-over');
+        if(!dragSrcKey||dragSrcKey===ak||dragSrcWsNo!==w.no)return;
+        // reorder actOrder for this WS
+        if(!w.actOrder){w.actOrder=actList.map(x=>x.no);}
+        const arr=w.actOrder;
+        const fi=arr.indexOf(dragSrcAno),ti=arr.indexOf(a.no);
+        if(fi===-1||ti===-1)return;
+        arr.splice(fi,1);arr.splice(ti,0,dragSrcAno);
+        renderTasks();
+      });
+      tb.appendChild(ar);
+      if(!aexp)return;
+      // Task rows — 세분류 (흰 배경)
+      a.tasks.forEach(t=>{
+        if(!mT(t,q)||!mF(t))return;
+        vis++;
+        const del=isDel(t);const warn=isWarn(t)&&!del;
+        const tr=document.createElement('tr');tr.className='tkr';
+        if(del)tr.style.borderLeft='3px solid var(--del)';
+        else if(warn)tr.style.borderLeft='3px solid var(--warn)';
+        const msh=t.ms?`<span class="msl" data-msnav="${t.ms}">${t.ms}</span>`:'—';
+        tr.innerHTML=`<td></td>
+          <td style="padding-left:36px;line-height:1.4">
+            ${del?'<span style="font-size:10px;color:var(--del);margin-right:3px">⚠</span>':warn?'<span style="font-size:10px;color:var(--warn);margin-right:3px">⏰</span>':''}
+            ${t.task}
+          </td>
+          <td><span class="editable" data-sted="${t.id}">${sbadge(t.st,t)}</span></td>
+          <td><span class="editable" data-dated="${t.id}" style="font-size:12px;${del?'color:var(--del)':''}">${fd(t.date)}</span></td>
+          <td style="font-size:11px;color:var(--tx2)">${t.wk||w2n(t.date)}</td>
+          <td><span class="editable" data-piced="${t.id}" style="font-size:12px">${t.pic||'—'}</span></td>
+          <td>${pbadge(t.phase)}</td>
+          <td>${msh}</td>
+          <td><button class="dbtn" data-deltask="${t.id}" title="삭제">✕</button></td>`;
+        tb.appendChild(tr);
+      });
+    });
+  });
+  document.getElementById('tcnt').textContent=vis+'개 표시';
+}
+let dragSrcAno=null;
+function mT(t,q){if(!q)return true;const ws=WS.find(w=>w.no===t.wsNo)||{};return(t.task+t.action+(ws.name||'')+t.pic+t.ms).toLowerCase().includes(q);}
+function getWeekNum(d){const j=new Date(d.getFullYear(),0,1);return Math.ceil(((d-j)/86400000+j.getDay()+1)/7);}
+function mF(t){
+  if(picFilter&&t.pic!==picFilter)return false;
+  if(weekFilter){
+    const td=pd(t.date);if(!td)return false;
+    const tw=getWeekNum(TODAY);
+    const dw=getWeekNum(td)+(td.getFullYear()>TODAY.getFullYear()?52*(td.getFullYear()-TODAY.getFullYear()):0);
+    if(weekFilter==='prev'&&dw!==tw-1)return false;
+    if(weekFilter==='this'&&dw!==tw)return false;
+    if(weekFilter==='next'&&dw!==tw+1)return false;
+  }
+  if(taskFilter==='all')return true;
+  if(taskFilter==='planned')return !t.st&&!isDel(t);
+  if(taskFilter==='delayed')return isDel(t);
+  return t.st===taskFilter;
+}
+
+// ── Tab 2: Alerts ──
+function renderAlerts(){
+  function teamOf(t){const ws=WS.find(w=>w.no===t.wsNo);return ws?ws.team:'';}
+  function flt(arr){return alertFilter==='all'?arr:arr.filter(t=>teamOf(t).includes(alertFilter));}
+  const del=flt(TASKS.filter(t=>isDel(t)));
+  const warn=flt(TASKS.filter(t=>isWarn(t)&&!isDel(t)));
+  document.getElementById('cntDel').textContent=del.length+'건';
+  document.getElementById('cntWarn').textContent=warn.length+'건';
+  function rnd(arr,elId,cls){
+    const el=document.getElementById(elId);el.innerHTML='';
+    if(!arr.length){el.innerHTML='<div class="eblk">해당 없음</div>';return;}
+    const g={};arr.forEach(t=>{if(!g[t.wsNo])g[t.wsNo]=[];g[t.wsNo].push(t);});
+    Object.entries(g).forEach(([wn,items])=>{
+      const ws=WS.find(w=>w.no===parseInt(wn));
+      const lbl=document.createElement('div');
+      lbl.style.cssText='font-size:10px;font-weight:800;color:var(--tx2);margin:8px 0 4px;text-transform:uppercase;letter-spacing:.4px;';
+      lbl.textContent=ws?ws.name:'';el.appendChild(lbl);
+      items.forEach(t=>{
+        const c=document.createElement('div');c.className='ac2 '+cls;
+        c.innerHTML=`<span class="adot adot-${cls==='delayed'?'d':'w'}"></span>
+          <div style="flex:1;min-width:0"><div class="aws">${t.action}</div><div class="atask">${t.task}</div></div>
+          <div class="amet"><div class="adate" style="color:${cls==='delayed'?'var(--del)':'var(--warn)'}">${fd(t.date)}</div><div class="apic">${t.pic||'—'}</div></div>`;
+        el.appendChild(c);
+      });
+    });
+  }
+  rnd(del,'alertDel','delayed');rnd(warn,'alertWarn','warning');
+}
+
+// ── Tab 3: Milestones ──
+function renderMs(){
+  [['Phase 1','msBody1','msCnt1'],['Phase 1.5','msBody15','msCnt15'],['Phase 2','msBody2','msCnt2']].forEach(([ph,bid,cid])=>{
+    const items=MS.filter(m=>m.phase===ph);
+    document.getElementById(cid).textContent=items.length+'개';
+    const el=document.getElementById(bid);el.innerHTML='';
+    if(!items.length){el.innerHTML='<div class="eblk">없음</div>';return;}
+    items.forEach(m=>{
+      const del2=!m.status&&pd(m.date)&&pd(m.date)<TODAY;
+      const w2r=!m.status&&pd(m.date)&&(pd(m.date)-TODAY)/86400000<=7&&(pd(m.date)-TODAY)/86400000>=0;
+      const c=document.createElement('div');c.className='msc';c.dataset.msopen=m.no;c.id='ms-card-'+m.no;
+      c.innerHTML=`<div class="mst">
+        <span class="msno">${m.no}</span>
+        <span class="msnm">${del2?'<span style="color:var(--del)">⚠ </span>':w2r?'<span style="color:var(--warn)">⏰ </span>':''}${m.name}</span>
+      </div>
+      <div class="msb">
+        ${sbadge(m.status,{st:m.status,date:m.date})}
+        <span class="msorg">${m.org}</span>
+        <button class="dbtn" data-delms="${m.no}" style="margin-left:auto" title="삭제">✕</button>
+      </div>
+      <div style="display:flex;gap:12px;margin-top:6px;padding-top:6px;border-top:1px solid var(--bd);font-size:11px;color:var(--tx2);align-items:center;">
+        <span style="font-weight:600;color:var(--tx3);min-width:52px">Start</span>
+        <input type="date" class="di" style="font-size:11px;padding:2px 6px;border-color:var(--bd);color:var(--tx2);background:var(--sf2)" 
+          value="${m.startDate||''}" data-msstartdate="${m.no}" title="Start 일정 입력">
+        <span style="font-weight:600;color:var(--tx3);min-width:38px">End</span>
+        <span class="msdt">${fd(m.date)}</span>
+      </div>`;
+      el.appendChild(c);
+    });
+  });
+}
+function openMsModal(no){
+  const m=MS.find(x=>x.no===no);if(!m)return;
+  document.getElementById('moMsNo').textContent=m.no;
+  document.getElementById('moMsNm').textContent=m.name;
+  document.getElementById('moMsDt').textContent=fd(m.date);
+  document.getElementById('moMsOrg').textContent=m.org;
+  document.getElementById('moMsSt').innerHTML=sbadge(m.status,{st:m.status,date:m.date});
+  const rel=TASKS.filter(t=>t.ms===m.no);
+  const el=document.getElementById('moMsActs');el.innerHTML='';
+  if(!rel.length){el.innerHTML='<div style="padding:16px;text-align:center;color:var(--tx2);font-size:12px">연결된 Task가 없습니다</div>';}
+  else rel.forEach(t=>{
+    const r=document.createElement('div');r.className='mahr';
+    r.innerHTML=`<span style="font-size:12px">${t.task}</span><span style="font-size:12px;color:var(--tx2)">${t.pic||'—'}</span><span style="font-size:12px;color:var(--tx2)">${fd(t.date)}</span><span>${sbadge(t.st,t)}</span><span></span>`;
+    el.appendChild(r);
+  });
+  document.getElementById('moMs').classList.add('open');
+}
+
+// ── Tab 4: WS ──
+function renderWs(){
+  const teams=['물류사업기획','서비스기획','물류사업기획/서비스기획','기타'];
+  const el=document.getElementById('wsCols');el.innerHTML='';
+  teams.forEach(team=>{
+    const items=WS.filter(w=>team==='기타'?!['물류사업기획','서비스기획','물류사업기획/서비스기획'].includes(w.team):w.team===team);
+    const col=document.createElement('div');col.className='bc';
+    col.innerHTML=`<div class="bh"><span class="bht">${team==='기타'?'기타/신규':team}</span><span class="bcnt">${items.length}개</span></div>`;
+    const bb=document.createElement('div');bb.className='bb';bb.style.gap='8px';
+    if(!items.length)bb.innerHTML='<div class="eblk">없음</div>';
+    else items.forEach(ws=>{
+      const taskCount=TASKS.filter(t=>t.wsNo===ws.no).length;
+      const doneCount=TASKS.filter(t=>t.wsNo===ws.no&&t.st==='Done').length;
+      const c=document.createElement('div');c.className='wsc';
+      c.style.cursor='pointer';
+      c.dataset.wsopen=ws.no;
+      c.innerHTML=`<div class="wsh">
+        <div class="wsnb">${ws.no}</div>
+        <div class="wsn">${ws.name}</div>
+        <button class="dbtn" data-delws="${ws.no}" title="삭제">✕</button>
+      </div>
+      <div class="wsobj">${ws.obj}</div>
+      <div class="wste"><span class="wstle">담당팀</span>
+        <span class="wstv" contenteditable="true" data-wsteam="${ws.no}" spellcheck="false">${ws.team}</span>
+        <span style="margin-left:auto;font-size:10px;color:var(--tx3)">${doneCount}/${taskCount} Task</span>
+      </div>`;
+      bb.appendChild(c);
+    });
+    col.appendChild(bb);el.appendChild(col);
+  });
+}
+
+function openWsTasksModal(wsNo){
+  const ws=WS.find(w=>w.no===parseInt(wsNo));if(!ws)return;
+  document.getElementById('moWsNo').textContent='WS'+ws.no;
+  document.getElementById('moWsNm').textContent=ws.name;
+  document.getElementById('moWsObj').textContent=ws.obj;
+  const tasks=TASKS.filter(t=>t.wsNo===ws.no);
+  const el=document.getElementById('moWsTasksBody');el.innerHTML='';
+  if(!tasks.length){el.innerHTML='<div style="padding:16px;text-align:center;color:var(--tx2);font-size:12px">연결된 Task가 없습니다</div>';}
+  else tasks.forEach(t=>{
+    const r=document.createElement('div');r.className='mahr';
+    r.innerHTML=`<span style="font-size:11px;line-height:1.4"><span style="font-size:10px;color:var(--tx3)">${t.action} · </span>${t.task}</span><span style="font-size:12px;color:var(--tx2)">${t.pic||'—'}</span><span style="font-size:12px;color:var(--tx2)">${fd(t.date)}</span><span>${sbadge(t.st,t)}</span><span></span>`;
+    el.appendChild(r);
+  });
+  document.getElementById('moWsTasks').classList.add('open');
+}
+
+// ── Tab 5: Charter ──
+function renderCharter(){
+  // WS list
+  const wlist=document.getElementById('charterWsList');wlist.innerHTML='';
+  WS.forEach(w=>{
+    const d=document.createElement('div');
+    d.style.cssText='display:flex;align-items:center;gap:6px;font-size:11px;padding:3px 0;border-bottom:1px solid var(--bd);';
+    d.innerHTML=`<span style="font-size:10px;font-weight:800;background:var(--ws-bg);color:var(--ws-tx);padding:1px 5px;border-radius:4px">WS${w.no}</span>
+      <span style="flex:1;color:var(--tx)">${w.name}</span>
+      <span class="tag tag-ws">${w.team}</span>`;
+    wlist.appendChild(d);
+  });
+  // MS summary by phase
+  const mlist=document.getElementById('charterMsList');mlist.innerHTML='';
+  ['Phase 1','Phase 1.5','Phase 2'].forEach(ph=>{
+    const count=MS.filter(m=>m.phase===ph).length;
+    const done=MS.filter(m=>m.phase===ph&&m.status==='Done').length;
+    const cls=ph==='Phase 1'?'bd-p1':ph==='Phase 1.5'?'bd-p15':'bd-p2';
+    const d=document.createElement('div');
+    d.style.cssText='display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--bd);';
+    d.innerHTML=`<span class="badge ${cls}">${ph}</span>
+      <span style="flex:1;font-size:12px;color:var(--tx)">${count}개 마일스톤</span>
+      <span style="font-size:11px;color:var(--done);font-weight:700">${done}완료</span>`;
+    mlist.appendChild(d);
+  });
+  // This week tasks
+  const tw=document.getElementById('charterThisWeek');tw.innerHTML='';
+  const thisWeekTasks=TASKS.filter(t=>isWarn(t)||isDel(t)).slice(0,8);
+  if(!thisWeekTasks.length){tw.innerHTML='<div class="eblk" style="padding:12px">이번 주 마감 없음</div>';}
+  else thisWeekTasks.forEach(t=>{
+    const d=document.createElement('div');
+    d.style.cssText='display:flex;align-items:flex-start;gap:6px;padding:5px 0;border-bottom:1px solid var(--bd);font-size:11px;';
+    d.innerHTML=`${sdot(t.st,t)}<span style="flex:1;color:var(--tx)">${t.task}</span>
+      <span style="color:${isDel(t)?'var(--del)':'var(--warn)'};font-weight:700">${fd(t.date)}</span>`;
+    tw.appendChild(d);
+  });
+  // Weekly list
+  renderWeeklyList();
+}
+function renderWeeklyList(){
+  const el=document.getElementById('weeklyList');el.innerHTML='';
+  if(!WEEKLY.length){
+    el.innerHTML=`<div class="empty-state">
+      <div class="empty-icon">📅</div>
+      <div class="empty-title">주간 업데이트가 없습니다</div>
+      <div class="empty-sub">위 '+ 이번 주 업데이트 추가' 버튼을 눌러<br>이번 주 진행 내용을 기록해 주세요</div>
+    </div>`;
+    return;
+  }
+  WEEKLY.sort((a,b)=>{
+    const wa=parseInt(a.wk.replace('W','')||0);
+    const wb=parseInt(b.wk.replace('W','')||0);
+    return wb-wa;
+  });
+  WEEKLY.forEach((w,i)=>{
+    const card=document.createElement('div');card.className='weekly-card';
+    const isOpen=!w.collapsed;
+    card.innerHTML=`<div class="weekly-header" data-wtog="${i}">
+      <span class="weekly-wk">${w.wk||'—'}</span>
+      <span class="weekly-date">${fd(w.date)}</span>
+      <span class="weekly-toggle" data-wtog="${i}">${isOpen?'▾':'▸'}</span>
+    </div>
+    ${isOpen?`<div class="weekly-body">
+      ${w.done?`<div class="weekly-section">
+        <div class="weekly-section-lbl">📌 완료 / 진행 내용</div>
+        <div style="font-size:12px;color:var(--tx);line-height:1.7;white-space:pre-wrap">${w.done}</div>
+      </div>`:''}
+      ${w.issue?`<div class="weekly-section">
+        <div class="weekly-section-lbl">⚠️ 이슈 / 지연</div>
+        <div style="font-size:12px;color:var(--del);line-height:1.7;white-space:pre-wrap">${w.issue}</div>
+      </div>`:''}
+      ${w.next?`<div class="weekly-section">
+        <div class="weekly-section-lbl">📅 다음 주 예정</div>
+        <div style="font-size:12px;color:var(--tx);line-height:1.7;white-space:pre-wrap">${w.next}</div>
+      </div>`:''}
+      ${w.memo?`<div class="weekly-section">
+        <div class="weekly-section-lbl">🗒 메모</div>
+        <div style="font-size:12px;color:var(--tx2);line-height:1.7;white-space:pre-wrap">${w.memo}</div>
+      </div>`:''}
+      <div style="display:flex;justify-content:flex-end;gap:6px;margin-top:10px;padding-top:8px;border-top:1px solid var(--bd)">
+        <button class="bs" style="font-size:11px;padding:4px 10px" data-wedit="${i}">수정</button>
+        <button class="dbtn" data-wdel="${i}" style="font-size:12px">삭제</button>
+      </div>
+    </div>`:''}`;
+    el.appendChild(card);
+  });
+}
+function updateCharterMeta(){
+  if(WEEKLY.length){
+    const latest=WEEKLY.reduce((a,b)=>{
+      const wa=parseInt(a.wk.replace('W','')||0),wb=parseInt(b.wk.replace('W','')||0);
+      return wa>wb?a:b;
+    });
+    document.getElementById('charterLastUpdate').textContent=latest.wk+' ('+fd(latest.date)+')';
+  }
+}
+
+// ── Tab 6: Logs ──
+function renderLogs(){
+  const q=document.getElementById('lsrch').value.toLowerCase();
+  const el=document.getElementById('logBody');el.innerHTML='';
+  const f=LOGS.filter(l=>!q||(l.field+l.user+l.id+l.ov+l.nv).toLowerCase().includes(q));
+  if(!f.length){el.innerHTML='<div style="text-align:center;padding:40px;color:var(--tx2);font-size:12px">📋 변경 이력이 없습니다.</div>';return;}
+  f.forEach(l=>{
+    const r=document.createElement('div');r.className='lr';
+    r.innerHTML=`<span class="lt">${l.ts}</span><span style="font-size:12px">${l.user}</span><span style="font-size:11px;color:var(--tx2)">${l.id}</span><span class="lf">${l.field}</span><span class="lo">${l.ov}</span><span class="ln">${l.nv}</span>`;
+    el.appendChild(r);
+  });
+}
+
+// ── Tab: Gantt Chart ──
+function renderGantt(){
+  const wrap=document.getElementById('ganttInner');
+  wrap.innerHTML='';
+
+  // collect date range
+  const allDates=[...MS.map(m=>pd(m.date)),...MS.map(m=>pd(m.startDate)),...TASKS.map(t=>pd(t.date))].filter(Boolean);
+  if(!allDates.length){wrap.innerHTML='<div class="eblk" style="padding:40px">데이터 없음</div>';return;}
+  const minD=new Date(Math.min(...allDates.map(d=>d.getTime())));
+  const maxD=new Date(Math.max(...allDates.map(d=>d.getTime())));
+  // snap to week boundaries
+  const startWk=new Date(minD);startWk.setDate(startWk.getDate()-startWk.getDay());
+  const endWk=new Date(maxD);endWk.setDate(endWk.getDate()+(6-endWk.getDay())+7);
+
+  const LABEL_W=260;const WK_W=48;
+  // generate week columns
+  const weeks=[];let cur=new Date(startWk);
+  while(cur<=endWk){weeks.push(new Date(cur));cur.setDate(cur.getDate()+7);}
+  const totalW=LABEL_W+weeks.length*WK_W;
+
+  // build header
+  let html=`<div style="position:sticky;top:0;z-index:20;background:var(--sf);border-bottom:2px solid var(--bd);display:flex;min-width:${totalW}px">`;
+  html+=`<div style="width:${LABEL_W}px;flex-shrink:0;padding:8px 12px;font-size:11px;font-weight:700;color:var(--tx2);border-right:1px solid var(--bd);background:var(--sf2)">Milestone / Action</div>`;
+  weeks.forEach((w,i)=>{
+    const wn='W'+getWeekNum(w);
+    const isNow=getWeekNum(w)===getWeekNum(TODAY)&&w.getFullYear()===TODAY.getFullYear();
+    const mo=(w.getMonth()+1);
+    html+=`<div style="width:${WK_W}px;flex-shrink:0;text-align:center;padding:4px 2px;font-size:10px;font-weight:${isNow?800:600};color:${isNow?'var(--ac)':'var(--tx2)'};border-right:1px solid var(--bd2);background:${isNow?'#e8f1ff':'var(--sf2)'};line-height:1.3">
+      <div>${wn}</div><div style="font-size:9px;opacity:.7">${mo}/${w.getDate()}</div>
+    </div>`;
+  });
+  html+='</div>';
+
+  function dateToX(dateStr){
+    const d=pd(dateStr);if(!d)return null;
+    const diff=(d-startWk)/86400000;
+    return LABEL_W+Math.round(diff/7*WK_W);
+  }
+
+  // rows
+  MS.forEach(m=>{
+    const mEnd=pd(m.date);
+    const mStart=m.startDate?pd(m.startDate):null;
+    const endX=mEnd?dateToX(m.date):null;
+    const startX=mStart?dateToX(m.startDate):(endX?endX-WK_W:null);
+    const isNow=mEnd&&(mEnd-TODAY)/86400000<=14&&mEnd>=TODAY;
+    const isDone=m.status==='Done';
+    const isDel2=!isDone&&mEnd&&mEnd<TODAY;
+
+    // Milestone row
+    html+=`<div style="display:flex;min-width:${totalW}px;border-bottom:1px solid var(--bd);background:#f0f4ff;position:relative;height:36px;align-items:center">`;
+    html+=`<div style="width:${LABEL_W}px;flex-shrink:0;padding:0 10px;font-size:11px;font-weight:700;color:#1e40af;border-right:1px solid var(--ws-bd);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:6px;height:100%">
+      <span style="font-size:10px;background:#1e40af;color:#fff;padding:1px 5px;border-radius:3px;flex-shrink:0">${m.no}</span>
+      <span style="overflow:hidden;text-overflow:ellipsis">${m.name}</span>
+    </div>`;
+    // timeline area
+    html+=`<div style="flex:1;position:relative;height:100%;overflow:hidden">`;
+    // today line
+    const todayX=dateToX(TODAY.toISOString().slice(0,10));
+    if(todayX!==null){
+      html+=`<div style="position:absolute;left:${todayX-LABEL_W}px;top:0;bottom:0;width:2px;background:rgba(49,130,246,.3);z-index:1"></div>`;}
+    // bar
+    if(startX!==null&&endX!==null){
+      const bx=startX-LABEL_W;const bw=Math.max(endX-startX,WK_W/2);
+      const bc=isDone?'var(--done)':isDel2?'var(--del)':isNow?'var(--warn)':'var(--ac)';
+      html+=`<div style="position:absolute;left:${bx}px;width:${bw}px;height:14px;top:50%;transform:translateY(-50%);background:${bc};border-radius:4px;opacity:.85"></div>`;
+      // diamond endpoint
+      html+=`<div style="position:absolute;left:${bx+bw-7}px;top:50%;transform:translateY(-50%) rotate(45deg);width:10px;height:10px;background:${bc};border:2px solid #fff"></div>`;
+    }
+    html+=`</div></div>`;
+
+    // Action rows under this milestone
+    const relTasks=TASKS.filter(t=>t.ms===m.no);
+    const actions={};
+    relTasks.forEach(t=>{if(!actions[t.action])actions[t.action]=[];actions[t.action].push(t);});
+    Object.entries(actions).forEach(([action,tasks])=>{
+      const dates=tasks.map(t=>pd(t.date)).filter(Boolean);
+      if(!dates.length)return;
+      const aEnd=new Date(Math.max(...dates.map(d=>d.getTime())));
+      const aStart=new Date(Math.min(...dates.map(d=>d.getTime())));
+      const aEndX=dateToX(aEnd.toISOString().slice(0,10));
+      const aStartX=dateToX(aStart.toISOString().slice(0,10));
+
+      html+=`<div style="display:flex;min-width:${totalW}px;border-bottom:1px solid #f0f2f5;background:#fff;height:28px;align-items:center">`;
+      html+=`<div style="width:${LABEL_W}px;flex-shrink:0;padding:0 10px 0 24px;font-size:10px;color:var(--ac-tx);border-right:1px solid var(--ac-bd);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;height:100%;display:flex;align-items:center">
+        ${action}
+      </div>`;
+      html+=`<div style="flex:1;position:relative;height:100%;overflow:hidden">`;
+      if(todayX!==null){html+=`<div style="position:absolute;left:${todayX-LABEL_W}px;top:0;bottom:0;width:1px;background:rgba(49,130,246,.2);z-index:1"></div>`;}
+      if(aStartX!==null&&aEndX!==null){
+        const bx=aStartX-LABEL_W;const bw=Math.max(aEndX-aStartX,WK_W/2);
+        html+=`<div style="position:absolute;left:${bx}px;width:${bw}px;height:8px;top:50%;transform:translateY(-50%);background:var(--ac-bd);border-radius:3px;border:1px solid var(--ac);opacity:.8"></div>`;
+      }
+      html+=`</div></div>`;
+    });
+  });
+
+  wrap.innerHTML=html;
+}
+
+// ── XLSX Download ──
+function downloadXlsx(){
+  // Build CSV-based data (pure JS, no library)
+  const headers=['ID','WS No','WS Name','Action','Task','Target Date','Week','담당자','Phase','Status','Milestone'];
+  const rows=TASKS.map(t=>{
+    const ws=WS.find(w=>w.no===t.wsNo)||{};
+    return [t.id,t.wsNo,ws.name||'',t.action,t.task,t.date,t.wk||w2n(t.date),t.pic||'',t.phase,t.st||'예정',t.ms||''];
+  });
+
+  // BOM + CSV
+  let csv='\uFEFF'+headers.join(',')+'\n';
+  rows.forEach(r=>{
+    csv+=r.map(v=>{
+      const s=String(v===null||v===undefined?'':v);
+      return s.includes(',')||s.includes('"')||s.includes('\n')?'"'+s.replace(/"/g,'""')+'"':s;
+    }).join(',')+'\n';
+  });
+
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download='4pl_tasks_'+new Date().toISOString().slice(0,10)+'.csv';
+  document.body.appendChild(a);a.click();
+  document.body.removeChild(a);URL.revokeObjectURL(url);
+}
+
+// ── Event delegation ──
+document.addEventListener('click',function(e){
+  const t=e.target;
+
+  // tab buttons
+  const tbtn=t.closest('.tbtn');
+  if(tbtn&&tbtn.dataset.tab){
+    document.querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tc').forEach(c=>c.classList.remove('active'));
+    tbtn.classList.add('active');
+    document.getElementById('tab-'+tbtn.dataset.tab).classList.add('active');
+    if(tbtn.dataset.tab==='log')renderLogs();
+    if(tbtn.dataset.tab==='charter')renderCharter();
+    if(tbtn.dataset.tab==='gantt')renderGantt();
+    return;
+  }
+  // task filter
+  const fbtn=t.closest('.fbtn[data-tf]');
+  if(fbtn){document.querySelectorAll('.fbtn[data-tf]').forEach(b=>b.classList.remove('active'));fbtn.classList.add('active');taskFilter=fbtn.dataset.tf;renderTasks();return;}
+  // alert filter
+  const afbtn=t.closest('.fbtn[data-af]');
+  if(afbtn){document.querySelectorAll('.fbtn[data-af]').forEach(b=>b.classList.remove('active'));afbtn.classList.add('active');alertFilter=afbtn.dataset.af;renderAlerts();return;}
+  // ws toggle
+  const wt=t.closest('[data-wstog]');
+  if(wt){const no=parseInt(wt.dataset.wstog);if(expWs.has(no))expWs.delete(no);else expWs.add(no);renderTasks();return;}
+  // action toggle
+  const at2=t.closest('[data-actog]');
+  if(at2){const k=at2.dataset.actog;if(colAct.has(k))colAct.delete(k);else colAct.add(k);renderTasks();return;}
+  // inline edits
+  const se=t.closest('[data-sted]');if(se){editSt(se,se.dataset.sted);return;}
+  const de=t.closest('[data-dated]');if(de){editDt(de,de.dataset.dated);return;}
+  const pe=t.closest('[data-piced]');if(pe){editPic(pe,pe.dataset.piced);return;}
+  // delete task
+  const dt=t.closest('[data-deltask]');
+  if(dt){if(confirm('이 Task를 삭제할까요?')){TASKS=TASKS.filter(x=>x.id!==dt.dataset.deltask);renderTasks();updateSummary();renderAlerts();}return;}
+  // ms navigate
+  const mn=t.closest('[data-msnav]');if(mn){goMs(mn.dataset.msnav);return;}
+  // ms modal open
+  const mco=t.closest('[data-msopen]');if(mco&&!t.closest('[data-delms]')&&!t.closest('[data-msstartdate]')){openMsModal(mco.dataset.msopen);return;}
+  // delete ms
+  const dm=t.closest('[data-delms]');
+  if(dm){e.stopPropagation();if(confirm(dm.dataset.delms+' 마일스톤을 삭제할까요?')){MS=MS.filter(m=>m.no!==dm.dataset.delms);renderMs();}return;}
+  // delete ws
+  const dw=t.closest('[data-delws]');
+  if(dw){e.stopPropagation();if(confirm('WS'+dw.dataset.delws+' 워크스트림을 삭제할까요?')){WS=WS.filter(w=>w.no!==parseInt(dw.dataset.delws));renderWs();}return;}
+  // ws tasks modal open
+  const wso=t.closest('[data-wsopen]');
+  if(wso&&!t.closest('[data-delws]')&&!t.closest('[data-wsteam]')){e.stopPropagation();openWsTasksModal(wso.dataset.wsopen);return;}
+  // expand/collapse all
+  if(t.id==='btnExpAll'){WS.forEach(w=>expWs.add(w.no));renderTasks();return;}
+  if(t.id==='btnColAll'){expWs.clear();renderTasks();return;}
+  // XLSX download
+  if(t.id==='btnDownloadXlsx'){downloadXlsx();return;}
+  // add task modal
+  if(t.id==='btnAddTask'){openAddTaskModal();return;}
+  if(t.id==='moAddTaskX'||t.id==='moAddTaskCan'){document.getElementById('moAddTask').classList.remove('open');return;}
+  if(t.id==='moAddTaskOk'){confirmAddTask();return;}
+  // add ws modal
+  if(t.id==='btnAddWs'){openAddWsModal();return;}
+  if(t.id==='moAddWsX'||t.id==='moAddWsCan'){document.getElementById('moAddWs').classList.remove('open');return;}
+  if(t.id==='moAddWsOk'){confirmAddWs();return;}
+  // ms modal close
+  if(t.id==='moMsX'){document.getElementById('moMs').classList.remove('open');return;}
+  if(t===document.getElementById('moMs')){document.getElementById('moMs').classList.remove('open');return;}
+  // ws tasks modal close
+  if(t.id==='moWsTasksX'){document.getElementById('moWsTasks').classList.remove('open');return;}
+  if(t===document.getElementById('moWsTasks')){document.getElementById('moWsTasks').classList.remove('open');return;}
+  // clear logs
+  if(t.id==='btnClrLog'){if(confirm('편집 로그를 모두 삭제할까요?')){LOGS=[];renderLogs();}return;}
+  // weekly toggle
+  const wtog=t.closest('[data-wtog]');
+  if(wtog&&wtog.dataset.wtog!==undefined){
+    const idx=parseInt(wtog.dataset.wtog);
+    WEEKLY[idx].collapsed=!WEEKLY[idx].collapsed;
+    renderWeeklyList();return;
+  }
+  // add weekly
+  if(t.id==='btnAddWeekly'){openAddWeeklyModal();return;}
+  if(t.id==='moAddWeeklyX'||t.id==='moAddWeeklyCan'){document.getElementById('moAddWeekly').classList.remove('open');return;}
+  if(t.id==='moAddWeeklyOk'){confirmAddWeekly();return;}
+  // edit weekly
+  const wedit=t.closest('[data-wedit]');
+  if(wedit){openEditWeeklyModal(parseInt(wedit.dataset.wedit));return;}
+  // delete weekly
+  const wdel=t.closest('[data-wdel]');
+  if(wdel){if(confirm('이 주간 업데이트를 삭제할까요?')){WEEKLY.splice(parseInt(wdel.dataset.wdel),1);renderWeeklyList();updateCharterMeta();}return;}
+  // charter upload zone
+  if(t.id==='charterUploadZone'||t.closest('#charterUploadZone')){document.getElementById('charterFile').click();return;}
+  // gantt scroll to today
+  if(t.id==='btnGanttScrollNow'){
+    const wrap=document.getElementById('ganttWrap');
+    // find today column approx
+    wrap.scrollLeft=Math.max(0,wrap.scrollLeft);
+    renderGantt();
+    return;
+  }
+});
+
+// WS team blur
+document.addEventListener('blur',function(e){
+  const el=e.target;const wno=el.dataset.wsteam;if(!wno)return;
+  const ws=WS.find(w=>w.no===parseInt(wno));
+  if(ws){const ov=ws.team;ws.team=el.textContent.trim();if(ov!==ws.team){addLog('WS_'+wno,'담당팀',ov,ws.team);renderWs();}}
+},true);
+
+// search inputs
+document.getElementById('tsrch').addEventListener('input',renderTasks);
+document.getElementById('lsrch').addEventListener('input',renderLogs);
+
+// pic filter
+document.getElementById('picFilter').addEventListener('change',function(){picFilter=this.value;renderTasks();});
+// week filter
+document.getElementById('weekFilter').addEventListener('change',function(){weekFilter=this.value;renderTasks();});
+
+// MS start date change via event delegation
+document.addEventListener('change',function(e){
+  const el=e.target;
+  if(el.dataset.msstartdate){
+    const m=MS.find(x=>x.no===el.dataset.msstartdate);
+    if(m){m.startDate=el.value;addLog(m.no,'Start Date',m.startDate||'—',el.value||'—');}
+    return;
+  }
+});
+
+// Charter file upload
+document.getElementById('charterFile').addEventListener('change',function(){
+  if(!this.files.length)return;
+  const file=this.files[0];
+  document.getElementById('charterFileName').textContent=file.name;
+  document.getElementById('charterFileDate').textContent='업로드: '+new Date().toLocaleDateString('ko-KR');
+  document.getElementById('charterUploadZone').classList.add('has-file');
+  document.getElementById('charterUploadIcon').textContent='✅';
+  document.getElementById('charterUploadTitle').textContent='Charter 문서 업로드 완료';
+  document.getElementById('charterUploadSub').textContent=file.name+' — 클릭하여 교체';
+});
+
+// ── CSV Upload & Parse ──
+let pendingCsvTasks = null;
+
+function parseCSV(text){
+  const lines=text.split(/\r?\n/).filter(l=>l.trim());
+  if(!lines.length)return null;
+  // strip BOM
+  if(lines[0].charCodeAt(0)===0xFEFF)lines[0]=lines[0].slice(1);
+  function splitRow(row){
+    const r=[];let cur='',inQ=false;
+    for(let i=0;i<row.length;i++){
+      const c=row[i];
+      if(c==='"'){if(inQ&&row[i+1]==='"'){cur+='"';i++;}else inQ=!inQ;}
+      else if(c===','&&!inQ){r.push(cur);cur='';}
+      else cur+=c;
+    }
+    r.push(cur);return r;
+  }
+  const headers=splitRow(lines[0]).map(h=>h.trim().toLowerCase());
+  // column index map
+  const col={
+    id:headers.indexOf('id'),
+    wsno:headers.findIndex(h=>h==='ws no'||h==='wsno'||h==='ws_no'),
+    wsname:headers.findIndex(h=>h==='ws name'||h==='wsname'),
+    action:headers.indexOf('action'),
+    task:headers.indexOf('task'),
+    date:headers.findIndex(h=>h==='target date'||h==='date'),
+    wk:headers.indexOf('week'),
+    pic:headers.findIndex(h=>h==='담당자'||h==='pic'),
+    phase:headers.indexOf('phase'),
+    st:headers.findIndex(h=>h==='status'||h==='st'),
+    ms:headers.findIndex(h=>h==='milestone'||h==='ms'),
+  };
+  const tasks=[];
+  for(let i=1;i<lines.length;i++){
+    const r=splitRow(lines[i]);
+    if(r.length<3)continue;
+    const g=k=>col[k]>=0&&col[k]<r.length?r[col[k]].trim():'';
+    const date=g('date');
+    if(!g('task'))continue;
+    tasks.push({
+      id:g('id')||'u'+Date.now()+i,
+      wsNo:parseInt(g('wsno'))||1,
+      ano:'A',
+      action:g('action')||'업로드된 Action',
+      task:g('task'),
+      date:date,
+      wk:g('wk')||w2n(date),
+      pic:g('pic'),
+      phase:g('phase')||'Phase 1',
+      st:g('st'),
+      ms:g('ms'),
+    });
+  }
+  return tasks;
+}
+
+function showUploadPreview(tasks){
+  pendingCsvTasks=tasks;
+  const prev=document.getElementById('uploadPreview');
+  document.getElementById('previewMeta').textContent=`총 ${tasks.length}개 Task 감지됨 — 아래에서 확인 후 반영하세요`;
+  // build preview table (first 10 rows)
+  const tbl=document.getElementById('previewTable');
+  const cols=['task','action','date','pic','st','phase','ms'];
+  const labels=['Task','Action','Target Date','담당자','Status','Phase','MS'];
+  let html=`<thead style="background:var(--sf2)"><tr>${labels.map(l=>`<th style="padding:6px 10px;text-align:left;font-size:10px;font-weight:700;color:var(--tx2);border-bottom:1px solid var(--bd);white-space:nowrap">${l}</th>`).join('')}</tr></thead><tbody>`;
+  tasks.slice(0,15).forEach(t=>{
+    html+=`<tr>${cols.map(c=>`<td style="padding:5px 10px;border-bottom:1px solid var(--bd);font-size:11px;white-space:nowrap;max-width:200px;overflow:hidden;text-overflow:ellipsis">${t[c]||'—'}</td>`).join('')}</tr>`;
+  });
+  if(tasks.length>15)html+=`<tr><td colspan="${cols.length}" style="padding:8px 10px;font-size:11px;color:var(--tx2);text-align:center">... 외 ${tasks.length-15}개</td></tr>`;
+  html+='</tbody>';
+  tbl.innerHTML=html;
+  prev.style.display='block';
+}
+
+function applyUploadedTasks(){
+  if(!pendingCsvTasks||!pendingCsvTasks.length)return;
+  const prev=TASKS.length;
+  TASKS=pendingCsvTasks;
+  addLog('UPLOAD','전체 데이터',prev+'개',TASKS.length+'개 (CSV 업로드)');
+  pendingCsvTasks=null;
+  document.getElementById('uploadPreview').style.display='none';
+  document.getElementById('uploadIcon').textContent='✅';
+  document.getElementById('uploadTitle').textContent='업로드 완료';
+  document.getElementById('uploadSub').textContent=TASKS.length+'개 Task가 반영되었습니다 — 클릭하여 재업로드';
+  document.getElementById('uploadStatus').textContent='';
+  document.getElementById('uploadZone').style.borderColor='var(--done)';
+  // refresh all tabs
+  updateSummary();
+  renderTasks();
+  renderAlerts();
+  renderMs();
+  renderWs();
+  // if gantt is visible, re-render
+  if(document.getElementById('tab-gantt').classList.contains('active'))renderGantt();
+}
+
+document.getElementById('fi').addEventListener('change',function(){
+  if(!this.files.length)return;
+  const file=this.files[0];
+  document.getElementById('uploadStatus').textContent='읽는 중...';
+  const reader=new FileReader();
+  reader.onload=function(e){
+    try{
+      const text=e.target.result;
+      const tasks=parseCSV(text);
+      if(!tasks||!tasks.length){
+        document.getElementById('uploadStatus').textContent='⚠ Task를 찾을 수 없습니다. 컬럼명을 확인해 주세요.';
+        return;
+      }
+      document.getElementById('uploadStatus').textContent='';
+      showUploadPreview(tasks);
+    }catch(err){
+      document.getElementById('uploadStatus').textContent='⚠ 파싱 오류: '+err.message;
+    }
+  };
+  reader.readAsText(file,'UTF-8');
+  this.value='';
+});
+
+document.getElementById('btnUploadApply').addEventListener('click',applyUploadedTasks);
+document.getElementById('btnUploadCancel').addEventListener('click',function(){
+  pendingCsvTasks=null;
+  document.getElementById('uploadPreview').style.display='none';
+  document.getElementById('uploadStatus').textContent='';
+});
+
+// ── Inline edits ──
+function editSt(el,id){
+  const t=TASKS.find(x=>x.id===id);if(!t)return;
+  const s=document.createElement('select');s.className='si';
+  [['','예정'],['On Track','On Track'],['Done','Done'],['Delayed','Delayed']].forEach(([v,l])=>{
+    const o=document.createElement('option');o.value=v;o.textContent=l;if(t.st===v)o.selected=true;s.appendChild(o);
+  });
+  s.onchange=()=>{const ov=t.st;t.st=s.value;addLog(id,'Status',ov||'예정',s.value||'예정');renderTasks();updateSummary();renderAlerts();};
+  s.onblur=()=>renderTasks();
+  el.replaceWith(s);s.focus();
+}
+function editDt(el,id){
+  const t=TASKS.find(x=>x.id===id);if(!t)return;
+  const i=document.createElement('input');i.type='date';i.className='di';i.value=t.date;
+  i.onchange=()=>{const ov=t.date;t.date=i.value;t.wk=w2n(i.value);addLog(id,'Target Date',ov,i.value);renderTasks();renderAlerts();};
+  i.onblur=()=>renderTasks();
+  el.replaceWith(i);i.focus();
+}
+function editPic(el,id){
+  const t=TASKS.find(x=>x.id===id);if(!t)return;
+  const s=document.createElement('select');s.className='si';
+  const ob=document.createElement('option');ob.value='';ob.textContent='—';s.appendChild(ob);
+  PERSONS.forEach(p=>{const o=document.createElement('option');o.value=p;o.textContent=p;if(t.pic===p)o.selected=true;s.appendChild(o);});
+  s.onchange=()=>{const ov=t.pic;t.pic=s.value;addLog(id,'담당자',ov||'—',s.value||'—');renderTasks();};
+  s.onblur=()=>renderTasks();
+  el.replaceWith(s);s.focus();
+}
+
+function goMs(no){
+  document.querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tc').forEach(c=>c.classList.remove('active'));
+  document.querySelector('.tbtn[data-tab="ms"]').classList.add('active');
+  document.getElementById('tab-ms').classList.add('active');
+  setTimeout(()=>{
+    const el=document.getElementById('ms-card-'+no);
+    if(el){el.scrollIntoView({behavior:'smooth',block:'center'});el.style.outline='2px solid var(--ac)';el.style.borderRadius='var(--r2)';setTimeout(()=>el.style.outline='',1800);}
+  },80);
+}
+
+// ── Modals: Add Task ──
+function openAddTaskModal(){
+  const we=document.getElementById('atWs');we.innerHTML='';
+  WS.forEach(w=>{const o=document.createElement('option');o.value=w.no;o.textContent='WS'+w.no+' '+w.name;we.appendChild(o);});
+  const pe=document.getElementById('atPic');pe.innerHTML='<option value="">선택</option>';
+  PERSONS.forEach(p=>{const o=document.createElement('option');o.value=p;o.textContent=p;pe.appendChild(o);});
+  const me=document.getElementById('atMs');me.innerHTML='<option value="">없음</option>';
+  MS.forEach(m=>{const o=document.createElement('option');o.value=m.no;o.textContent=m.no+' '+m.name.slice(0,22)+'...';me.appendChild(o);});
+  ['atAct','atTask'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('atDate').value='';
+  document.getElementById('moAddTask').classList.add('open');
+}
+function confirmAddTask(){
+  const nm=document.getElementById('atTask').value.trim();
+  const dt=document.getElementById('atDate').value;
+  if(!nm||!dt){alert('Task명과 Target Date는 필수입니다.');return;}
+  const wno=parseInt(document.getElementById('atWs').value);
+  TASKS.push({id:'n'+Date.now(),wsNo:wno,ano:'Z',action:document.getElementById('atAct').value.trim()||'신규 Action',task:nm,date:dt,wk:w2n(dt),pic:document.getElementById('atPic').value,phase:document.getElementById('atPhase').value,st:document.getElementById('atSt').value,ms:document.getElementById('atMs').value});
+  expWs.add(wno);
+  document.getElementById('moAddTask').classList.remove('open');
+  renderTasks();updateSummary();renderAlerts();
+}
+
+// ── Modals: Add WS ──
+function openAddWsModal(){
+  document.getElementById('wnNm').value='';document.getElementById('wnObj').value='';
+  document.getElementById('moAddWs').classList.add('open');
+}
+function confirmAddWs(){
+  const nm=document.getElementById('wnNm').value.trim();
+  if(!nm){alert('워크스트림명은 필수입니다.');return;}
+  const no=Math.max(...WS.map(w=>w.no),0)+1;
+  WS.push({no,name:nm,obj:document.getElementById('wnObj').value.trim(),team:document.getElementById('wnTeam').value});
+  document.getElementById('moAddWs').classList.remove('open');
+  renderWs();
+}
+
+// ── Modals: Weekly ──
+let editingWeeklyIdx=null;
+function openAddWeeklyModal(idx=null){
+  editingWeeklyIdx=idx;
+  const isEdit=idx!==null&&WEEKLY[idx];
+  const w=isEdit?WEEKLY[idx]:{};
+  // set default wk
+  const now=new Date();
+  const j=new Date(now.getFullYear(),0,1);
+  const defWk='W'+Math.ceil(((now-j)/86400000+j.getDay()+1)/7);
+  document.getElementById('wkWk').value=w.wk||defWk;
+  document.getElementById('wkDate').value=w.date||'2026-06-10';
+  document.getElementById('wkDone').value=w.done||'';
+  document.getElementById('wkIssue').value=w.issue||'';
+  document.getElementById('wkNext').value=w.next||'';
+  document.getElementById('wkMemo').value=w.memo||'';
+  document.querySelector('#moAddWeekly .mot').textContent=isEdit?'주간 업데이트 수정':'주간 업데이트 추가';
+  document.getElementById('moAddWeekly').classList.add('open');
+}
+function openEditWeeklyModal(idx){openAddWeeklyModal(idx);}
+function confirmAddWeekly(){
+  const entry={
+    wk:document.getElementById('wkWk').value.trim(),
+    date:document.getElementById('wkDate').value,
+    done:document.getElementById('wkDone').value.trim(),
+    issue:document.getElementById('wkIssue').value.trim(),
+    next:document.getElementById('wkNext').value.trim(),
+    memo:document.getElementById('wkMemo').value.trim(),
+    collapsed:false
+  };
+  if(editingWeeklyIdx!==null&&WEEKLY[editingWeeklyIdx]){
+    WEEKLY[editingWeeklyIdx]={...WEEKLY[editingWeeklyIdx],...entry};
+  } else {
+    WEEKLY.push(entry);
+  }
+  editingWeeklyIdx=null;
+  document.getElementById('moAddWeekly').classList.remove('open');
+  renderWeeklyList();updateCharterMeta();
+}
+
+// ── Init ──
+(function(){
+  const d=TODAY;
+  document.getElementById('todayLbl').textContent='기준일: '+d.getFullYear()+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'+String(d.getDate()).padStart(2,'0');
+  // populate pic filter
+  const pf=document.getElementById('picFilter');
+  PERSONS.forEach(p=>{const o=document.createElement('option');o.value=p;o.textContent=p;pf.appendChild(o);});
+  updateSummary();renderTasks();renderAlerts();renderMs();renderWs();
+})();
+</script>
+</body>
+</html>
