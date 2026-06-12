@@ -270,6 +270,14 @@ select.si{background:#fff;border:1.5px solid var(--ac);color:var(--tx);padding:3
 .tag-del{background:#fff0f1;color:var(--del);}
 .tag-warn{background:#fff7e6;color:var(--warn);}
 
+/* ── Cancelled Task ── */
+.tkr.cancelled td{opacity:.45;}
+.task-cancelled{text-decoration:line-through;color:var(--tx3);}
+.cancel-memo{display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--tx3);background:var(--sf2);border:1px solid var(--bd);border-radius:4px;padding:1px 7px;margin-left:6px;font-style:italic;}
+.cancel-badge{display:inline-flex;align-items:center;padding:1px 7px;border-radius:20px;font-size:11px;font-weight:600;background:#f5f5f5;color:var(--tx3);white-space:nowrap;text-decoration:none;}
+.restore-btn{background:none;border:none;color:var(--tx3);cursor:pointer;font-size:11px;padding:2px 6px;border-radius:var(--r2);transition:all .15s;white-space:nowrap;}
+.restore-btn:hover{color:var(--ac);background:#e8f1ff;}
+
 /* scrollbar */
 ::-webkit-scrollbar{width:5px;height:5px;}
 ::-webkit-scrollbar-track{background:var(--sf2);}
@@ -915,11 +923,12 @@ function addLog(id,field,ov,nv){
 
 // ── Summary ──
 function updateSummary(){
-  const done=TASKS.filter(t=>t.st==='Done').length;
-  const ot=TASKS.filter(t=>t.st==='On Track').length;
-  const del=TASKS.filter(t=>isDel(t)).length;
-  const pl=TASKS.filter(t=>!t.st&&!isDel(t)).length;
-  const tot=TASKS.length,pct=tot?Math.round(done/tot*100):0;
+  const active=TASKS.filter(t=>!t.cancelled);
+  const done=active.filter(t=>t.st==='Done').length;
+  const ot=active.filter(t=>t.st==='On Track').length;
+  const del=active.filter(t=>isDel(t)).length;
+  const pl=active.filter(t=>!t.st&&!isDel(t)).length;
+  const tot=active.length,pct=tot?Math.round(done/tot*100):0;
   document.getElementById('sTot').textContent=tot;
   document.getElementById('sDone').textContent='완료 '+done;
   document.getElementById('sOt').textContent='진행중 '+ot;
@@ -1016,23 +1025,32 @@ function renderTasks(){
       a.tasks.forEach(t=>{
         if(!mT(t,q)||!mF(t))return;
         vis++;
-        const del=isDel(t);const warn=isWarn(t)&&!del;
-        const tr=document.createElement('tr');tr.className='tkr';
-        if(del)tr.style.borderLeft='3px solid var(--del)';
-        else if(warn)tr.style.borderLeft='3px solid var(--warn)';
+        const isCancelled=!!t.cancelled;
+        const del=!isCancelled&&isDel(t);const warn=!isCancelled&&isWarn(t)&&!del;
+        const tr=document.createElement('tr');
+        tr.className='tkr'+(isCancelled?' cancelled':'');
+        if(!isCancelled){
+          if(del)tr.style.borderLeft='3px solid var(--del)';
+          else if(warn)tr.style.borderLeft='3px solid var(--warn)';
+        } else {
+          tr.style.borderLeft='3px solid var(--bd2)';
+        }
         const msh=t.ms?`<span class="msl" data-msnav="${t.ms}">${t.ms}</span>`:'—';
+        const taskNameHtml=isCancelled
+          ?`<span class="task-cancelled">${t.task}</span>${t.cancelMemo?`<span class="cancel-memo">💬 ${t.cancelMemo}</span>`:''}`
+          :`${del?'<span style="font-size:10px;color:var(--del);margin-right:3px">⚠</span>':warn?'<span style="font-size:10px;color:var(--warn);margin-right:3px">⏰</span>':''}${t.task}`;
+        const actionCell=isCancelled
+          ?`<button class="restore-btn" data-restoretask="${t.id}" title="취소 복원">↩ 복원</button>`
+          :`<button class="dbtn" data-canceltask="${t.id}" title="취소 처리">✕</button>`;
         tr.innerHTML=`<td></td>
-          <td style="padding-left:36px;line-height:1.4">
-            ${del?'<span style="font-size:10px;color:var(--del);margin-right:3px">⚠</span>':warn?'<span style="font-size:10px;color:var(--warn);margin-right:3px">⏰</span>':''}
-            ${t.task}
-          </td>
-          <td><span class="editable" data-sted="${t.id}">${sbadge(t.st,t)}</span></td>
-          <td><span class="editable" data-dated="${t.id}" style="font-size:12px;${del?'color:var(--del)':''}">${fd(t.date)}</span></td>
+          <td style="padding-left:36px;line-height:1.4">${taskNameHtml}</td>
+          <td>${isCancelled?`<span class="cancel-badge">취소됨</span>`:`<span class="editable" data-sted="${t.id}">${sbadge(t.st,t)}</span>`}</td>
+          <td style="font-size:12px;${del?'color:var(--del)':''}">${isCancelled?`<span style="color:var(--tx3)">${fd(t.date)}</span>`:`<span class="editable" data-dated="${t.id}" style="font-size:12px;${del?'color:var(--del)':''}">${fd(t.date)}</span>`}</td>
           <td style="font-size:11px;color:var(--tx2)">${t.wk||w2n(t.date)}</td>
-          <td><span class="editable" data-piced="${t.id}" style="font-size:12px">${t.pic||'—'}</span></td>
-          <td>${pbadge(t.phase)}</td>
-          <td>${msh}</td>
-          <td><button class="dbtn" data-deltask="${t.id}" title="삭제">✕</button></td>`;
+          <td style="font-size:12px">${isCancelled?`<span style="color:var(--tx3)">${t.pic||'—'}</span>`:`<span class="editable" data-piced="${t.id}" style="font-size:12px">${t.pic||'—'}</span>`}</td>
+          <td>${isCancelled?'':pbadge(t.phase)}</td>
+          <td>${isCancelled?'':msh}</td>
+          <td>${actionCell}</td>`;
         tb.appendChild(tr);
       });
     });
@@ -1053,6 +1071,7 @@ function mF(t){
     if(weekFilter==='next'&&dw!==tw+1)return false;
   }
   if(taskFilter==='all')return true;
+  if(t.cancelled)return false; // 취소된 태스크는 '전체' 외 필터에서 제외
   if(taskFilter==='planned')return !t.st&&!isDel(t);
   if(taskFilter==='delayed')return isDel(t);
   return t.st===taskFilter;
@@ -1062,8 +1081,8 @@ function mF(t){
 function renderAlerts(){
   function teamOf(t){const ws=WS.find(w=>w.no===t.wsNo);return ws?ws.team:'';}
   function flt(arr){return alertFilter==='all'?arr:arr.filter(t=>teamOf(t).includes(alertFilter));}
-  const del=flt(TASKS.filter(t=>isDel(t)));
-  const warn=flt(TASKS.filter(t=>isWarn(t)&&!isDel(t)));
+  const del=flt(TASKS.filter(t=>!t.cancelled&&isDel(t)));
+  const warn=flt(TASKS.filter(t=>!t.cancelled&&isWarn(t)&&!isDel(t)));
   document.getElementById('cntDel').textContent=del.length+'건';
   document.getElementById('cntWarn').textContent=warn.length+'건';
   function rnd(arr,elId,cls){
@@ -1571,9 +1590,32 @@ document.addEventListener('click',function(e){
   const se=t.closest('[data-sted]');if(se){editSt(se,se.dataset.sted);return;}
   const de=t.closest('[data-dated]');if(de){editDt(de,de.dataset.dated);return;}
   const pe=t.closest('[data-piced]');if(pe){editPic(pe,pe.dataset.piced);return;}
-  // delete task
-  const dt=t.closest('[data-deltask]');
-  if(dt){if(confirm('이 Task를 삭제할까요?')){TASKS=TASKS.filter(x=>x.id!==dt.dataset.deltask);renderTasks();updateSummary();renderAlerts();}return;}
+  // cancel task (취소선 처리)
+  const ct=t.closest('[data-canceltask]');
+  if(ct){
+    const memo=prompt('취소 사유를 입력해 주세요 (선택):', '');
+    if(memo===null)return; // 취소 버튼
+    const task=TASKS.find(x=>x.id===ct.dataset.canceltask);
+    if(task){
+      task.cancelled=true;
+      task.cancelMemo=memo.trim();
+      addLog(ct.dataset.canceltask,'취소 처리','활성','취소'+(memo.trim()?(' ('+memo.trim()+')'):''));
+      renderTasks();updateSummary();renderAlerts();
+    }
+    return;
+  }
+  // restore task (취소 복원)
+  const rt=t.closest('[data-restoretask]');
+  if(rt){
+    const task=TASKS.find(x=>x.id===rt.dataset.restoretask);
+    if(task){
+      task.cancelled=false;
+      task.cancelMemo='';
+      addLog(rt.dataset.restoretask,'취소 복원','취소','활성');
+      renderTasks();updateSummary();renderAlerts();
+    }
+    return;
+  }
   // ms navigate
   const mn=t.closest('[data-msnav]');if(mn){goMs(mn.dataset.msnav);return;}
   // ms modal open
