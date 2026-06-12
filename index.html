@@ -24,30 +24,30 @@
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 html,body{height:100%;overflow:hidden;}
-body{background:var(--bg);color:var(--tx);font-family:var(--fnt);font-size:13px;display:flex;flex-direction:column;}
+body{background:var(--bg);color:var(--tx);font-family:var(--fnt);font-size:15px;display:flex;flex-direction:column;}
 
 /* ── Header ── */
 .header{background:var(--sf);border-bottom:1px solid var(--bd);padding:0 28px;height:var(--hh);display:flex;align-items:center;gap:16px;flex-shrink:0;box-shadow:0 1px 0 var(--bd);}
-.logo{font-size:17px;font-weight:800;letter-spacing:-.5px;color:var(--tx);}
+.logo{font-size:19px;font-weight:800;letter-spacing:-.5px;color:var(--tx);}
 .logo span{color:var(--ac);}
-.logo-pill{background:var(--ac);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:8px;letter-spacing:.3px;}
-.header-meta{margin-left:auto;font-size:12px;color:var(--tx2);background:var(--sf2);padding:4px 12px;border-radius:20px;border:1px solid var(--bd);}
+.logo-pill{background:var(--ac);color:#fff;font-size:12px;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:8px;letter-spacing:.3px;}
+.header-meta{margin-left:auto;font-size:14px;color:var(--tx2);background:var(--sf2);padding:4px 12px;border-radius:20px;border:1px solid var(--bd);}
 
 /* ── Summary Bar ── */
 .sbar{background:var(--sf);border-bottom:1px solid var(--bd);padding:0 28px;height:var(--sh);display:flex;gap:24px;align-items:center;flex-shrink:0;}
 .sblock{display:flex;align-items:center;gap:10px;}
-.snum{font-size:24px;font-weight:800;line-height:1;color:var(--tx);}
-.slbl{font-size:11px;color:var(--tx2);font-weight:500;}
+.snum{font-size:26px;font-weight:800;line-height:1;color:var(--tx);}
+.slbl{font-size:13px;color:var(--tx2);font-weight:500;}
 .sdiv{width:1px;height:28px;background:var(--bd);}
 .pwrap{margin-left:auto;display:flex;align-items:center;gap:10px;min-width:220px;}
-.plbl{font-size:12px;color:var(--tx2);white-space:nowrap;}
+.plbl{font-size:14px;color:var(--tx2);white-space:nowrap;}
 .pbar{flex:1;height:6px;background:var(--sf2);border-radius:3px;overflow:hidden;border:1px solid var(--bd);}
 .pfill{height:100%;background:linear-gradient(90deg,var(--ac),var(--ac2));border-radius:3px;transition:width .5s cubic-bezier(.4,0,.2,1);}
-.ppct{font-size:13px;font-weight:700;color:var(--ac);min-width:36px;text-align:right;}
+.ppct{font-size:15px;font-weight:700;color:var(--ac);min-width:36px;text-align:right;}
 
 /* ── Tabs ── */
 .tabs{background:var(--sf);border-bottom:1px solid var(--bd);padding:0 28px;display:flex;flex-shrink:0;height:var(--th);align-items:stretch;}
-.tbtn{padding:0 18px;font-size:13px;font-weight:600;color:var(--tx2);border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;transition:color .15s,border-color .15s;white-space:nowrap;letter-spacing:-.2px;}
+.tbtn{padding:0 18px;font-size:15px;font-weight:600;color:var(--tx2);border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;transition:color .15s,border-color .15s;white-space:nowrap;letter-spacing:-.2px;}
 .tbtn:hover{color:var(--tx);}
 .tbtn.active{color:var(--ac);border-bottom-color:var(--ac);}
 .tbtn.charter-tab{color:var(--ac2);}
@@ -58,7 +58,7 @@ body{background:var(--bg);color:var(--tx);font-family:var(--fnt);font-size:13px;
 .tc.active{display:block;}
 
 /* ── Badges ── */
-.badge{display:inline-flex;align-items:center;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap;}
+.badge{display:inline-flex;align-items:center;padding:2px 9px;border-radius:20px;font-size:13px;font-weight:600;white-space:nowrap;}
 .bd-done{background:#e6f9f5;color:var(--done);}
 .bd-ot{background:#e8f1ff;color:var(--ot);}
 .bd-del{background:#fff0f1;color:var(--del);}
@@ -74,7 +74,7 @@ body{background:var(--bg);color:var(--tx);font-family:var(--fnt);font-size:13px;
 table{width:100%;border-collapse:collapse;}
 thead{position:sticky;top:0;z-index:10;}
 thead tr{background:#f8f9fc;}
-th{padding:10px 14px;text-align:left;font-size:11px;font-weight:700;color:var(--tx2);white-space:nowrap;border-bottom:1px solid var(--bd);letter-spacing:.3px;text-transform:uppercase;}
+th{padding:10px 14px;text-align:left;font-size:13px;font-weight:700;color:var(--tx2);white-space:nowrap;border-bottom:1px solid var(--bd);letter-spacing:.3px;text-transform:uppercase;}
 td{padding:8px 14px;border-bottom:1px solid var(--bd);vertical-align:middle;}
 
 /* WS row - 대분류 (진하게 - 진한 파란 배경, 흰 텍스트) */
@@ -87,7 +87,7 @@ td{padding:8px 14px;border-bottom:1px solid var(--bd);vertical-align:middle;}
 .acr.drag-over td{background:#bfdbfe!important;}
 .acr[draggable="true"]{cursor:grab;}
 .acr[draggable="true"]:active{cursor:grabbing;}
-.drag-handle{color:var(--tx3);font-size:13px;cursor:grab;padding:0 4px;user-select:none;}
+.drag-handle{color:var(--tx3);font-size:15px;cursor:grab;padding:0 4px;user-select:none;}
 .drag-handle:hover{color:var(--tx2);}
 
 /* Task row - 세분류 (연하게) */
@@ -98,30 +98,30 @@ td{padding:8px 14px;border-bottom:1px solid var(--bd);vertical-align:middle;}
 /* editable cells */
 .editable{cursor:pointer;padding:3px 7px;border-radius:var(--r2);border:1px solid transparent;transition:all .15s;display:inline-block;}
 .editable:hover{border-color:var(--bd2);background:var(--sf2);}
-input.di{background:#fff;border:1.5px solid var(--ac);color:var(--tx);padding:3px 7px;border-radius:var(--r2);font-size:12px;font-family:var(--fnt);outline:none;}
-select.si{background:#fff;border:1.5px solid var(--ac);color:var(--tx);padding:3px 7px;border-radius:var(--r2);font-size:12px;font-family:var(--fnt);cursor:pointer;outline:none;}
+input.di{background:#fff;border:1.5px solid var(--ac);color:var(--tx);padding:3px 7px;border-radius:var(--r2);font-size:14px;font-family:var(--fnt);outline:none;}
+select.si{background:#fff;border:1.5px solid var(--ac);color:var(--tx);padding:3px 7px;border-radius:var(--r2);font-size:14px;font-family:var(--fnt);cursor:pointer;outline:none;}
 
 /* ms link */
-.msl{font-size:11px;color:var(--ac2);font-weight:600;cursor:pointer;text-decoration:underline;text-decoration-color:rgba(107,78,248,.3);}
+.msl{font-size:13px;color:var(--ac2);font-weight:600;cursor:pointer;text-decoration:underline;text-decoration-color:rgba(107,78,248,.3);}
 .msl:hover{color:var(--ac-h);}
 
 /* delete btn */
-.dbtn{background:none;border:none;color:var(--tx3);cursor:pointer;font-size:13px;padding:3px 5px;border-radius:var(--r2);transition:all .15s;}
+.dbtn{background:none;border:none;color:var(--tx3);cursor:pointer;font-size:15px;padding:3px 5px;border-radius:var(--r2);transition:all .15s;}
 .dbtn:hover{color:var(--del);background:#fff0f1;}
 
 /* ── Filter / Toolbar ── */
 .fbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
-.fbtn{padding:5px 14px;border-radius:20px;border:1px solid var(--bd);background:var(--sf);color:var(--tx2);font-size:12px;cursor:pointer;transition:all .15s;font-weight:500;}
+.fbtn{padding:5px 14px;border-radius:20px;border:1px solid var(--bd);background:var(--sf);color:var(--tx2);font-size:14px;cursor:pointer;transition:all .15s;font-weight:500;}
 .fbtn:hover{border-color:var(--ac);color:var(--ac);}
 .fbtn.active{background:var(--ac);border-color:var(--ac);color:#fff;font-weight:700;}
-.si2{padding:6px 14px;border-radius:20px;border:1px solid var(--bd);background:var(--sf);color:var(--tx);font-size:12px;outline:none;width:210px;transition:border-color .15s;}
+.si2{padding:6px 14px;border-radius:20px;border:1px solid var(--bd);background:var(--sf);color:var(--tx);font-size:14px;outline:none;width:210px;transition:border-color .15s;}
 .si2:focus{border-color:var(--ac);}
 .tbar{display:flex;gap:8px;margin-bottom:16px;align-items:center;flex-wrap:wrap;}
-.bp{padding:7px 18px;background:var(--ac);color:#fff;border:none;border-radius:var(--r2);font-size:12px;font-weight:700;cursor:pointer;transition:background .15s;}
+.bp{padding:7px 18px;background:var(--ac);color:#fff;border:none;border-radius:var(--r2);font-size:14px;font-weight:700;cursor:pointer;transition:background .15s;}
 .bp:hover{background:var(--ac-h);}
-.bs{padding:7px 14px;background:var(--sf);color:var(--tx2);border:1px solid var(--bd);border-radius:var(--r2);font-size:12px;cursor:pointer;transition:all .15s;}
+.bs{padding:7px 14px;background:var(--sf);color:var(--tx2);border:1px solid var(--bd);border-radius:var(--r2);font-size:14px;cursor:pointer;transition:all .15s;}
 .bs:hover{border-color:var(--ac);color:var(--ac);}
-.sp{flex:1;}.cb{font-size:11px;color:var(--tx2);background:var(--sf2);padding:3px 10px;border-radius:20px;border:1px solid var(--bd);}
+.sp{flex:1;}.cb{font-size:13px;color:var(--tx2);background:var(--sf2);padding:3px 10px;border-radius:20px;border:1px solid var(--bd);}
 
 /* ── Grid layouts ── */
 .s2{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start;}
@@ -131,8 +131,8 @@ select.si{background:#fff;border:1.5px solid var(--ac);color:var(--tx);padding:3
 /* ── Block cards ── */
 .bc{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);}
 .bh{padding:12px 16px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:8px;background:var(--sf);}
-.bht{font-size:13px;font-weight:700;flex:1;color:var(--tx);}
-.bcnt{font-size:11px;color:var(--tx2);background:var(--sf2);border-radius:20px;padding:2px 10px;border:1px solid var(--bd);font-weight:600;}
+.bht{font-size:15px;font-weight:700;flex:1;color:var(--tx);}
+.bcnt{font-size:13px;color:var(--tx2);background:var(--sf2);border-radius:20px;padding:2px 10px;border:1px solid var(--bd);font-weight:600;}
 .bb{padding:12px;display:flex;flex-direction:column;gap:6px;min-height:60px;}
 
 /* ── Alert cards ── */
@@ -142,22 +142,22 @@ select.si{background:#fff;border:1.5px solid var(--ac);color:var(--tx);padding:3
 .adot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
 .adot-d{background:var(--del);}
 .adot-w{background:var(--warn);}
-.aws{font-size:10px;color:var(--tx2);margin-bottom:2px;}
-.atask{font-size:12px;font-weight:600;color:var(--tx);}
+.aws{font-size:12px;color:var(--tx2);margin-bottom:2px;}
+.atask{font-size:14px;font-weight:600;color:var(--tx);}
 .amet{margin-left:auto;text-align:right;flex-shrink:0;}
-.adate{font-size:11px;font-weight:700;}
-.apic{font-size:11px;color:var(--tx2);}
-.eblk{text-align:center;padding:24px;color:var(--tx3);font-size:12px;}
+.adate{font-size:13px;font-weight:700;}
+.apic{font-size:13px;color:var(--tx2);}
+.eblk{text-align:center;padding:24px;color:var(--tx3);font-size:14px;}
 
 /* ── Milestone cards ── */
 .msc{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r2);padding:11px 14px;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;gap:5px;box-shadow:var(--shadow);}
 .msc:hover{border-color:var(--ac);box-shadow:0 0 0 2px rgba(49,130,246,.15);}
 .mst{display:flex;align-items:center;gap:8px;}
-.msno{font-size:10px;font-weight:700;color:var(--tx2);background:var(--sf2);padding:1px 6px;border-radius:4px;}
-.msnm{font-size:12px;font-weight:600;flex:1;line-height:1.4;color:var(--tx);}
+.msno{font-size:12px;font-weight:700;color:var(--tx2);background:var(--sf2);padding:1px 6px;border-radius:4px;}
+.msnm{font-size:14px;font-weight:600;flex:1;line-height:1.4;color:var(--tx);}
 .msb{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
-.msdt{font-size:11px;color:var(--tx2);}
-.msorg{font-size:10px;color:var(--tx3);}
+.msdt{font-size:13px;color:var(--tx2);}
+.msorg{font-size:12px;color:var(--tx3);}
 .mbh.p1{background:#e8f1ff;color:var(--p1c);}
 .mbh.p15{background:#f0ebff;color:var(--p15c);}
 .mbh.p2{background:#e0f6ff;color:var(--p2c);}
@@ -165,12 +165,12 @@ select.si{background:#fff;border:1.5px solid var(--ac);color:var(--tx);padding:3
 /* ── WS cards ── */
 .wsc{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r2);padding:12px 14px;display:flex;flex-direction:column;gap:5px;box-shadow:var(--shadow);}
 .wsh{display:flex;align-items:flex-start;gap:8px;}
-.wsnb{width:24px;height:24px;border-radius:50%;background:var(--ac);color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0;}
-.wsn{font-size:12px;font-weight:700;flex:1;line-height:1.4;color:var(--tx);}
-.wsobj{font-size:11px;color:var(--tx2);line-height:1.6;margin-top:2px;}
+.wsnb{width:24px;height:24px;border-radius:50%;background:var(--ac);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0;}
+.wsn{font-size:14px;font-weight:700;flex:1;line-height:1.4;color:var(--tx);}
+.wsobj{font-size:13px;color:var(--tx2);line-height:1.6;margin-top:2px;}
 .wste{display:flex;align-items:center;gap:6px;margin-top:6px;padding-top:6px;border-top:1px solid var(--bd);}
-.wstle{font-size:10px;color:var(--tx3);font-weight:600;text-transform:uppercase;letter-spacing:.5px;}
-.wstv{font-size:12px;font-weight:600;cursor:pointer;padding:2px 7px;border-radius:var(--r2);border:1px solid transparent;color:var(--tx);}
+.wstle{font-size:12px;color:var(--tx3);font-weight:600;text-transform:uppercase;letter-spacing:.5px;}
+.wstv{font-size:14px;font-weight:600;cursor:pointer;padding:2px 7px;border-radius:var(--r2);border:1px solid transparent;color:var(--tx);}
 .wstv:hover{border-color:var(--bd);background:var(--sf2);}
 
 /* ── Modals ── */
@@ -179,78 +179,78 @@ select.si{background:#fff;border:1.5px solid var(--ac);color:var(--tx);padding:3
 .mo{background:var(--sf);border-radius:16px;width:580px;max-width:95vw;max-height:88vh;overflow-y:auto;box-shadow:var(--shadow-md);}
 .molg{width:700px;}
 .moh{padding:20px 24px 16px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:10px;}
-.mot{font-size:15px;font-weight:800;flex:1;color:var(--tx);}
+.mot{font-size:17px;font-weight:800;flex:1;color:var(--tx);}
 .mox{background:var(--sf2);border:1px solid var(--bd);color:var(--tx2);cursor:pointer;font-size:16px;padding:4px 8px;border-radius:var(--r2);line-height:1;}
 .mox:hover{background:var(--sf3);color:var(--tx);}
 .mob{padding:20px 24px;}
 .mof{padding:14px 24px;border-top:1px solid var(--bd);display:flex;justify-content:flex-end;gap:8px;}
-.mahr,.mahdr{display:grid;grid-template-columns:1fr 90px 100px 70px 32px;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--bd);font-size:12px;}
-.mahdr{font-size:11px;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:.3px;}
+.mahr,.mahdr{display:grid;grid-template-columns:1fr 90px 100px 70px 32px;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--bd);font-size:14px;}
+.mahdr{font-size:13px;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:.3px;}
 .fr{display:flex;flex-direction:column;gap:5px;margin-bottom:14px;}
-.fl{font-size:12px;color:var(--tx2);font-weight:700;}
-.fi,.fsel,.fta{background:var(--sf);border:1.5px solid var(--bd);color:var(--tx);padding:8px 12px;border-radius:var(--r2);font-size:13px;font-family:var(--fnt);outline:none;width:100%;transition:border-color .15s;}
+.fl{font-size:14px;color:var(--tx2);font-weight:700;}
+.fi,.fsel,.fta{background:var(--sf);border:1.5px solid var(--bd);color:var(--tx);padding:8px 12px;border-radius:var(--r2);font-size:15px;font-family:var(--fnt);outline:none;width:100%;transition:border-color .15s;}
 .fi:focus,.fsel:focus,.fta:focus{border-color:var(--ac);}
 .fta{resize:vertical;min-height:70px;}
 .fg2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
 
 /* ── Edit Log ── */
 .lw{border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);}
-.lr{display:grid;grid-template-columns:130px 90px 110px 110px 1fr 1fr;gap:10px;padding:10px 14px;border-bottom:1px solid var(--bd);font-size:12px;align-items:center;}
+.lr{display:grid;grid-template-columns:130px 90px 110px 110px 1fr 1fr;gap:10px;padding:10px 14px;border-bottom:1px solid var(--bd);font-size:14px;align-items:center;}
 .lrh{background:var(--sf2);}
-.lt{font-size:11px;color:var(--tx2);}
-.lf{font-size:11px;color:var(--ac);font-weight:700;}
-.lo{text-decoration:line-through;color:var(--tx3);font-size:11px;}
-.ln{color:var(--done);font-size:11px;font-weight:700;}
+.lt{font-size:13px;color:var(--tx2);}
+.lf{font-size:13px;color:var(--ac);font-weight:700;}
+.lo{text-decoration:line-through;color:var(--tx3);font-size:13px;}
+.ln{color:var(--done);font-size:13px;font-weight:700;}
 
 /* ── Guide ── */
 .gs{margin-bottom:28px;}
-.gh{font-size:14px;font-weight:800;color:var(--tx);margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid var(--bd);}
+.gh{font-size:16px;font-weight:800;color:var(--tx);margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid var(--bd);}
 .gt{width:100%;border-collapse:collapse;border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);}
-.gt th{background:var(--sf2);padding:10px 14px;text-align:left;font-size:11px;font-weight:700;color:var(--tx2);border-bottom:1px solid var(--bd);text-transform:uppercase;letter-spacing:.3px;}
-.gt td{padding:10px 14px;border-bottom:1px solid var(--bd);font-size:12px;vertical-align:top;}
+.gt th{background:var(--sf2);padding:10px 14px;text-align:left;font-size:13px;font-weight:700;color:var(--tx2);border-bottom:1px solid var(--bd);text-transform:uppercase;letter-spacing:.3px;}
+.gt td{padding:10px 14px;border-bottom:1px solid var(--bd);font-size:14px;vertical-align:top;}
 .gt tr:last-child td{border-bottom:none;}
 .rm{color:var(--del);font-weight:700;}
 .ro{color:var(--ac);}
-.cd{background:var(--sf2);border:1px solid var(--bd);border-radius:4px;padding:1px 7px;font-family:monospace;font-size:11px;color:var(--warn);}
+.cd{background:var(--sf2);border:1px solid var(--bd);border-radius:4px;padding:1px 7px;font-family:monospace;font-size:13px;color:var(--warn);}
 .ua{border:2px dashed var(--bd);border-radius:var(--r);padding:28px;text-align:center;cursor:pointer;transition:all .15s;margin-bottom:14px;background:var(--sf);}
 .ua:hover{border-color:var(--ac);background:#f0f7ff;}
-.ubtn{padding:8px 20px;background:var(--ac);color:#fff;border:none;border-radius:var(--r2);font-size:13px;font-weight:700;cursor:pointer;}
+.ubtn{padding:8px 20px;background:var(--ac);color:#fff;border:none;border-radius:var(--r2);font-size:15px;font-weight:700;cursor:pointer;}
 
 /* ── Charter Tab ── */
 .charter-hero{background:linear-gradient(135deg,var(--ac) 0%,var(--ac2) 100%);border-radius:var(--r);padding:28px 32px;color:#fff;margin-bottom:24px;position:relative;overflow:hidden;}
 .charter-hero::before{content:'';position:absolute;top:-40px;right:-40px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.08);}
 .charter-hero-title{font-size:20px;font-weight:800;margin-bottom:6px;}
-.charter-hero-sub{font-size:13px;opacity:.85;line-height:1.6;}
+.charter-hero-sub{font-size:15px;opacity:.85;line-height:1.6;}
 .charter-upload-zone{background:var(--sf);border:2px dashed var(--bd2);border-radius:var(--r);padding:40px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:20px;}
 .charter-upload-zone:hover{border-color:var(--ac);background:#f0f7ff;}
 .charter-upload-zone.has-file{border-color:var(--done);background:#e6f9f5;}
 .charter-icon{font-size:40px;margin-bottom:12px;}
-.charter-upload-title{font-size:14px;font-weight:700;color:var(--tx);margin-bottom:4px;}
-.charter-upload-sub{font-size:12px;color:var(--tx2);}
+.charter-upload-title{font-size:16px;font-weight:700;color:var(--tx);margin-bottom:4px;}
+.charter-upload-sub{font-size:14px;color:var(--tx2);}
 .charter-info-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:24px;}
 .charter-info-card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:16px 20px;box-shadow:var(--shadow);}
-.charter-info-label{font-size:11px;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;}
-.charter-info-val{font-size:13px;font-weight:600;color:var(--tx);}
-.charter-info-sub{font-size:11px;color:var(--tx2);margin-top:3px;}
+.charter-info-label{font-size:13px;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;}
+.charter-info-val{font-size:15px;font-weight:600;color:var(--tx);}
+.charter-info-sub{font-size:13px;color:var(--tx2);margin-top:3px;}
 .charter-section{margin-bottom:24px;}
-.charter-section-title{font-size:13px;font-weight:800;color:var(--tx);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.charter-section-title{font-size:15px;font-weight:800;color:var(--tx);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
 .charter-section-title::after{content:'';flex:1;height:1px;background:var(--bd);}
 .weekly-list{display:flex;flex-direction:column;gap:8px;}
 .weekly-card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);}
 .weekly-header{padding:12px 16px;background:var(--sf2);border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:10px;cursor:pointer;}
-.weekly-wk{font-size:11px;font-weight:800;color:var(--ac);background:#e8f1ff;padding:2px 8px;border-radius:20px;}
-.weekly-date{font-size:11px;color:var(--tx2);}
-.weekly-toggle{margin-left:auto;font-size:12px;color:var(--tx3);}
+.weekly-wk{font-size:13px;font-weight:800;color:var(--ac);background:#e8f1ff;padding:2px 8px;border-radius:20px;}
+.weekly-date{font-size:13px;color:var(--tx2);}
+.weekly-toggle{margin-left:auto;font-size:14px;color:var(--tx3);}
 .weekly-body{padding:16px;}
 .weekly-section{margin-bottom:14px;}
-.weekly-section-lbl{font-size:11px;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid var(--bd);}
-.weekly-item{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--sf2);font-size:12px;}
+.weekly-section-lbl{font-size:13px;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid var(--bd);}
+.weekly-item{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--sf2);font-size:14px;}
 .weekly-item:last-child{border-bottom:none;}
 .wi-status{flex-shrink:0;}
 .wi-task{flex:1;color:var(--tx);line-height:1.4;}
-.wi-meta{font-size:11px;color:var(--tx2);white-space:nowrap;}
-.wi-note{font-size:11px;color:var(--tx2);padding:4px 8px;background:var(--sf2);border-radius:4px;margin-top:3px;border-left:2px solid var(--bd2);}
-.add-weekly-btn{width:100%;padding:10px;border:2px dashed var(--bd);border-radius:var(--r);background:none;color:var(--tx2);font-size:12px;cursor:pointer;transition:all .15s;font-family:var(--fnt);font-weight:600;}
+.wi-meta{font-size:13px;color:var(--tx2);white-space:nowrap;}
+.wi-note{font-size:13px;color:var(--tx2);padding:4px 8px;background:var(--sf2);border-radius:4px;margin-top:3px;border-left:2px solid var(--bd2);}
+.add-weekly-btn{width:100%;padding:10px;border:2px dashed var(--bd);border-radius:var(--r);background:none;color:var(--tx2);font-size:14px;cursor:pointer;transition:all .15s;font-family:var(--fnt);font-weight:600;}
 .add-weekly-btn:hover{border-color:var(--ac);color:var(--ac);background:#f0f7ff;}
 .status-dot{width:7px;height:7px;border-radius:50%;margin-top:4px;flex-shrink:0;}
 .sdot-done{background:var(--done);}
@@ -259,11 +259,11 @@ select.si{background:#fff;border:1.5px solid var(--ac);color:var(--tx);padding:3
 .sdot-pl{background:var(--pl);}
 .empty-state{text-align:center;padding:60px 20px;color:var(--tx2);}
 .empty-icon{font-size:48px;margin-bottom:12px;}
-.empty-title{font-size:14px;font-weight:700;color:var(--tx);margin-bottom:6px;}
-.empty-sub{font-size:12px;color:var(--tx2);line-height:1.6;}
-.weekly-edit-area{width:100%;min-height:80px;padding:10px 12px;border:1.5px solid var(--bd);border-radius:var(--r2);font-size:12px;font-family:var(--fnt);color:var(--tx);resize:vertical;outline:none;background:var(--sf);}
+.empty-title{font-size:16px;font-weight:700;color:var(--tx);margin-bottom:6px;}
+.empty-sub{font-size:14px;color:var(--tx2);line-height:1.6;}
+.weekly-edit-area{width:100%;min-height:80px;padding:10px 12px;border:1.5px solid var(--bd);border-radius:var(--r2);font-size:14px;font-family:var(--fnt);color:var(--tx);resize:vertical;outline:none;background:var(--sf);}
 .weekly-edit-area:focus{border-color:var(--ac);}
-.tag{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;}
+.tag{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:12px;font-weight:700;}
 .tag-ws{background:#e8f1ff;color:var(--p1c);}
 .tag-ms{background:#f0ebff;color:var(--p15c);}
 .tag-done{background:#e6f9f5;color:var(--done);}
@@ -305,10 +305,10 @@ select.si{background:#fff;border:1.5px solid var(--ac);color:var(--tx);padding:3
 </div>
 
 <div class="tabs">
-  <button class="tbtn active" data-tab="task">Task</button>
+  <button class="tbtn active" data-tab="gantt">Gantt</button>
+  <button class="tbtn" data-tab="task">Task</button>
   <button class="tbtn" data-tab="alert">Flags</button>
   <button class="tbtn" data-tab="ms">Milestone</button>
-  <button class="tbtn" data-tab="gantt">Gantt</button>
   <button class="tbtn" data-tab="ws">Workstream</button>
   <button class="tbtn charter-tab" data-tab="charter">Charter</button>
   <button class="tbtn" data-tab="log">Log</button>
@@ -316,7 +316,7 @@ select.si{background:#fff;border:1.5px solid var(--ac);color:var(--tx);padding:3
 </div>
 
 <!-- ① Task -->
-<div class="tc active" id="tab-task">
+<div class="tc" id="tab-task">
   <div class="tbar">
     <input class="si2" type="text" id="tsrch" placeholder="🔍  Task 검색...">
     <div class="fbar" style="gap:6px">
@@ -369,10 +369,18 @@ select.si{background:#fff;border:1.5px solid var(--ac);color:var(--tx);padding:3
     <div class="bc">
       <div class="bh"><span style="font-size:18px">🔴</span><span class="bht">지연 Task</span><span class="bcnt" id="cntDel">0건</span></div>
       <div class="bb" id="alertDel"></div>
+      <div style="padding:10px 14px;border-top:1px solid var(--bd);font-size:12px;color:var(--tx2);line-height:1.6;background:var(--sf2);border-radius:0 0 var(--r) var(--r);">
+        <span style="color:var(--del);font-weight:700;">지연 Task</span>란 Target Date가 오늘 기준 이미 지났으나 Status가 완료(Done)가 아닌 항목입니다.<br>
+        해당 항목의 담당자에게 진행 상황을 확인하고 일정 재조정 또는 완료 처리가 필요합니다.
+      </div>
     </div>
     <div class="bc">
       <div class="bh"><span style="font-size:18px">🟡</span><span class="bht">7일 내 마감</span><span class="bcnt" id="cntWarn">0건</span></div>
       <div class="bb" id="alertWarn"></div>
+      <div style="padding:10px 14px;border-top:1px solid var(--bd);font-size:12px;color:var(--tx2);line-height:1.6;background:var(--sf2);border-radius:0 0 var(--r) var(--r);">
+        <span style="color:var(--warn);font-weight:700;">7일 내 마감 Task</span>란 오늘로부터 7일 이내에 Target Date가 도래하는 미완료 항목입니다.<br>
+        이번 주 주간 미팅에서 우선 점검이 필요한 항목으로, 사전에 완료 가능 여부를 확인해 주세요.
+      </div>
     </div>
   </div>
 </div>
@@ -396,10 +404,18 @@ select.si{background:#fff;border:1.5px solid var(--ac);color:var(--tx);padding:3
 </div>
 
 <!-- Gantt Tab -->
-<div class="tc" id="tab-gantt">
+<div class="tc active" id="tab-gantt">
   <div class="tbar">
-    <span style="font-size:12px;color:var(--tx2);font-weight:600">📊 Gantt Chart — 주단위 표기 / 상위: Milestone · 하위: Action</span>
+    <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+      <span style="font-size:15px;color:var(--tx);font-weight:700">📊 Gantt Chart</span>
+      <span style="font-size:13px;color:var(--tx2);">주단위 표기 &nbsp;·&nbsp; 상위: Milestone &nbsp;·&nbsp; 하위: Action</span>
+      <span style="font-size:13px;color:var(--ac);background:#e8f1ff;padding:3px 10px;border-radius:20px;border:1px solid var(--ac-bd);">
+        💡 Action 클릭 → 해당 Task 목록으로 이동합니다
+      </span>
+    </div>
     <div class="sp"></div>
+    <button class="bs" id="btnGanttColAll">전체 접기</button>
+    <button class="bs" id="btnGanttExpAll">전체 펼치기</button>
     <button class="bs" id="btnGanttScrollNow">오늘로 이동</button>
   </div>
   <div id="ganttWrap" style="overflow-x:auto;overflow-y:auto;max-height:calc(100vh - var(--hh) - var(--sh) - var(--th) - 80px);position:relative;">
@@ -409,7 +425,6 @@ select.si{background:#fff;border:1.5px solid var(--ac);color:var(--tx);padding:3
 
 <!-- ④ Workstream -->
 <div class="tc" id="tab-ws">
-  <div class="tbar"><button class="bp" id="btnAddWs">+ 워크스트림 추가</button></div>
   <div class="s4" id="wsCols"></div>
 </div>
 
@@ -574,7 +589,6 @@ select.si{background:#fff;border:1.5px solid var(--ac);color:var(--tx);padding:3
         <span>소유조직: <strong id="moMsOrg" style="color:var(--tx)"></strong></span>
         <span id="moMsSt"></span>
       </div>
-      <div class="mahdr"><span>Task</span><span>담당자</span><span>Target Date</span><span>Status</span><span></span></div>
       <div id="moMsActs"></div>
     </div>
   </div>
@@ -586,7 +600,11 @@ select.si{background:#fff;border:1.5px solid var(--ac);color:var(--tx);padding:3
     <div class="moh"><div class="mot">Task 추가</div><button class="mox" id="moAddTaskX">✕</button></div>
     <div class="mob">
       <div class="fr"><label class="fl">Workstream</label><select class="fsel" id="atWs"></select></div>
-      <div class="fr"><label class="fl">Action</label><input class="fi" id="atAct" placeholder="Action 명칭 입력"></div>
+      <div class="fr"><label class="fl">Action</label>
+        <select class="fsel" id="atAct">
+          <option value="">— WS 선택 후 Action 선택 —</option>
+        </select>
+      </div>
       <div class="fr"><label class="fl">Task명 *</label><input class="fi" id="atTask" placeholder="Task 상세 내용 입력"></div>
       <div class="fg2">
         <div class="fr"><label class="fl">Target Date *</label><input class="fi" type="date" id="atDate"></div>
@@ -683,196 +701,173 @@ let WS = [
 ];
 
 let MS = [
-  {no:'MS-01',phase:'Phase 1',name:'First Mile 직영 집하센터 남부(동탄센터 활용) Pilot 구축 완료',startDate:'',date:'2026-04-01',status:'Done',org:'물류사업기획팀'},
-  {no:'MS-02',phase:'Phase 1',name:'First Mile 매뉴얼 운영 셀러 대상 영업·운영 개시',startDate:'',date:'2026-05-18',status:'Done',org:'물류사업기획팀'},
-  {no:'MS-03',phase:'Phase 1',name:'Last Mile 3PL — CJ대한통운 직접 우선 협상 완료',startDate:'',date:'2026-05-29',status:'On Track',org:'물류사업기획팀'},
-  {no:'MS-03-2',phase:'Phase 1',name:'AIDC TMS MVP ver. 개발 요청 사항 접수 완료',startDate:'',date:'2026-05-22',status:'On Track',org:'물류사업기획팀'},
-  {no:'MS-03-1',phase:'Phase 1',name:'Last Mile 3PL 파트너 계약 체결 완료',startDate:'',date:'2026-06-19',status:'',org:'물류사업기획팀'},
-  {no:'MS-04',phase:'Phase 1',name:'4PL 아웃바운드 영업 공식 개시',startDate:'',date:'2026-06-22',status:'On Track',org:'물류사업기획팀'},
-  {no:'MS-05',phase:'Phase 1',name:'서비스 일단위 정산 모델 개발요건 확정',startDate:'',date:'2026-06-19',status:'On Track',org:'물류사업기획팀'},
-  {no:'MS-06',phase:'Phase 1',name:'First Mile 집하센터 입지·구축·운영 설계 완료 및 확장 전략 확정',startDate:'',date:'2026-07-21',status:'On Track',org:'물류사업기획팀'},
-  {no:'MS-07',phase:'Phase 1',name:'First Mile 직영 집하센터 서북부 오픈 완료',startDate:'',date:'2026-07-31',status:'On Track',org:'물류사업기획팀'},
-  {no:'MS-08',phase:'Phase 1',name:'서비스 요율표 확정 및 판매자 공시',startDate:'',date:'2026-07-31',status:'On Track',org:'서비스기획팀'},
-  {no:'MS-09',phase:'Phase 1',name:'판매자 이용정책 및 개발요건 확정 (가입·상품·CS)',startDate:'',date:'2026-07-30',status:'On Track',org:'서비스기획팀'},
-  {no:'MS-10',phase:'Phase 1',name:'배송 데이터 기반 판매자 평가 관리지표 확정',startDate:'',date:'2026-07-31',status:'On Track',org:'서비스기획팀'},
-  {no:'MS-11',phase:'Phase 1',name:'TMS MVP 운영 반영 및 서비스 가동 개시',startDate:'',date:'2026-07-31',status:'On Track',org:'개발조직'},
-  {no:'MS-12',phase:'Phase 1',name:'G마켓 배송서비스 beta 오픈',startDate:'',date:'2026-07-31',status:'On Track',org:'개발조직'},
-  {no:'MS-13',phase:'Phase 1.5',name:'레거시 셀러 마이그레이션 영업 개시',startDate:'',date:'2026-09-01',status:'',org:'서비스기획팀'},
-  {no:'MS-14',phase:'Phase 1.5',name:'Flex 모델 도입 위한 택배사 협상 완료 (SLA, 단가)',startDate:'',date:'2026-09-18',status:'On Track',org:'서비스기획팀'},
-  {no:'MS-15',phase:'Phase 1.5',name:'First Mile 제휴 집하협력사 3개 권역 계약 체결 완료 (대전, 부산, 서울)',startDate:'',date:'2026-09-30',status:'On Track',org:'기획팀'},
-  {no:'MS-16',phase:'Phase 1.5',name:'집하 기사 운영 시스템 구축 완료 및 현장 배포',startDate:'',date:'2026-09-30',status:'',org:'개발조직'},
-  {no:'MS-17',phase:'Phase 1.5',name:'MVP(TMS) 개발 완료 및 현장 배포',startDate:'',date:'2026-09-25',status:'',org:'개발조직'},
-  {no:'MS-18',phase:'Phase 1.5',name:'스타배송 태그 단일 통합 및 장바구니 정책 설계 및 방향 확정',startDate:'',date:'2026-06-19',status:'',org:'기획팀'},
-  {no:'MS-19',phase:'Phase 1.5',name:'스타배송 도착보장 상품 리스팅 탐색 강화 BRD 접수 완료',startDate:'',date:'2026-10-23',status:'',org:'기획팀'},
-  {no:'MS-20',phase:'Phase 1.5',name:'지마켓 배송 서비스 공식 오픈 (스타배송 태그 통합 및 Seller향 서비스 개편)',startDate:'',date:'2026-09-30',status:'',org:'개발조직'},
-  {no:'MS-21',phase:'Phase 1.5',name:'Star Delivery / 4PL Order PH1 35% 달성',startDate:'',date:'2026-09-30',status:'',org:'공동'},
-  {no:'MS-22',phase:'Phase 2',name:'First Mile 직영 집하센터 동북부 오픈 완료',startDate:'',date:'2026-11-06',status:'',org:'기획팀'},
-  {no:'MS-23',phase:'Phase 2',name:'ETA 기반 구매자 배송 경험 설계 완료 및 개발 요건 확정',startDate:'',date:'2026-12-30',status:'',org:'기획팀'},
-  {no:'MS-24',phase:'Phase 2',name:'판매자 배송점수 기반 페널티 자동화 개발 요건 확정',startDate:'',date:'2027-01-29',status:'',org:'기획팀'},
-  {no:'MS-25',phase:'Phase 2',name:'4PL E2E 시스템·Control Tower v1 오픈',startDate:'',date:'2027-01-29',status:'',org:'개발조직'},
-  {no:'MS-26',phase:'Phase 2',name:'동적 Tag(Dynamic Tag) 노출 규칙 정의 및 BRD 확정',startDate:'',date:'2027-02-05',status:'',org:'기획팀'},
-  {no:'MS-27',phase:'Phase 2',name:'배송서비스 리뉴얼 방향성 수립',startDate:'',date:'2027-02-05',status:'',org:'기획팀'},
-  {no:'MS-28',phase:'Phase 2',name:'Star Delivery / 4PL Order 40% 이상 달성',startDate:'',date:'2027-02-05',status:'',org:'공동'},
-  {no:'MS-29',phase:'Phase 2',name:'TMS G마켓 전용 통합 시스템 구축 완료',startDate:'',date:'2027-02-28',status:'',org:'개발조직'},
-  {no:'MS-30',phase:'Phase 2',name:'판매자 대시보드·지능형 제안 v1 배포',startDate:'',date:'2027-04-30',status:'',org:'개발조직'},
+  {no:'MS-A',phase:'Phase 1',name:'Last Mile 3PL 파트너 계약 협상 및 완료',startDate:'',date:'2026-06-30',status:'On Track',org:'물류사업기획'},
+  {no:'MS-B',phase:'Phase 1',name:'AIDC TMS MVP ver Open (Phase1.5)',startDate:'',date:'2026-07-30',status:'On Track',org:'물류사업기획'},
+  {no:'MS-C',phase:'Phase 1',name:'Sales·On Boarding Program 운영 시작',startDate:'',date:'2026-05-18',status:'Done',org:'서비스기획'},
+  {no:'MS-D',phase:'Phase 1',name:'G마켓 배송 서비스 공식 출시 / 태그통합',startDate:'',date:'2026-09-30',status:'On Track',org:'서비스기획'},
+  {no:'MS-E',phase:'Phase 1',name:'First Mile 직영센터 단계별 구축 완료 (남부 → 서북부 → 동북부)',startDate:'',date:'2026-10-31',status:'On Track',org:'물류사업기획'},
+  {no:'MS-F',phase:'Phase 1.5',name:'First Mile 위탁센터 단계별 구축 완료 (대전, 부산, 서울일부)',startDate:'',date:'2026-09-30',status:'On Track',org:'물류사업기획'},
+  {no:'MS-G',phase:'Phase 1.5',name:'Flex 운영모델 체계 설계 완료',startDate:'',date:'2026-09-18',status:'On Track',org:'물류사업기획'},
+  {no:'MS-H',phase:'Phase 2',name:'스타배송 리브랜드',startDate:'',date:'2027-02-28',status:'',org:'서비스기획'},
+  {no:'MS-I',phase:'Phase 2',name:'E2E 시스템 + Control Tower v1 오픈',startDate:'',date:'2026-12-11',status:'',org:'물류사업/서비스기획'},
 ];
 
 let TASKS = [
   // WS1
-  {id:'1.1.1',wsNo:1,ano:'B',action:'Last Mile 직접 우선 협상 완료',task:'CJ TF 구성 요청 완료',date:'2026-01-31',wk:'W5',pic:'최승범',phase:'Phase 1',st:'Done',ms:'MS-03'},
-  {id:'1.1.2',wsNo:1,ano:'B',action:'Last Mile 직접 우선 협상 완료',task:'판매자별 개별 물량 통합 가능 물동량 파악 (택배사 협상 카드 물량 확인)',date:'2026-03-27',wk:'W13',pic:'최승범',phase:'Phase 1',st:'Done',ms:'MS-03'},
-  {id:'1.1.3',wsNo:1,ano:'B',action:'Last Mile 직접 우선 협상 완료',task:'비즈니스 Risk 및 비용 구조 협상 완료 (대리점 이슈, 택배사별 물량이동 등)',date:'2026-05-29',wk:'W22',pic:'최승범',phase:'Phase 1',st:'On Track',ms:'MS-03'},
-  {id:'1.1.4',wsNo:1,ano:'B',action:'Last Mile 직접 우선 협상 완료',task:'Last Mile 협상 결과 요약 및 내부 보고 (리더십 공유)',date:'2026-06-05',wk:'W23',pic:'최승범',phase:'Phase 1',st:'',ms:'MS-03'},
-  {id:'1.3.1',wsNo:1,ano:'C',action:'3PL 파트너십 계약 체결',task:'Last Mile 3PL - 직영 FM 우선 협상 협력사 선정 완료',date:'2026-06-05',wk:'W23',pic:'최승범',phase:'Phase 1',st:'',ms:'MS-03-1'},
-  {id:'1.3.2',wsNo:1,ano:'C',action:'3PL 파트너십 계약 체결',task:'Last Mile 3PL - 최종 단가 및 SLA(도착보장율, 패널티) 협상 완료',date:'2026-06-19',wk:'W25',pic:'최승범',phase:'Phase 1',st:'',ms:'MS-03-1'},
-  {id:'1.3.3',wsNo:1,ano:'C',action:'3PL 파트너십 계약 체결',task:'Last Mile 3PL - 최종 협의안 내부 검토 및 승인 (리더십&구매/회계/법무)',date:'2026-06-26',wk:'W26',pic:'최승범',phase:'Phase 1',st:'',ms:'MS-03-1'},
-  {id:'1.3.4',wsNo:1,ano:'C',action:'3PL 파트너십 계약 체결',task:'Last Mile 3PL 파트너 계약 최종 체결',date:'2026-06-30',wk:'W27',pic:'최승범',phase:'Phase 1',st:'',ms:'MS-03-1'},
-  {id:'1.2.1',wsNo:1,ano:'D',action:'제휴 FM 협력사 계약 체결',task:'제휴 FM 협력사 표준계약서 초안 작성 (SLA, 정산 기준 등)',date:'2026-05-29',wk:'W22',pic:'강승구',phase:'Phase 1',st:'',ms:'MS-15'},
-  {id:'1.2.2',wsNo:1,ano:'D',action:'제휴 FM 협력사 계약 체결',task:'제휴 FM 협력사 표준계약서 최종본 확정 (법무검토 포함)',date:'2026-06-05',wk:'W23',pic:'강승구',phase:'Phase 1',st:'',ms:'MS-15'},
-  {id:'1.2.3',wsNo:1,ano:'D',action:'제휴 FM 협력사 계약 체결',task:'G마켓 자체 제휴 FM 협력사 선정 기준 수립 (계약기간, 인프라 조건 등)',date:'2026-06-05',wk:'W23',pic:'강승구',phase:'Phase 1',st:'',ms:'MS-15'},
-  {id:'1.2.4',wsNo:1,ano:'D',action:'제휴 FM 협력사 계약 체결',task:'제휴 FM 시행 지역별 협력사 핫라인 확보',date:'2026-06-08',wk:'W24',pic:'강승구',phase:'Phase 1',st:'',ms:'MS-15'},
-  {id:'1.2.5',wsNo:1,ano:'D',action:'제휴 FM 협력사 계약 체결',task:'제휴 FM 협력사 표준 계약조건 최종 협의 (정산 기준 등)',date:'2026-06-12',wk:'W24',pic:'강승구',phase:'Phase 1',st:'',ms:'MS-15'},
+  {id:'1.1.1',wsNo:1,ano:'B',action:'Last Mile 직접 우선 협상 완료',task:'CJ TF 구성 요청 완료',date:'2026-01-31',wk:'W5',pic:'최승범',phase:'Phase 1',st:'Done',ms:'MS-A'},
+  {id:'1.1.2',wsNo:1,ano:'B',action:'Last Mile 직접 우선 협상 완료',task:'판매자별 개별 물량 통합 가능 물동량 파악 (택배사 협상 카드 물량 확인)',date:'2026-03-27',wk:'W13',pic:'최승범',phase:'Phase 1',st:'Done',ms:'MS-A'},
+  {id:'1.1.3',wsNo:1,ano:'B',action:'Last Mile 직접 우선 협상 완료',task:'비즈니스 Risk 및 비용 구조 협상 완료 (대리점 이슈, 택배사별 물량이동 등)',date:'2026-05-29',wk:'W22',pic:'최승범',phase:'Phase 1',st:'On Track',ms:'MS-A'},
+  {id:'1.1.4',wsNo:1,ano:'B',action:'Last Mile 직접 우선 협상 완료',task:'Last Mile 협상 결과 요약 및 내부 보고 (리더십 공유)',date:'2026-06-05',wk:'W23',pic:'최승범',phase:'Phase 1',st:'',ms:'MS-A'},
+  {id:'1.3.1',wsNo:1,ano:'C',action:'3PL 파트너십 계약 체결',task:'Last Mile 3PL - 직영 FM 우선 협상 협력사 선정 완료',date:'2026-06-05',wk:'W23',pic:'최승범',phase:'Phase 1',st:'',ms:'MS-A'},
+  {id:'1.3.2',wsNo:1,ano:'C',action:'3PL 파트너십 계약 체결',task:'Last Mile 3PL - 최종 단가 및 SLA(도착보장율, 패널티) 협상 완료',date:'2026-06-19',wk:'W25',pic:'최승범',phase:'Phase 1',st:'',ms:'MS-A'},
+  {id:'1.3.3',wsNo:1,ano:'C',action:'3PL 파트너십 계약 체결',task:'Last Mile 3PL - 최종 협의안 내부 검토 및 승인 (리더십&구매/회계/법무)',date:'2026-06-26',wk:'W26',pic:'최승범',phase:'Phase 1',st:'',ms:'MS-A'},
+  {id:'1.3.4',wsNo:1,ano:'C',action:'3PL 파트너십 계약 체결',task:'Last Mile 3PL 파트너 계약 최종 체결',date:'2026-06-30',wk:'W27',pic:'최승범',phase:'Phase 1',st:'',ms:'MS-A'},
+  {id:'1.2.1',wsNo:1,ano:'D',action:'제휴 FM 협력사 계약 체결',task:'제휴 FM 협력사 표준계약서 초안 작성 (SLA, 정산 기준 등)',date:'2026-05-29',wk:'W22',pic:'강승구',phase:'Phase 1',st:'',ms:'MS-F'},
+  {id:'1.2.2',wsNo:1,ano:'D',action:'제휴 FM 협력사 계약 체결',task:'제휴 FM 협력사 표준계약서 최종본 확정 (법무검토 포함)',date:'2026-06-05',wk:'W23',pic:'강승구',phase:'Phase 1',st:'',ms:'MS-F'},
+  {id:'1.2.3',wsNo:1,ano:'D',action:'제휴 FM 협력사 계약 체결',task:'G마켓 자체 제휴 FM 협력사 선정 기준 수립 (계약기간, 인프라 조건 등)',date:'2026-06-05',wk:'W23',pic:'강승구',phase:'Phase 1',st:'',ms:'MS-F'},
+  {id:'1.2.4',wsNo:1,ano:'D',action:'제휴 FM 협력사 계약 체결',task:'제휴 FM 시행 지역별 협력사 핫라인 확보',date:'2026-06-08',wk:'W24',pic:'강승구',phase:'Phase 1',st:'',ms:'MS-F'},
+  {id:'1.2.5',wsNo:1,ano:'D',action:'제휴 FM 협력사 계약 체결',task:'제휴 FM 협력사 표준 계약조건 최종 협의 (정산 기준 등)',date:'2026-06-12',wk:'W24',pic:'강승구',phase:'Phase 1',st:'',ms:'MS-F'},
   // WS2
-  {id:'2.1.1',wsNo:2,ano:'B',action:'지마켓 전담 픽업(집하) 운영체계 설계',task:'거점 구축을 위한 물동량 Data 및 Cluster 분석',date:'2026-05-15',wk:'W20',pic:'최승범',phase:'Phase 1',st:'',ms:'MS-06'},
-  {id:'2.1.2',wsNo:2,ano:'B',action:'지마켓 전담 픽업(집하) 운영체계 설계',task:'Cluster 분포 기준 거점 권역 설정 및 입지 선정 분석',date:'2026-05-29',wk:'W22',pic:'최승범',phase:'Phase 1',st:'',ms:'MS-06'},
-  {id:'2.1.3',wsNo:2,ano:'B',action:'지마켓 전담 픽업(집하) 운영체계 설계',task:'인프라 구축 Plan - 거점별 운영 필요 CAPA 및 거점 규모 산정',date:'2026-05-29',wk:'W22',pic:'최승범',phase:'Phase 1',st:'',ms:'MS-06'},
-  {id:'2.1.4',wsNo:2,ano:'B',action:'지마켓 전담 픽업(집하) 운영체계 설계',task:'인프라 구축 Plan - 집하/간선 차량 운영 전략 수립',date:'2026-05-29',wk:'W22',pic:'최승범',phase:'Phase 1',st:'',ms:'MS-06'},
-  {id:'2.1.5',wsNo:2,ano:'B',action:'지마켓 전담 픽업(집하) 운영체계 설계',task:'권역별 진입 순서와 방식(직영/제휴) 로드맵 확정',date:'2026-07-10',wk:'W28',pic:'최승범',phase:'Phase 1',st:'',ms:'MS-06'},
-  {id:'2.2.1',wsNo:2,ano:'C',action:'지마켓 전담 픽업(집하) 모델 비용설계',task:'운영 모델 Concept별 비용 체계 구조화 (직영/제휴)',date:'2026-06-05',wk:'W23',pic:'최승범',phase:'Phase 1',st:'',ms:'MS-06'},
-  {id:'2.2.2',wsNo:2,ano:'C',action:'지마켓 전담 픽업(집하) 모델 비용설계',task:'상세 비용 항목별 기준 단가 수립 및 비용 시뮬레이션',date:'2026-06-19',wk:'W25',pic:'최승범',phase:'Phase 1',st:'',ms:'MS-06'},
-  {id:'2.2.3',wsNo:2,ano:'C',action:'지마켓 전담 픽업(집하) 모델 비용설계',task:'예산 확정을 위한 최종 예산안 내부 검토 및 승인 (리더십&구매/회계)',date:'2026-06-26',wk:'W26',pic:'최승범',phase:'Phase 1',st:'',ms:'MS-06'},
-  {id:'2.4.1',wsNo:2,ano:'D',action:'지마켓 직영 집하센터 권역별 인프라 설계 및 단계별 구축',task:'남부 - 협력사/설비 계약 완료',date:'2026-03-13',wk:'W11',pic:'최무창',phase:'Phase 1',st:'Done',ms:'MS-01'},
-  {id:'2.4.2',wsNo:2,ano:'D',action:'지마켓 직영 집하센터 권역별 인프라 설계 및 단계별 구축',task:'남부 - 운영 프로세스 설계',date:'2026-04-30',wk:'W18',pic:'최무창',phase:'Phase 1',st:'Done',ms:'MS-01'},
-  {id:'2.4.3',wsNo:2,ano:'D',action:'지마켓 직영 집하센터 권역별 인프라 설계 및 단계별 구축',task:'남부 - 현장 인프라 세팅 및 그랜드 오픈',date:'2026-04-01',wk:'W14',pic:'최무창',phase:'Phase 1',st:'Done',ms:'MS-01'},
-  {id:'2.4.4',wsNo:2,ano:'D',action:'지마켓 직영 집하센터 권역별 인프라 설계 및 단계별 구축',task:'서북부 Hub - 세부 계획 수립 (거점 Capa, 추정비용 등)',date:'2026-06-19',wk:'W25',pic:'최무창',phase:'Phase 1',st:'',ms:'MS-07'},
-  {id:'2.4.5',wsNo:2,ano:'D',action:'지마켓 직영 집하센터 권역별 인프라 설계 및 단계별 구축',task:'서북부 Hub - 거점 확보 및 3PL 설비검토/계약완료',date:'2026-07-10',wk:'W28',pic:'최무창',phase:'Phase 1',st:'',ms:'MS-07'},
-  {id:'2.4.6',wsNo:2,ano:'D',action:'지마켓 직영 집하센터 권역별 인프라 설계 및 단계별 구축',task:'서북부 Hub - 현장 인프라 세팅 및 그랜드 오픈',date:'2026-07-30',wk:'W31',pic:'최무창',phase:'Phase 1',st:'',ms:'MS-07'},
-  {id:'2.4.7',wsNo:2,ano:'D',action:'지마켓 직영 집하센터 권역별 인프라 설계 및 단계별 구축',task:'동북부 Hub - 세부 계획 수립 (거점 Capa, 추정비용 등)',date:'2026-09-18',wk:'W38',pic:'최무창',phase:'Phase 1.5',st:'',ms:'MS-22'},
-  {id:'2.4.8',wsNo:2,ano:'D',action:'지마켓 직영 집하센터 권역별 인프라 설계 및 단계별 구축',task:'동북부 Hub - 거점 확보 및 3PL 설비검토/계약완료',date:'2026-10-23',wk:'W43',pic:'최무창',phase:'Phase 1.5',st:'',ms:'MS-22'},
-  {id:'2.4.9',wsNo:2,ano:'D',action:'지마켓 직영 집하센터 권역별 인프라 설계 및 단계별 구축',task:'동북부 Hub - 현장 인프라 세팅 및 그랜드 오픈',date:'2026-11-06',wk:'W44',pic:'최무창',phase:'Phase 1.5',st:'',ms:'MS-22'},
-  {id:'2.5.1',wsNo:2,ano:'E',action:'지마켓 제휴 집하 운영체계 설계 및 단계별 구축',task:'지방권 네트워크 전략 및 대리점 상생 방안 수립',date:'2026-04-27',wk:'W18',pic:'강승구',phase:'Phase 1',st:'Done',ms:'MS-15'},
-  {id:'2.5.2',wsNo:2,ano:'E',action:'지마켓 제휴 집하 운영체계 설계 및 단계별 구축',task:'집하점 정산 기준, 화물사고 대응 방안, 계약 준비사항 및 관련 FAQ 작성',date:'2026-04-27',wk:'W18',pic:'강승구',phase:'Phase 1',st:'Done',ms:'MS-15'},
-  {id:'2.5.3',wsNo:2,ano:'E',action:'지마켓 제휴 집하 운영체계 설계 및 단계별 구축',task:'제휴 FM 협력사 운영 가이드 안내 (정산, 화물사고 등)',date:'2026-06-08',wk:'W24',pic:'강승구',phase:'Phase 1',st:'',ms:'MS-15'},
-  {id:'2.5.4',wsNo:2,ano:'E',action:'지마켓 제휴 집하 운영체계 설계 및 단계별 구축',task:'제휴 FM 추가 지역 확장 검토',date:'2026-06-30',wk:'W27',pic:'강승구',phase:'Phase 1',st:'',ms:'MS-15'},
-  {id:'2.6.1',wsNo:2,ano:'E',action:'지마켓 제휴 집하 운영체계 설계 및 단계별 구축',task:'대전 권역 협력사 계약 체결 완료',date:'2026-06-30',wk:'W27',pic:'강승구',phase:'Phase 1',st:'',ms:'MS-15'},
-  {id:'2.6.2',wsNo:2,ano:'E',action:'지마켓 제휴 집하 운영체계 설계 및 단계별 구축',task:'부산 권역 협력사 계약 체결 완료',date:'2026-08-14',wk:'W33',pic:'강승구',phase:'Phase 1.5',st:'',ms:'MS-15'},
-  {id:'2.6.3',wsNo:2,ano:'E',action:'지마켓 제휴 집하 운영체계 설계 및 단계별 구축',task:'서울 권역 협력사 계약 체결 완료',date:'2026-09-30',wk:'W40',pic:'강승구',phase:'Phase 1.5',st:'',ms:'MS-15'},
-  {id:'2.7.1',wsNo:2,ano:'F',action:'지마켓 Flex 모델 운영체계 설계',task:'데이터 분석 기반 권역별 물동량 분포 확인 및 Flex 서비스 대상 지역 정의',date:'2026-05-08',wk:'W19',pic:'유현천',phase:'Phase 1.5',st:'Done',ms:'MS-14'},
-  {id:'2.7.2',wsNo:2,ano:'F',action:'지마켓 Flex 모델 운영체계 설계',task:'서비스 본격 도입 전 1차 택배 단가 인하 견적 회신/추가 협의 완료',date:'2026-06-05',wk:'W23',pic:'유현천',phase:'Phase 1.5',st:'',ms:'MS-14'},
-  {id:'2.7.3',wsNo:2,ano:'F',action:'지마켓 Flex 모델 운영체계 설계',task:'서비스 고도화에 따른 PILOT 기준 수립',date:'2026-06-12',wk:'W24',pic:'유현천',phase:'Phase 1.5',st:'',ms:'MS-14'},
-  {id:'2.7.4',wsNo:2,ano:'F',action:'지마켓 Flex 모델 운영체계 설계',task:'PILOT 결과 및 택배사 협의를 통해 Flex 배송 고도화 운영 프로세스 수립 및 2차 단가 인하 기준 협의',date:'2026-09-11',wk:'W37',pic:'유현천',phase:'Phase 1.5',st:'',ms:'MS-14'},
-  {id:'2.7.5',wsNo:2,ano:'F',action:'지마켓 Flex 모델 운영체계 설계',task:'택배사별 지역 분배 전략 수립',date:'2026-09-18',wk:'W38',pic:'유현천',phase:'Phase 1.5',st:'',ms:'MS-14'},
+  {id:'2.1.1',wsNo:2,ano:'B',action:'지마켓 전담 픽업(집하) 운영체계 설계',task:'거점 구축을 위한 물동량 Data 및 Cluster 분석',date:'2026-05-15',wk:'W20',pic:'최승범',phase:'Phase 1',st:'',ms:'MS-E'},
+  {id:'2.1.2',wsNo:2,ano:'B',action:'지마켓 전담 픽업(집하) 운영체계 설계',task:'Cluster 분포 기준 거점 권역 설정 및 입지 선정 분석',date:'2026-05-29',wk:'W22',pic:'최승범',phase:'Phase 1',st:'',ms:'MS-E'},
+  {id:'2.1.3',wsNo:2,ano:'B',action:'지마켓 전담 픽업(집하) 운영체계 설계',task:'인프라 구축 Plan - 거점별 운영 필요 CAPA 및 거점 규모 산정',date:'2026-05-29',wk:'W22',pic:'최승범',phase:'Phase 1',st:'',ms:'MS-E'},
+  {id:'2.1.4',wsNo:2,ano:'B',action:'지마켓 전담 픽업(집하) 운영체계 설계',task:'인프라 구축 Plan - 집하/간선 차량 운영 전략 수립',date:'2026-05-29',wk:'W22',pic:'최승범',phase:'Phase 1',st:'',ms:'MS-E'},
+  {id:'2.1.5',wsNo:2,ano:'B',action:'지마켓 전담 픽업(집하) 운영체계 설계',task:'권역별 진입 순서와 방식(직영/제휴) 로드맵 확정',date:'2026-07-10',wk:'W28',pic:'최승범',phase:'Phase 1',st:'',ms:'MS-E'},
+  {id:'2.2.1',wsNo:2,ano:'C',action:'지마켓 전담 픽업(집하) 모델 비용설계',task:'운영 모델 Concept별 비용 체계 구조화 (직영/제휴)',date:'2026-06-05',wk:'W23',pic:'최승범',phase:'Phase 1',st:'',ms:'MS-E'},
+  {id:'2.2.2',wsNo:2,ano:'C',action:'지마켓 전담 픽업(집하) 모델 비용설계',task:'상세 비용 항목별 기준 단가 수립 및 비용 시뮬레이션',date:'2026-06-19',wk:'W25',pic:'최승범',phase:'Phase 1',st:'',ms:'MS-E'},
+  {id:'2.2.3',wsNo:2,ano:'C',action:'지마켓 전담 픽업(집하) 모델 비용설계',task:'예산 확정을 위한 최종 예산안 내부 검토 및 승인 (리더십&구매/회계)',date:'2026-06-26',wk:'W26',pic:'최승범',phase:'Phase 1',st:'',ms:'MS-E'},
+  {id:'2.4.1',wsNo:2,ano:'D',action:'지마켓 직영 집하센터 권역별 인프라 설계 및 단계별 구축',task:'남부 - 협력사/설비 계약 완료',date:'2026-03-13',wk:'W11',pic:'최무창',phase:'Phase 1',st:'Done',ms:'MS-E'},
+  {id:'2.4.2',wsNo:2,ano:'D',action:'지마켓 직영 집하센터 권역별 인프라 설계 및 단계별 구축',task:'남부 - 운영 프로세스 설계',date:'2026-04-30',wk:'W18',pic:'최무창',phase:'Phase 1',st:'Done',ms:'MS-E'},
+  {id:'2.4.3',wsNo:2,ano:'D',action:'지마켓 직영 집하센터 권역별 인프라 설계 및 단계별 구축',task:'남부 - 현장 인프라 세팅 및 그랜드 오픈',date:'2026-04-01',wk:'W14',pic:'최무창',phase:'Phase 1',st:'Done',ms:'MS-E'},
+  {id:'2.4.4',wsNo:2,ano:'D',action:'지마켓 직영 집하센터 권역별 인프라 설계 및 단계별 구축',task:'서북부 Hub - 세부 계획 수립 (거점 Capa, 추정비용 등)',date:'2026-06-19',wk:'W25',pic:'최무창',phase:'Phase 1',st:'',ms:'MS-E'},
+  {id:'2.4.5',wsNo:2,ano:'D',action:'지마켓 직영 집하센터 권역별 인프라 설계 및 단계별 구축',task:'서북부 Hub - 거점 확보 및 3PL 설비검토/계약완료',date:'2026-07-10',wk:'W28',pic:'최무창',phase:'Phase 1',st:'',ms:'MS-E'},
+  {id:'2.4.6',wsNo:2,ano:'D',action:'지마켓 직영 집하센터 권역별 인프라 설계 및 단계별 구축',task:'서북부 Hub - 현장 인프라 세팅 및 그랜드 오픈',date:'2026-07-30',wk:'W31',pic:'최무창',phase:'Phase 1',st:'',ms:'MS-E'},
+  {id:'2.4.7',wsNo:2,ano:'D',action:'지마켓 직영 집하센터 권역별 인프라 설계 및 단계별 구축',task:'동북부 Hub - 세부 계획 수립 (거점 Capa, 추정비용 등)',date:'2026-09-18',wk:'W38',pic:'최무창',phase:'Phase 1.5',st:'',ms:'MS-E'},
+  {id:'2.4.8',wsNo:2,ano:'D',action:'지마켓 직영 집하센터 권역별 인프라 설계 및 단계별 구축',task:'동북부 Hub - 거점 확보 및 3PL 설비검토/계약완료',date:'2026-10-23',wk:'W43',pic:'최무창',phase:'Phase 1.5',st:'',ms:'MS-E'},
+  {id:'2.4.9',wsNo:2,ano:'D',action:'지마켓 직영 집하센터 권역별 인프라 설계 및 단계별 구축',task:'동북부 Hub - 현장 인프라 세팅 및 그랜드 오픈',date:'2026-11-06',wk:'W44',pic:'최무창',phase:'Phase 1.5',st:'',ms:'MS-E'},
+  {id:'2.5.1',wsNo:2,ano:'E',action:'지마켓 제휴 집하 운영체계 설계 및 단계별 구축',task:'지방권 네트워크 전략 및 대리점 상생 방안 수립',date:'2026-04-27',wk:'W18',pic:'강승구',phase:'Phase 1',st:'Done',ms:'MS-F'},
+  {id:'2.5.2',wsNo:2,ano:'E',action:'지마켓 제휴 집하 운영체계 설계 및 단계별 구축',task:'집하점 정산 기준, 화물사고 대응 방안, 계약 준비사항 및 관련 FAQ 작성',date:'2026-04-27',wk:'W18',pic:'강승구',phase:'Phase 1',st:'Done',ms:'MS-F'},
+  {id:'2.5.3',wsNo:2,ano:'E',action:'지마켓 제휴 집하 운영체계 설계 및 단계별 구축',task:'제휴 FM 협력사 운영 가이드 안내 (정산, 화물사고 등)',date:'2026-06-08',wk:'W24',pic:'강승구',phase:'Phase 1',st:'',ms:'MS-F'},
+  {id:'2.5.4',wsNo:2,ano:'E',action:'지마켓 제휴 집하 운영체계 설계 및 단계별 구축',task:'제휴 FM 추가 지역 확장 검토',date:'2026-06-30',wk:'W27',pic:'강승구',phase:'Phase 1',st:'',ms:'MS-F'},
+  {id:'2.6.1',wsNo:2,ano:'E',action:'지마켓 제휴 집하 운영체계 설계 및 단계별 구축',task:'대전 권역 협력사 계약 체결 완료',date:'2026-06-30',wk:'W27',pic:'강승구',phase:'Phase 1',st:'',ms:'MS-F'},
+  {id:'2.6.2',wsNo:2,ano:'E',action:'지마켓 제휴 집하 운영체계 설계 및 단계별 구축',task:'부산 권역 협력사 계약 체결 완료',date:'2026-08-14',wk:'W33',pic:'강승구',phase:'Phase 1.5',st:'',ms:'MS-F'},
+  {id:'2.6.3',wsNo:2,ano:'E',action:'지마켓 제휴 집하 운영체계 설계 및 단계별 구축',task:'서울 권역 협력사 계약 체결 완료',date:'2026-09-30',wk:'W40',pic:'강승구',phase:'Phase 1.5',st:'',ms:'MS-F'},
+  {id:'2.7.1',wsNo:2,ano:'F',action:'지마켓 Flex 모델 운영체계 설계',task:'데이터 분석 기반 권역별 물동량 분포 확인 및 Flex 서비스 대상 지역 정의',date:'2026-05-08',wk:'W19',pic:'유현천',phase:'Phase 1.5',st:'Done',ms:'MS-G'},
+  {id:'2.7.2',wsNo:2,ano:'F',action:'지마켓 Flex 모델 운영체계 설계',task:'서비스 본격 도입 전 1차 택배 단가 인하 견적 회신/추가 협의 완료',date:'2026-06-05',wk:'W23',pic:'유현천',phase:'Phase 1.5',st:'',ms:'MS-G'},
+  {id:'2.7.3',wsNo:2,ano:'F',action:'지마켓 Flex 모델 운영체계 설계',task:'서비스 고도화에 따른 PILOT 기준 수립',date:'2026-06-12',wk:'W24',pic:'유현천',phase:'Phase 1.5',st:'',ms:'MS-G'},
+  {id:'2.7.4',wsNo:2,ano:'F',action:'지마켓 Flex 모델 운영체계 설계',task:'PILOT 결과 및 택배사 협의를 통해 Flex 배송 고도화 운영 프로세스 수립 및 2차 단가 인하 기준 협의',date:'2026-09-11',wk:'W37',pic:'유현천',phase:'Phase 1.5',st:'',ms:'MS-G'},
+  {id:'2.7.5',wsNo:2,ano:'F',action:'지마켓 Flex 모델 운영체계 설계',task:'택배사별 지역 분배 전략 수립',date:'2026-09-18',wk:'W38',pic:'유현천',phase:'Phase 1.5',st:'',ms:'MS-G'},
   // WS3
-  {id:'3.1.1',wsNo:3,ano:'A',action:'Phase 1. First Mile 매뉴얼 운영 체계 설계',task:'AIDC 공동 개발 체계 구성 — 공동 로드맵·모듈 분담·품질 기준 정의',date:'2026-06-05',wk:'W23',pic:'이욱재',phase:'Phase 1',st:'',ms:'MS-03-2'},
-  {id:'3.1.2',wsNo:3,ano:'A',action:'Phase 1. First Mile 매뉴얼 운영 체계 설계',task:'G마켓 MVP 모델을 적용한 First Mile 운영 Business 요구사항(BRD) 정의',date:'2026-06-05',wk:'W23',pic:'이욱재',phase:'Phase 1',st:'',ms:'MS-03-2'},
-  {id:'3.2.1',wsNo:3,ano:'B',action:'Phase 1.5. First Mile MVP 시스템 구축',task:'Phase 1 MVP 모델 Scope 확정 (Data 연동, WEB/APP 필수 기능 구현 및 국내 환경 구축)',date:'2026-06-05',wk:'W23',pic:'이욱재',phase:'Phase 1',st:'',ms:'MS-11'},
-  {id:'3.2.2',wsNo:3,ano:'B',action:'Phase 1.5. First Mile MVP 시스템 구축',task:'Phase 1 PRD(제품요구사항) 리뷰를 통한 Product 요구사항 정의 확정',date:'2026-06-19',wk:'W25',pic:'이욱재',phase:'Phase 1',st:'',ms:'MS-11'},
-  {id:'3.2.3',wsNo:3,ano:'B',action:'Phase 1.5. First Mile MVP 시스템 구축',task:'FM, 3PL, 4PL 기능별 AIDC 시스템 현지화 및 G마켓 Customized 4PL 시스템 기능/연동 개발 완료',date:'2026-07-10',wk:'W28',pic:'이욱재',phase:'Phase 1',st:'',ms:'MS-11'},
-  {id:'3.2.4',wsNo:3,ano:'B',action:'Phase 1.5. First Mile MVP 시스템 구축',task:'시스템 통합 테스트(SIT) 진행 및 웹/앱 실적 처리 품질 검증',date:'2026-07-17',wk:'W29',pic:'이욱재',phase:'Phase 1',st:'',ms:'MS-11'},
-  {id:'3.2.5',wsNo:3,ano:'B',action:'Phase 1.5. First Mile MVP 시스템 구축',task:'Phase 1 UAT(사용자 수용 테스트) 진행 및 운영 현장 테스트 실행 (사용자 가이드 배포)',date:'2026-07-17',wk:'W29',pic:'이욱재',phase:'Phase 1',st:'',ms:'MS-11'},
-  {id:'3.2.6',wsNo:3,ano:'B',action:'Phase 1.5. First Mile MVP 시스템 구축',task:'Phase 1 LIVE 배포 완료 — 시스템 기반 실제 서비스 가동 개시',date:'2026-07-31',wk:'W31',pic:'이욱재',phase:'Phase 1',st:'',ms:'MS-11'},
-  {id:'3.3.1',wsNo:3,ano:'C',action:'현장 오퍼레이션 최적화를 위한 TMS 및 집하 기사 운영 시스템 구축',task:'동선 최적화 및 픽업 효율을 위한 TMS 시스템 비즈니스 요구사항 수립',date:'2026-08-07',wk:'W32',pic:'이욱재',phase:'Phase 1.5',st:'',ms:'MS-17'},
-  {id:'3.3.2',wsNo:3,ano:'C',action:'현장 오퍼레이션 최적화를 위한 TMS 및 집하 기사 운영 시스템 구축',task:'집하 기사 전용 운영 시스템 및 현장 장비 인프라 구축 완료',date:'2026-09-12',wk:'W37',pic:'이욱재',phase:'Phase 1.5',st:'',ms:'MS-17'},
-  {id:'3.3.3',wsNo:3,ano:'C',action:'현장 오퍼레이션 최적화를 위한 TMS 및 집하 기사 운영 시스템 구축',task:'구축 완료된 집하 기사 운영 시스템 및 장비 현장 배포·적용',date:'2026-09-30',wk:'W40',pic:'이욱재',phase:'Phase 1.5',st:'',ms:'MS-17'},
-  {id:'3.4.1',wsNo:3,ano:'D',action:'Phase 2. G마켓 전용 통합 시스템 설계',task:'G마켓 커스터마이징 개발 요건사항 정의',date:'2026-11-30',wk:'W49',pic:'이욱재',phase:'Phase 2',st:'',ms:'MS-29'},
-  {id:'3.4.2',wsNo:3,ano:'D',action:'Phase 2. G마켓 전용 통합 시스템 설계',task:'버전업 G마켓 FM 전용 시스템 현장 전면 적용',date:'2027-02-28',wk:'W10',pic:'이욱재',phase:'Phase 2',st:'',ms:'MS-29'},
-  {id:'3.4.3',wsNo:3,ano:'D',action:'Phase 2. G마켓 전용 통합 시스템 설계',task:'Phase 2 시스템 안정화 모니터링 및 현장 운영 피드백 수렴 (1개월)',date:'2027-03-31',wk:'W14',pic:'이욱재',phase:'Phase 2',st:'',ms:'MS-29'},
+  {id:'3.1.1',wsNo:3,ano:'A',action:'Phase 1. First Mile 매뉴얼 운영 체계 설계',task:'AIDC 공동 개발 체계 구성 — 공동 로드맵·모듈 분담·품질 기준 정의',date:'2026-06-05',wk:'W23',pic:'이욱재',phase:'Phase 1',st:'',ms:'MS-B'},
+  {id:'3.1.2',wsNo:3,ano:'A',action:'Phase 1. First Mile 매뉴얼 운영 체계 설계',task:'G마켓 MVP 모델을 적용한 First Mile 운영 Business 요구사항(BRD) 정의',date:'2026-06-05',wk:'W23',pic:'이욱재',phase:'Phase 1',st:'',ms:'MS-B'},
+  {id:'3.2.1',wsNo:3,ano:'B',action:'Phase 1.5. First Mile MVP 시스템 구축',task:'Phase 1 MVP 모델 Scope 확정 (Data 연동, WEB/APP 필수 기능 구현 및 국내 환경 구축)',date:'2026-06-05',wk:'W23',pic:'이욱재',phase:'Phase 1',st:'',ms:'MS-B'},
+  {id:'3.2.2',wsNo:3,ano:'B',action:'Phase 1.5. First Mile MVP 시스템 구축',task:'Phase 1 PRD(제품요구사항) 리뷰를 통한 Product 요구사항 정의 확정',date:'2026-06-19',wk:'W25',pic:'이욱재',phase:'Phase 1',st:'',ms:'MS-B'},
+  {id:'3.2.3',wsNo:3,ano:'B',action:'Phase 1.5. First Mile MVP 시스템 구축',task:'FM, 3PL, 4PL 기능별 AIDC 시스템 현지화 및 G마켓 Customized 4PL 시스템 기능/연동 개발 완료',date:'2026-07-10',wk:'W28',pic:'이욱재',phase:'Phase 1',st:'',ms:'MS-B'},
+  {id:'3.2.4',wsNo:3,ano:'B',action:'Phase 1.5. First Mile MVP 시스템 구축',task:'시스템 통합 테스트(SIT) 진행 및 웹/앱 실적 처리 품질 검증',date:'2026-07-17',wk:'W29',pic:'이욱재',phase:'Phase 1',st:'',ms:'MS-B'},
+  {id:'3.2.5',wsNo:3,ano:'B',action:'Phase 1.5. First Mile MVP 시스템 구축',task:'Phase 1 UAT(사용자 수용 테스트) 진행 및 운영 현장 테스트 실행 (사용자 가이드 배포)',date:'2026-07-17',wk:'W29',pic:'이욱재',phase:'Phase 1',st:'',ms:'MS-B'},
+  {id:'3.2.6',wsNo:3,ano:'B',action:'Phase 1.5. First Mile MVP 시스템 구축',task:'Phase 1 LIVE 배포 완료 — 시스템 기반 실제 서비스 가동 개시',date:'2026-07-31',wk:'W31',pic:'이욱재',phase:'Phase 1',st:'',ms:'MS-B'},
+  {id:'3.3.1',wsNo:3,ano:'C',action:'현장 오퍼레이션 최적화를 위한 TMS 및 집하 기사 운영 시스템 구축',task:'동선 최적화 및 픽업 효율을 위한 TMS 시스템 비즈니스 요구사항 수립',date:'2026-08-07',wk:'W32',pic:'이욱재',phase:'Phase 1.5',st:'',ms:'MS-B'},
+  {id:'3.3.2',wsNo:3,ano:'C',action:'현장 오퍼레이션 최적화를 위한 TMS 및 집하 기사 운영 시스템 구축',task:'집하 기사 전용 운영 시스템 및 현장 장비 인프라 구축 완료',date:'2026-09-12',wk:'W37',pic:'이욱재',phase:'Phase 1.5',st:'',ms:'MS-B'},
+  {id:'3.3.3',wsNo:3,ano:'C',action:'현장 오퍼레이션 최적화를 위한 TMS 및 집하 기사 운영 시스템 구축',task:'구축 완료된 집하 기사 운영 시스템 및 장비 현장 배포·적용',date:'2026-09-30',wk:'W40',pic:'이욱재',phase:'Phase 1.5',st:'',ms:'MS-B'},
+  {id:'3.4.1',wsNo:3,ano:'D',action:'Phase 2. G마켓 전용 통합 시스템 설계',task:'G마켓 커스터마이징 개발 요건사항 정의',date:'2026-11-30',wk:'W49',pic:'이욱재',phase:'Phase 2',st:'',ms:'MS-I'},
+  {id:'3.4.2',wsNo:3,ano:'D',action:'Phase 2. G마켓 전용 통합 시스템 설계',task:'버전업 G마켓 FM 전용 시스템 현장 전면 적용',date:'2027-02-28',wk:'W10',pic:'이욱재',phase:'Phase 2',st:'',ms:'MS-I'},
+  {id:'3.4.3',wsNo:3,ano:'D',action:'Phase 2. G마켓 전용 통합 시스템 설계',task:'Phase 2 시스템 안정화 모니터링 및 현장 운영 피드백 수렴 (1개월)',date:'2027-03-31',wk:'W14',pic:'이욱재',phase:'Phase 2',st:'',ms:'MS-I'},
   // WS4
-  {id:'4.1.1',wsNo:4,ano:'A',action:'원가 기반 일단위 정산 모델 설계안 도출',task:'배송 원가 항목 정의 및 단가 기준표 초안 작성',date:'2026-05-15',wk:'W20',pic:'황병순',phase:'Phase 1',st:'Done',ms:'MS-05'},
-  {id:'4.1.2',wsNo:4,ano:'A',action:'원가 기반 일단위 정산 모델 설계안 도출',task:'일단위 정산 로직 설계 및 유관부서(회계/재무) 협의',date:'2026-05-22',wk:'W21',pic:'황병순',phase:'Phase 1',st:'Done',ms:'MS-05'},
-  {id:'4.1.3',wsNo:4,ano:'A',action:'원가 기반 일단위 정산 모델 설계안 도출',task:'정산 모델 최종안 내부 검토 및 승인',date:'2026-05-29',wk:'W22',pic:'황병순',phase:'Phase 1',st:'',ms:'MS-05'},
-  {id:'4.2.1',wsNo:4,ano:'B',action:'서비스 요율표 확정 및 판매자 공시',task:'경쟁사 대비 서비스 요율 벤치마킹 및 초안 도출',date:'2026-06-19',wk:'W25',pic:'황병순',phase:'Phase 1',st:'',ms:'MS-08'},
-  {id:'4.2.2',wsNo:4,ano:'B',action:'서비스 요율표 확정 및 판매자 공시',task:'서비스 요율표 유관부서(리더십/영업/마케팅) 검토 및 확정',date:'2026-06-30',wk:'W27',pic:'황병순',phase:'Phase 1',st:'',ms:'MS-08'},
-  {id:'4.2.3',wsNo:4,ano:'B',action:'서비스 요율표 확정 및 판매자 공시',task:'판매자 공시 채널 확정 및 공지 배포',date:'2026-07-30',wk:'W31',pic:'황병순',phase:'Phase 1',st:'',ms:'MS-08'},
+  {id:'4.1.1',wsNo:4,ano:'A',action:'원가 기반 일단위 정산 모델 설계안 도출',task:'배송 원가 항목 정의 및 단가 기준표 초안 작성',date:'2026-05-15',wk:'W20',pic:'황병순',phase:'Phase 1',st:'Done',ms:'MS-D'},
+  {id:'4.1.2',wsNo:4,ano:'A',action:'원가 기반 일단위 정산 모델 설계안 도출',task:'일단위 정산 로직 설계 및 유관부서(회계/재무) 협의',date:'2026-05-22',wk:'W21',pic:'황병순',phase:'Phase 1',st:'Done',ms:'MS-D'},
+  {id:'4.1.3',wsNo:4,ano:'A',action:'원가 기반 일단위 정산 모델 설계안 도출',task:'정산 모델 최종안 내부 검토 및 승인',date:'2026-05-29',wk:'W22',pic:'황병순',phase:'Phase 1',st:'',ms:'MS-D'},
+  {id:'4.2.1',wsNo:4,ano:'B',action:'서비스 요율표 확정 및 판매자 공시',task:'경쟁사 대비 서비스 요율 벤치마킹 및 초안 도출',date:'2026-06-19',wk:'W25',pic:'황병순',phase:'Phase 1',st:'',ms:'MS-D'},
+  {id:'4.2.2',wsNo:4,ano:'B',action:'서비스 요율표 확정 및 판매자 공시',task:'서비스 요율표 유관부서(리더십/영업/마케팅) 검토 및 확정',date:'2026-06-30',wk:'W27',pic:'황병순',phase:'Phase 1',st:'',ms:'MS-D'},
+  {id:'4.2.3',wsNo:4,ano:'B',action:'서비스 요율표 확정 및 판매자 공시',task:'판매자 공시 채널 확정 및 공지 배포',date:'2026-07-30',wk:'W31',pic:'황병순',phase:'Phase 1',st:'',ms:'MS-D'},
   // WS5
-  {id:'5.1.1',wsNo:5,ano:'A',action:'회원가입 정책 설계 및 개발요건 정의',task:'서비스 가입 플로우 및 회원관리 정책 설계',date:'2026-05-15',wk:'W20',pic:'유주연',phase:'Phase 1',st:'Done',ms:'MS-09'},
-  {id:'5.1.2',wsNo:5,ano:'A',action:'회원가입 정책 설계 및 개발요건 정의',task:'회원 정책 최종안 확정 및 BRD 작성',date:'2026-05-29',wk:'W22',pic:'유주연',phase:'Phase 1',st:'Done',ms:'MS-09'},
-  {id:'5.1.3',wsNo:5,ano:'A',action:'회원가입 정책 설계 및 개발요건 정의',task:'BRD 개발 접수 및 개발 일정 확인',date:'2026-06-19',wk:'W25',pic:'유주연',phase:'Phase 1',st:'',ms:'MS-09'},
-  {id:'5.2.1',wsNo:5,ano:'B',action:'상품·주문 관리 정책 설계 및 개발요건 정의',task:'상품등록 변경구조안 도출 (스타배송 태그 통합 대응)',date:'2026-06-19',wk:'W25',pic:'유주연',phase:'Phase 1',st:'',ms:'MS-09'},
-  {id:'5.2.2',wsNo:5,ano:'B',action:'상품·주문 관리 정책 설계 및 개발요건 정의',task:'상품등록 변경구조안 개발 BRD 작성 및 접수',date:'2026-06-26',wk:'W27',pic:'유주연',phase:'Phase 1',st:'',ms:'MS-09'},
-  {id:'5.4.1',wsNo:5,ano:'C',action:'판매자 CS 프로세스 및 보상 정책 체계 수립',task:'판매자 CS 유입 채널별 대응 프로세스 및 표준 시나리오 설계',date:'2026-06-30',wk:'W27',pic:'김승훈',phase:'Phase 1',st:'',ms:'MS-09'},
-  {id:'5.4.2',wsNo:5,ano:'C',action:'판매자 CS 프로세스 및 보상 정책 체계 수립',task:'파손/분실/배송 지연 등 상황별·책임소재별 판매자 보상 기준 수립',date:'2026-06-30',wk:'W27',pic:'김승훈',phase:'Phase 1',st:'',ms:'MS-09'},
-  {id:'5.4.3',wsNo:5,ano:'C',action:'판매자 CS 프로세스 및 보상 정책 체계 수립',task:'판매자 CS 프로세스 유관부서 협의 및 최종 승인',date:'2026-07-15',wk:'W29',pic:'김승훈',phase:'Phase 1',st:'',ms:'MS-09'},
-  {id:'5.5.1',wsNo:5,ano:'D',action:'G마켓 배송서비스 beta 오픈 (판매자 스타배송)',task:'판매자 운영정책 초안 수립',date:'2026-05-29',wk:'W22',pic:'김승훈',phase:'Phase 1',st:'Done',ms:'MS-12'},
-  {id:'5.5.2',wsNo:5,ano:'D',action:'G마켓 배송서비스 beta 오픈 (판매자 스타배송)',task:'판매자 서비스 운영정책 도출 (법무검토완료 포함)',date:'2026-06-30',wk:'W27',pic:'유주연',phase:'Phase 1',st:'',ms:'MS-12'},
-  {id:'5.5.3',wsNo:5,ano:'D',action:'G마켓 배송서비스 beta 오픈 (판매자 스타배송)',task:'판매자 서비스 안내 페이지 신설',date:'2026-07-15',wk:'W29',pic:'김채원',phase:'Phase 1',st:'',ms:'MS-12'},
+  {id:'5.1.1',wsNo:5,ano:'A',action:'회원가입 정책 설계 및 개발요건 정의',task:'서비스 가입 플로우 및 회원관리 정책 설계',date:'2026-05-15',wk:'W20',pic:'유주연',phase:'Phase 1',st:'Done',ms:'MS-D'},
+  {id:'5.1.2',wsNo:5,ano:'A',action:'회원가입 정책 설계 및 개발요건 정의',task:'회원 정책 최종안 확정 및 BRD 작성',date:'2026-05-29',wk:'W22',pic:'유주연',phase:'Phase 1',st:'Done',ms:'MS-D'},
+  {id:'5.1.3',wsNo:5,ano:'A',action:'회원가입 정책 설계 및 개발요건 정의',task:'BRD 개발 접수 및 개발 일정 확인',date:'2026-06-19',wk:'W25',pic:'유주연',phase:'Phase 1',st:'',ms:'MS-D'},
+  {id:'5.2.1',wsNo:5,ano:'B',action:'상품·주문 관리 정책 설계 및 개발요건 정의',task:'상품등록 변경구조안 도출 (스타배송 태그 통합 대응)',date:'2026-06-19',wk:'W25',pic:'유주연',phase:'Phase 1',st:'',ms:'MS-D'},
+  {id:'5.2.2',wsNo:5,ano:'B',action:'상품·주문 관리 정책 설계 및 개발요건 정의',task:'상품등록 변경구조안 개발 BRD 작성 및 접수',date:'2026-06-26',wk:'W27',pic:'유주연',phase:'Phase 1',st:'',ms:'MS-D'},
+  {id:'5.4.1',wsNo:5,ano:'C',action:'판매자 CS 프로세스 및 보상 정책 체계 수립',task:'판매자 CS 유입 채널별 대응 프로세스 및 표준 시나리오 설계',date:'2026-06-30',wk:'W27',pic:'김승훈',phase:'Phase 1',st:'',ms:'MS-D'},
+  {id:'5.4.2',wsNo:5,ano:'C',action:'판매자 CS 프로세스 및 보상 정책 체계 수립',task:'파손/분실/배송 지연 등 상황별·책임소재별 판매자 보상 기준 수립',date:'2026-06-30',wk:'W27',pic:'김승훈',phase:'Phase 1',st:'',ms:'MS-D'},
+  {id:'5.4.3',wsNo:5,ano:'C',action:'판매자 CS 프로세스 및 보상 정책 체계 수립',task:'판매자 CS 프로세스 유관부서 협의 및 최종 승인',date:'2026-07-15',wk:'W29',pic:'김승훈',phase:'Phase 1',st:'',ms:'MS-D'},
+  {id:'5.5.1',wsNo:5,ano:'D',action:'G마켓 배송서비스 beta 오픈 (판매자 스타배송)',task:'판매자 운영정책 초안 수립',date:'2026-05-29',wk:'W22',pic:'김승훈',phase:'Phase 1',st:'Done',ms:'MS-D'},
+  {id:'5.5.2',wsNo:5,ano:'D',action:'G마켓 배송서비스 beta 오픈 (판매자 스타배송)',task:'판매자 서비스 운영정책 도출 (법무검토완료 포함)',date:'2026-06-30',wk:'W27',pic:'유주연',phase:'Phase 1',st:'',ms:'MS-D'},
+  {id:'5.5.3',wsNo:5,ano:'D',action:'G마켓 배송서비스 beta 오픈 (판매자 스타배송)',task:'판매자 서비스 안내 페이지 신설',date:'2026-07-15',wk:'W29',pic:'김채원',phase:'Phase 1',st:'',ms:'MS-D'},
   // WS6
-  {id:'6.1.1',wsNo:6,ano:'A',action:'배송 데이터 기반의 판매자 평가 관리지표 정의',task:'주요 배송 KPI 항목 정의 (당일발송율, 도착보장율, 취소율 등)',date:'2026-06-15',wk:'W25',pic:'김승훈',phase:'Phase 1',st:'',ms:'MS-10'},
-  {id:'6.1.2',wsNo:6,ano:'A',action:'배송 데이터 기반의 판매자 평가 관리지표 정의',task:'매뉴얼 모니터링 체계 수립',date:'2026-06-12',wk:'W24',pic:'김승훈',phase:'Phase 1',st:'',ms:'MS-10'},
-  {id:'6.1.3',wsNo:6,ano:'A',action:'배송 데이터 기반의 판매자 평가 관리지표 정의',task:'매뉴얼 모니터링 결과 도출',date:'2026-07-12',wk:'W29',pic:'김승훈',phase:'Phase 1',st:'',ms:'MS-10'},
-  {id:'6.1.4',wsNo:6,ano:'A',action:'배송 데이터 기반의 판매자 평가 관리지표 정의',task:'모니터링 데이터 기반 판매자 성과 등급 체계 설계 (등급별 기준 및 혜택/제재 연계)',date:'2026-07-30',wk:'W31',pic:'김승훈',phase:'Phase 1',st:'',ms:'MS-10'},
-  {id:'6.1.5',wsNo:6,ano:'A',action:'배송 데이터 기반의 판매자 평가 관리지표 정의',task:'지표 정의 최종안 내부 승인',date:'2026-07-31',wk:'W31',pic:'김승훈',phase:'Phase 1',st:'',ms:'MS-10'},
-  {id:'6.2.1',wsNo:6,ano:'B',action:'서비스 및 운영단계별 판매자 페널티 정책 공식 규정화',task:'판매자 스타배송 운영 데이터 기반 당일발송 관리 체계 수립',date:'2026-06-30',wk:'W27',pic:'김승훈',phase:'Phase 1',st:'',ms:'MS-20'},
-  {id:'6.2.2',wsNo:6,ano:'B',action:'서비스 및 운영단계별 판매자 페널티 정책 공식 규정화',task:'페널티 정책 매뉴얼 관리 ver 최종안 내부 검토 및 공식 배포',date:'2026-09-30',wk:'W40',pic:'김승훈',phase:'Phase 1',st:'',ms:'MS-20'},
-  {id:'6.3.1',wsNo:6,ano:'C',action:'판매자 배송점수 기반 페널티 자동화 프로그램 설계',task:'페널티 자동화 로직 설계 및 예외 케이스 정의',date:'2026-12-31',wk:'W53',pic:'김승훈',phase:'Phase 2',st:'',ms:'MS-24'},
-  {id:'6.3.2',wsNo:6,ano:'C',action:'판매자 배송점수 기반 페널티 자동화 프로그램 설계',task:'페널티 자동화 기획안 유관부서(개발/법무) 검토 및 확정',date:'2027-01-29',wk:'W5',pic:'김승훈',phase:'Phase 2',st:'',ms:'MS-24'},
-  {id:'6.4.1',wsNo:6,ano:'D',action:'판매자 성과 모니터링 대시보드 및 페널티 자동화 어드민 개발 반영',task:'모니터링 대시보드 개발 BRD 작성 및 접수',date:'2027-01-30',wk:'W5',pic:'김승훈',phase:'Phase 2',st:'',ms:'MS-30'},
-  {id:'6.4.2',wsNo:6,ano:'D',action:'판매자 성과 모니터링 대시보드 및 페널티 자동화 어드민 개발 반영',task:'대시보드 및 어드민 개발 완료 후 QA/UAT 진행',date:'2027-04-16',wk:'W16',pic:'김승훈',phase:'Phase 2',st:'',ms:'MS-30'},
+  {id:'6.1.1',wsNo:6,ano:'A',action:'배송 데이터 기반의 판매자 평가 관리지표 정의',task:'주요 배송 KPI 항목 정의 (당일발송율, 도착보장율, 취소율 등)',date:'2026-06-15',wk:'W25',pic:'김승훈',phase:'Phase 1',st:'',ms:'MS-D'},
+  {id:'6.1.2',wsNo:6,ano:'A',action:'배송 데이터 기반의 판매자 평가 관리지표 정의',task:'매뉴얼 모니터링 체계 수립',date:'2026-06-12',wk:'W24',pic:'김승훈',phase:'Phase 1',st:'',ms:'MS-D'},
+  {id:'6.1.3',wsNo:6,ano:'A',action:'배송 데이터 기반의 판매자 평가 관리지표 정의',task:'매뉴얼 모니터링 결과 도출',date:'2026-07-12',wk:'W29',pic:'김승훈',phase:'Phase 1',st:'',ms:'MS-D'},
+  {id:'6.1.4',wsNo:6,ano:'A',action:'배송 데이터 기반의 판매자 평가 관리지표 정의',task:'모니터링 데이터 기반 판매자 성과 등급 체계 설계 (등급별 기준 및 혜택/제재 연계)',date:'2026-07-30',wk:'W31',pic:'김승훈',phase:'Phase 1',st:'',ms:'MS-D'},
+  {id:'6.1.5',wsNo:6,ano:'A',action:'배송 데이터 기반의 판매자 평가 관리지표 정의',task:'지표 정의 최종안 내부 승인',date:'2026-07-31',wk:'W31',pic:'김승훈',phase:'Phase 1',st:'',ms:'MS-D'},
+  {id:'6.2.1',wsNo:6,ano:'B',action:'서비스 및 운영단계별 판매자 페널티 정책 공식 규정화',task:'판매자 스타배송 운영 데이터 기반 당일발송 관리 체계 수립',date:'2026-06-30',wk:'W27',pic:'김승훈',phase:'Phase 1',st:'',ms:'MS-D'},
+  {id:'6.2.2',wsNo:6,ano:'B',action:'서비스 및 운영단계별 판매자 페널티 정책 공식 규정화',task:'페널티 정책 매뉴얼 관리 ver 최종안 내부 검토 및 공식 배포',date:'2026-09-30',wk:'W40',pic:'김승훈',phase:'Phase 1',st:'',ms:'MS-D'},
+  {id:'6.3.1',wsNo:6,ano:'C',action:'판매자 배송점수 기반 페널티 자동화 프로그램 설계',task:'페널티 자동화 로직 설계 및 예외 케이스 정의',date:'2026-12-31',wk:'W53',pic:'김승훈',phase:'Phase 2',st:'',ms:'MS-D'},
+  {id:'6.3.2',wsNo:6,ano:'C',action:'판매자 배송점수 기반 페널티 자동화 프로그램 설계',task:'페널티 자동화 기획안 유관부서(개발/법무) 검토 및 확정',date:'2027-01-29',wk:'W5',pic:'김승훈',phase:'Phase 2',st:'',ms:'MS-D'},
+  {id:'6.4.1',wsNo:6,ano:'D',action:'판매자 성과 모니터링 대시보드 및 페널티 자동화 어드민 개발 반영',task:'모니터링 대시보드 개발 BRD 작성 및 접수',date:'2027-01-30',wk:'W5',pic:'김승훈',phase:'Phase 2',st:'',ms:'MS-I'},
+  {id:'6.4.2',wsNo:6,ano:'D',action:'판매자 성과 모니터링 대시보드 및 페널티 자동화 어드민 개발 반영',task:'대시보드 및 어드민 개발 완료 후 QA/UAT 진행',date:'2027-04-16',wk:'W16',pic:'김승훈',phase:'Phase 2',st:'',ms:'MS-I'},
   // WS7
-  {id:'7.2.1',wsNo:7,ano:'A',action:'Phase1 매뉴얼 운영 대상 셀러 발굴·계약 및 운영 준비 완료',task:'매뉴얼 운영 대상 셀러 선정 기준 수립 (월 출고량·지역·집하 환경 등)',date:'2026-06-19',wk:'W25',pic:'김채원',phase:'Phase 1',st:'Done',ms:'MS-02'},
-  {id:'7.2.3',wsNo:7,ano:'A',action:'Phase1 매뉴얼 운영 대상 셀러 발굴·계약 및 운영 준비 완료',task:'매뉴얼 운영 1차 참여 셀러 운영·단가 조건 협의',date:'2026-06-19',wk:'W25',pic:'윤현지',phase:'Phase 1',st:'Done',ms:'MS-02'},
-  {id:'7.2.5',wsNo:7,ano:'A',action:'Phase1 매뉴얼 운영 대상 셀러 발굴·계약 및 운영 준비 완료',task:'파일럿 참여 셀러 최종 확정 및 일정 공지',date:'2026-06-26',wk:'W27',pic:'박준성',phase:'Phase 1',st:'',ms:'MS-02'},
-  {id:'7.2.2',wsNo:7,ano:'A',action:'Phase1 매뉴얼 운영 대상 셀러 발굴·계약 및 운영 준비 완료',task:'매뉴얼 운영 2차 타겟 셀러 선별 (CM 영업 조직 연계)',date:'2026-06-26',wk:'W27',pic:'박준성',phase:'Phase 1',st:'',ms:'MS-02'},
-  {id:'7.1.1',wsNo:7,ano:'B',action:'Phase1 셀러 온보딩 프로세스 설계 및 운영 안정화',task:'판매자 스타배송 가입단계 기반 First mile 사전 영업 전환 요건 정의',date:'2026-04-30',wk:'W18',pic:'김채원',phase:'Phase 1',st:'Done',ms:'MS-02'},
-  {id:'7.1.2',wsNo:7,ano:'B',action:'Phase1 셀러 온보딩 프로세스 설계 및 운영 안정화',task:'컨설팅 후 승인 방식 온보딩 프로세스 설계',date:'2026-05-16',wk:'W20',pic:'김채원',phase:'Phase 1',st:'Done',ms:'MS-02'},
-  {id:'7.1.3',wsNo:7,ano:'B',action:'Phase1 셀러 온보딩 프로세스 설계 및 운영 안정화',task:'전환된 온보딩 프로세스 PX 반영 완료',date:'2026-05-18',wk:'W21',pic:'김채원',phase:'Phase 1',st:'Done',ms:'MS-02'},
-  {id:'7.1.4',wsNo:7,ano:'B',action:'Phase1 셀러 온보딩 프로세스 설계 및 운영 안정화',task:'온보딩 프로세스 전환 후 1개월 운영 모니터링 및 개선점 도출',date:'2026-06-18',wk:'W25',pic:'김채원',phase:'Phase 1',st:'',ms:'MS-02'},
-  {id:'7.4.1',wsNo:7,ano:'C',action:'판매자 SOP 수립 및 온보딩 가이드라인 문서화',task:'파일럿 운영 배송·운영 프로세스 수립 및 SOP v0.1 도출 완료',date:'2026-05-29',wk:'W22',pic:'김승훈',phase:'Phase 1',st:'Done',ms:'MS-02'},
-  {id:'7.4.2',wsNo:7,ano:'C',action:'판매자 SOP 수립 및 온보딩 가이드라인 문서화',task:'SOP 기반 파일럿 버전 판매자용 온보딩 가이드라인 문서화',date:'2026-06-08',wk:'W24',pic:'김채원',phase:'Phase 1',st:'',ms:'MS-02'},
-  {id:'7.4.3',wsNo:7,ano:'C',action:'판매자 SOP 수립 및 온보딩 가이드라인 문서화',task:'온보딩 가이드라인 파일럿 셀러 대상 배포 및 안내',date:'2026-06-10',wk:'W24',pic:'김채원',phase:'Phase 1',st:'',ms:'MS-02'},
-  {id:'7.4.4',wsNo:7,ano:'C',action:'판매자 SOP 수립 및 온보딩 가이드라인 문서화',task:'공식 오픈 대비 SOP v1.0 고도화 (파일럿 운영 결과 반영)',date:'2026-07-30',wk:'W31',pic:'김승훈',phase:'Phase 1',st:'',ms:'MS-02'},
-  {id:'7.6.2',wsNo:7,ano:'D',action:'Phase1 매뉴얼 운영 실행 및 결과 분석',task:'매뉴얼 공식 운영 개시 (파일럿 기간: 26년 6월~8월)',date:'2026-06-15',wk:'W25',pic:'김채원',phase:'Phase 1',st:'',ms:'MS-02'},
-  {id:'7.6.1',wsNo:7,ano:'D',action:'Phase1 매뉴얼 운영 실행 및 결과 분석',task:'매뉴얼 운영 데이터 모니터링 체계 수립',date:'2026-06-27',wk:'W27',pic:'김승훈',phase:'Phase 1',st:'',ms:'MS-02'},
-  {id:'7.6.3',wsNo:7,ano:'D',action:'Phase1 매뉴얼 운영 실행 및 결과 분석',task:'매뉴얼 운영 중간 점검 (4주차 기준 리뷰)',date:'2026-07-10',wk:'W28',pic:'김승훈',phase:'Phase 1',st:'',ms:'MS-02'},
-  {id:'7.6.4',wsNo:7,ano:'D',action:'Phase1 매뉴얼 운영 실행 및 결과 분석',task:'매뉴얼 운영 최종 데이터 리뷰 및 개선사항 도출',date:'2026-07-30',wk:'W31',pic:'김승훈',phase:'Phase 1',st:'',ms:'MS-02'},
-  {id:'7.6.5',wsNo:7,ano:'D',action:'Phase1 매뉴얼 운영 실행 및 결과 분석',task:'매뉴얼 결과 기반 세부 운영 정책 고도화 및 리스크 보완점 확정',date:'2026-07-30',wk:'W31',pic:'김승훈',phase:'Phase 1',st:'',ms:'MS-02'},
-  {id:'7.6.6',wsNo:7,ano:'D',action:'Phase1 매뉴얼 운영 실행 및 결과 분석',task:'매뉴얼 결과 기반 오픈 Go/No-Go 의사결정 보고',date:'2026-08-07',wk:'W32',pic:'김승훈',phase:'Phase 1',st:'',ms:'MS-02'},
+  {id:'7.2.1',wsNo:7,ano:'A',action:'Phase1 매뉴얼 운영 대상 셀러 발굴·계약 및 운영 준비 완료',task:'매뉴얼 운영 대상 셀러 선정 기준 수립 (월 출고량·지역·집하 환경 등)',date:'2026-06-19',wk:'W25',pic:'김채원',phase:'Phase 1',st:'Done',ms:''},
+  {id:'7.2.3',wsNo:7,ano:'A',action:'Phase1 매뉴얼 운영 대상 셀러 발굴·계약 및 운영 준비 완료',task:'매뉴얼 운영 1차 참여 셀러 운영·단가 조건 협의',date:'2026-06-19',wk:'W25',pic:'윤현지',phase:'Phase 1',st:'Done',ms:''},
+  {id:'7.2.5',wsNo:7,ano:'A',action:'Phase1 매뉴얼 운영 대상 셀러 발굴·계약 및 운영 준비 완료',task:'파일럿 참여 셀러 최종 확정 및 일정 공지',date:'2026-06-26',wk:'W27',pic:'박준성',phase:'Phase 1',st:'',ms:''},
+  {id:'7.2.2',wsNo:7,ano:'A',action:'Phase1 매뉴얼 운영 대상 셀러 발굴·계약 및 운영 준비 완료',task:'매뉴얼 운영 2차 타겟 셀러 선별 (CM 영업 조직 연계)',date:'2026-06-26',wk:'W27',pic:'박준성',phase:'Phase 1',st:'',ms:''},
+  {id:'7.1.1',wsNo:7,ano:'B',action:'Phase1 셀러 온보딩 프로세스 설계 및 운영 안정화',task:'판매자 스타배송 가입단계 기반 First mile 사전 영업 전환 요건 정의',date:'2026-04-30',wk:'W18',pic:'김채원',phase:'Phase 1',st:'Done',ms:''},
+  {id:'7.1.2',wsNo:7,ano:'B',action:'Phase1 셀러 온보딩 프로세스 설계 및 운영 안정화',task:'컨설팅 후 승인 방식 온보딩 프로세스 설계',date:'2026-05-16',wk:'W20',pic:'김채원',phase:'Phase 1',st:'Done',ms:''},
+  {id:'7.1.3',wsNo:7,ano:'B',action:'Phase1 셀러 온보딩 프로세스 설계 및 운영 안정화',task:'전환된 온보딩 프로세스 PX 반영 완료',date:'2026-05-18',wk:'W21',pic:'김채원',phase:'Phase 1',st:'Done',ms:''},
+  {id:'7.1.4',wsNo:7,ano:'B',action:'Phase1 셀러 온보딩 프로세스 설계 및 운영 안정화',task:'온보딩 프로세스 전환 후 1개월 운영 모니터링 및 개선점 도출',date:'2026-06-18',wk:'W25',pic:'김채원',phase:'Phase 1',st:'',ms:''},
+  {id:'7.4.1',wsNo:7,ano:'C',action:'판매자 SOP 수립 및 온보딩 가이드라인 문서화',task:'파일럿 운영 배송·운영 프로세스 수립 및 SOP v0.1 도출 완료',date:'2026-05-29',wk:'W22',pic:'김승훈',phase:'Phase 1',st:'Done',ms:''},
+  {id:'7.4.2',wsNo:7,ano:'C',action:'판매자 SOP 수립 및 온보딩 가이드라인 문서화',task:'SOP 기반 파일럿 버전 판매자용 온보딩 가이드라인 문서화',date:'2026-06-08',wk:'W24',pic:'김채원',phase:'Phase 1',st:'',ms:''},
+  {id:'7.4.3',wsNo:7,ano:'C',action:'판매자 SOP 수립 및 온보딩 가이드라인 문서화',task:'온보딩 가이드라인 파일럿 셀러 대상 배포 및 안내',date:'2026-06-10',wk:'W24',pic:'김채원',phase:'Phase 1',st:'',ms:''},
+  {id:'7.4.4',wsNo:7,ano:'C',action:'판매자 SOP 수립 및 온보딩 가이드라인 문서화',task:'공식 오픈 대비 SOP v1.0 고도화 (파일럿 운영 결과 반영)',date:'2026-07-30',wk:'W31',pic:'김승훈',phase:'Phase 1',st:'',ms:''},
+  {id:'7.6.2',wsNo:7,ano:'D',action:'Phase1 매뉴얼 운영 실행 및 결과 분석',task:'매뉴얼 공식 운영 개시 (파일럿 기간: 26년 6월~8월)',date:'2026-06-15',wk:'W25',pic:'김채원',phase:'Phase 1',st:'',ms:''},
+  {id:'7.6.1',wsNo:7,ano:'D',action:'Phase1 매뉴얼 운영 실행 및 결과 분석',task:'매뉴얼 운영 데이터 모니터링 체계 수립',date:'2026-06-27',wk:'W27',pic:'김승훈',phase:'Phase 1',st:'',ms:''},
+  {id:'7.6.3',wsNo:7,ano:'D',action:'Phase1 매뉴얼 운영 실행 및 결과 분석',task:'매뉴얼 운영 중간 점검 (4주차 기준 리뷰)',date:'2026-07-10',wk:'W28',pic:'김승훈',phase:'Phase 1',st:'',ms:''},
+  {id:'7.6.4',wsNo:7,ano:'D',action:'Phase1 매뉴얼 운영 실행 및 결과 분석',task:'매뉴얼 운영 최종 데이터 리뷰 및 개선사항 도출',date:'2026-07-30',wk:'W31',pic:'김승훈',phase:'Phase 1',st:'',ms:''},
+  {id:'7.6.5',wsNo:7,ano:'D',action:'Phase1 매뉴얼 운영 실행 및 결과 분석',task:'매뉴얼 결과 기반 세부 운영 정책 고도화 및 리스크 보완점 확정',date:'2026-07-30',wk:'W31',pic:'김승훈',phase:'Phase 1',st:'',ms:''},
+  {id:'7.6.6',wsNo:7,ano:'D',action:'Phase1 매뉴얼 운영 실행 및 결과 분석',task:'매뉴얼 결과 기반 오픈 Go/No-Go 의사결정 보고',date:'2026-08-07',wk:'W32',pic:'김승훈',phase:'Phase 1',st:'',ms:''},
   // WS8
-  {id:'8.1.1',wsNo:8,ano:'A',action:'신규 우선 타겟 셀러 발굴 및 세일즈 실행 플랜 수립',task:'G마켓 판매자 데이터 수집 및 분석 기준 정의 (집하지/물동량/출고형태 기반)',date:'2026-06-05',wk:'W23',pic:'김채원',phase:'Phase 1',st:'',ms:'MS-04'},
-  {id:'8.1.2',wsNo:8,ano:'A',action:'신규 우선 타겟 셀러 발굴 및 세일즈 실행 플랜 수립',task:'영업 우선 타겟 선정 기준 수립 및 최종 타겟 리스트업',date:'2026-06-12',wk:'W24',pic:'김채원',phase:'Phase 1',st:'',ms:'MS-04'},
-  {id:'8.1.3',wsNo:8,ano:'A',action:'신규 우선 타겟 셀러 발굴 및 세일즈 실행 플랜 수립',task:'셀러 세그먼트 맞춤 온보딩 전략 수립 및 세일즈 킷(Sales Kit) 제작',date:'2026-06-19',wk:'W25',pic:'김채원',phase:'Phase 1',st:'',ms:'MS-04'},
-  {id:'8.1.4',wsNo:8,ano:'A',action:'신규 우선 타겟 셀러 발굴 및 세일즈 실행 플랜 수립',task:'내부 영업 전략 수립 및 영업본부 대상 실행 얼라인먼트 세션 진행',date:'2026-06-12',wk:'W24',pic:'박준성',phase:'Phase 1',st:'',ms:'MS-04'},
-  {id:'8.1.5',wsNo:8,ano:'A',action:'신규 우선 타겟 셀러 발굴 및 세일즈 실행 플랜 수립',task:'셀러별 담당자 지정, 영업 액션 플랜 수립 및 운영 프로세스 확정',date:'2026-06-19',wk:'W25',pic:'박준성',phase:'Phase 1',st:'',ms:'MS-04'},
-  {id:'8.1.6',wsNo:8,ano:'A',action:'신규 우선 타겟 셀러 발굴 및 세일즈 실행 플랜 수립',task:'우선 타겟 셀러 대상 본격 아웃바운드 영업 시작',date:'2026-06-22',wk:'W26',pic:'박준성',phase:'Phase 1',st:'',ms:'MS-04'},
-  {id:'8.2.1',wsNo:8,ano:'B',action:'기존 레거시 셀러 마이그레이션 전략 및 영업 개시',task:'레거시 전환 타겟 리스트 확정 및 마이그레이션 대상 데이터 정리',date:'2026-07-31',wk:'W31',pic:'김준혜',phase:'Phase 1.5',st:'',ms:'MS-13'},
-  {id:'8.2.2',wsNo:8,ano:'B',action:'기존 레거시 셀러 마이그레이션 전략 및 영업 개시',task:'레거시 셀러 맞춤형 전환 유인 정책(혜택/프로모션) 및 소통 시나리오 수립',date:'2026-08-14',wk:'W33',pic:'김준혜',phase:'Phase 1.5',st:'',ms:'MS-13'},
-  {id:'8.2.3',wsNo:8,ano:'B',action:'기존 레거시 셀러 마이그레이션 전략 및 영업 개시',task:'영업본부 내 레거시 전환 전담 담당자 얼라인먼트 및 운영 프로세스 확정',date:'2026-08-21',wk:'W34',pic:'김준혜',phase:'Phase 1.5',st:'',ms:'MS-13'},
-  {id:'8.2.4',wsNo:8,ano:'B',action:'기존 레거시 셀러 마이그레이션 전략 및 영업 개시',task:'기존 레거시 셀러 대상 마이그레이션 전환 영업 개시',date:'2026-09-01',wk:'W36',pic:'김준혜',phase:'Phase 1.5',st:'',ms:'MS-13'},
+  {id:'8.1.1',wsNo:8,ano:'A',action:'신규 우선 타겟 셀러 발굴 및 세일즈 실행 플랜 수립',task:'G마켓 판매자 데이터 수집 및 분석 기준 정의 (집하지/물동량/출고형태 기반)',date:'2026-06-05',wk:'W23',pic:'김채원',phase:'Phase 1',st:'',ms:'MS-C'},
+  {id:'8.1.2',wsNo:8,ano:'A',action:'신규 우선 타겟 셀러 발굴 및 세일즈 실행 플랜 수립',task:'영업 우선 타겟 선정 기준 수립 및 최종 타겟 리스트업',date:'2026-06-12',wk:'W24',pic:'김채원',phase:'Phase 1',st:'',ms:'MS-C'},
+  {id:'8.1.3',wsNo:8,ano:'A',action:'신규 우선 타겟 셀러 발굴 및 세일즈 실행 플랜 수립',task:'셀러 세그먼트 맞춤 온보딩 전략 수립 및 세일즈 킷(Sales Kit) 제작',date:'2026-06-19',wk:'W25',pic:'김채원',phase:'Phase 1',st:'',ms:'MS-C'},
+  {id:'8.1.4',wsNo:8,ano:'A',action:'신규 우선 타겟 셀러 발굴 및 세일즈 실행 플랜 수립',task:'내부 영업 전략 수립 및 영업본부 대상 실행 얼라인먼트 세션 진행',date:'2026-06-12',wk:'W24',pic:'박준성',phase:'Phase 1',st:'',ms:'MS-C'},
+  {id:'8.1.5',wsNo:8,ano:'A',action:'신규 우선 타겟 셀러 발굴 및 세일즈 실행 플랜 수립',task:'셀러별 담당자 지정, 영업 액션 플랜 수립 및 운영 프로세스 확정',date:'2026-06-19',wk:'W25',pic:'박준성',phase:'Phase 1',st:'',ms:'MS-C'},
+  {id:'8.1.6',wsNo:8,ano:'A',action:'신규 우선 타겟 셀러 발굴 및 세일즈 실행 플랜 수립',task:'우선 타겟 셀러 대상 본격 아웃바운드 영업 시작',date:'2026-06-22',wk:'W26',pic:'박준성',phase:'Phase 1',st:'',ms:'MS-C'},
+  {id:'8.2.1',wsNo:8,ano:'B',action:'기존 레거시 셀러 마이그레이션 전략 및 영업 개시',task:'레거시 전환 타겟 리스트 확정 및 마이그레이션 대상 데이터 정리',date:'2026-07-31',wk:'W31',pic:'김준혜',phase:'Phase 1.5',st:'',ms:'MS-D'},
+  {id:'8.2.2',wsNo:8,ano:'B',action:'기존 레거시 셀러 마이그레이션 전략 및 영업 개시',task:'레거시 셀러 맞춤형 전환 유인 정책(혜택/프로모션) 및 소통 시나리오 수립',date:'2026-08-14',wk:'W33',pic:'김준혜',phase:'Phase 1.5',st:'',ms:'MS-D'},
+  {id:'8.2.3',wsNo:8,ano:'B',action:'기존 레거시 셀러 마이그레이션 전략 및 영업 개시',task:'영업본부 내 레거시 전환 전담 담당자 얼라인먼트 및 운영 프로세스 확정',date:'2026-08-21',wk:'W34',pic:'김준혜',phase:'Phase 1.5',st:'',ms:'MS-D'},
+  {id:'8.2.4',wsNo:8,ano:'B',action:'기존 레거시 셀러 마이그레이션 전략 및 영업 개시',task:'기존 레거시 셀러 대상 마이그레이션 전환 영업 개시',date:'2026-09-01',wk:'W36',pic:'김준혜',phase:'Phase 1.5',st:'',ms:'MS-D'},
   // WS9
-  {id:'9.1.1',wsNo:9,ano:'A',action:'스타배송 단일 Tag 통합 및 변경 반영',task:'스타배송/판매자 스타배송 태그 통합 개발 방향 협의 완료',date:'2026-06-05',wk:'W23',pic:'이태영',phase:'Phase 1.5',st:'',ms:'MS-18'},
-  {id:'9.1.2',wsNo:9,ano:'A',action:'스타배송 단일 Tag 통합 및 변경 반영',task:'스타배송 태그 통합 개발 완료',date:'2026-09-30',wk:'W40',pic:'이태영',phase:'Phase 1.5',st:'',ms:'MS-18'},
-  {id:'9.1.3',wsNo:9,ano:'A',action:'스타배송 단일 Tag 통합 및 변경 반영',task:'통합 변경 Buyer 안내 커뮤니케이션 및 캠페인 실행',date:'2026-09-30',wk:'W40',pic:'이태영',phase:'Phase 1.5',st:'',ms:'MS-18'},
-  {id:'9.2.1',wsNo:9,ano:'B',action:'스타배송 장바구니 구조 및 정책 개편',task:'풀필먼트 스타배송 장바구니 정책 변경안 수립 완료',date:'2026-06-19',wk:'W25',pic:'이태영',phase:'Phase 1.5',st:'',ms:'MS-18'},
-  {id:'9.2.2',wsNo:9,ano:'B',action:'스타배송 장바구니 구조 및 정책 개편',task:'풀필먼트 그루핑 및 합산 해체 적용을 위한 장바구니 기능 요구사항 및 화면 가이드라인 정의',date:'2026-06-30',wk:'W27',pic:'이태영',phase:'Phase 1.5',st:'',ms:'MS-18'},
-  {id:'9.2.3',wsNo:9,ano:'B',action:'스타배송 장바구니 구조 및 정책 개편',task:'장바구니 개편에 따른 정책·UX 통합 BRD 작성 및 개발 접수 완료',date:'2026-07-31',wk:'W31',pic:'이태영',phase:'Phase 1.5',st:'',ms:'MS-18'},
-  {id:'9.3.1',wsNo:9,ano:'C',action:'스타배송 도착보장 상품 리스팅 탐색 강화',task:'배송 가점 기반 상품 정렬 가점 로직 변경 및 리스팅 정책 수립',date:'2026-09-30',wk:'W40',pic:'이태영',phase:'Phase 1.5',st:'',ms:'MS-19'},
-  {id:'9.3.2',wsNo:9,ano:'C',action:'스타배송 도착보장 상품 리스팅 탐색 강화',task:'HM 모듈 및 개인화 추천 영역 내 스타배송 태그 노출 UI/UX 요구사항 정의',date:'2026-08-31',wk:'W36',pic:'이태영',phase:'Phase 1.5',st:'',ms:'MS-19'},
-  {id:'9.3.3',wsNo:9,ano:'C',action:'스타배송 도착보장 상품 리스팅 탐색 강화',task:'배송 가점 기반 상품 리스팅 탐색 통합 개발요건 BRD 작성 및 접수 완료',date:'2026-09-15',wk:'W38',pic:'이태영',phase:'Phase 1.5',st:'',ms:'MS-19'},
-  {id:'9.3.4',wsNo:9,ano:'C',action:'스타배송 도착보장 상품 리스팅 탐색 강화',task:'리스팅 탐색 강화 개발 완료 후 QA 및 효과 측정 기준 수립',date:'2026-09-30',wk:'W40',pic:'이태영',phase:'Phase 1.5',st:'',ms:'MS-19'},
+  {id:'9.1.1',wsNo:9,ano:'A',action:'스타배송 단일 Tag 통합 및 변경 반영',task:'스타배송/판매자 스타배송 태그 통합 개발 방향 협의 완료',date:'2026-06-05',wk:'W23',pic:'이태영',phase:'Phase 1.5',st:'',ms:'MS-D'},
+  {id:'9.1.2',wsNo:9,ano:'A',action:'스타배송 단일 Tag 통합 및 변경 반영',task:'스타배송 태그 통합 개발 완료',date:'2026-09-30',wk:'W40',pic:'이태영',phase:'Phase 1.5',st:'',ms:'MS-D'},
+  {id:'9.1.3',wsNo:9,ano:'A',action:'스타배송 단일 Tag 통합 및 변경 반영',task:'통합 변경 Buyer 안내 커뮤니케이션 및 캠페인 실행',date:'2026-09-30',wk:'W40',pic:'이태영',phase:'Phase 1.5',st:'',ms:'MS-D'},
+  {id:'9.2.1',wsNo:9,ano:'B',action:'스타배송 장바구니 구조 및 정책 개편',task:'풀필먼트 스타배송 장바구니 정책 변경안 수립 완료',date:'2026-06-19',wk:'W25',pic:'이태영',phase:'Phase 1.5',st:'',ms:'MS-D'},
+  {id:'9.2.2',wsNo:9,ano:'B',action:'스타배송 장바구니 구조 및 정책 개편',task:'풀필먼트 그루핑 및 합산 해체 적용을 위한 장바구니 기능 요구사항 및 화면 가이드라인 정의',date:'2026-06-30',wk:'W27',pic:'이태영',phase:'Phase 1.5',st:'',ms:'MS-D'},
+  {id:'9.2.3',wsNo:9,ano:'B',action:'스타배송 장바구니 구조 및 정책 개편',task:'장바구니 개편에 따른 정책·UX 통합 BRD 작성 및 개발 접수 완료',date:'2026-07-31',wk:'W31',pic:'이태영',phase:'Phase 1.5',st:'',ms:'MS-D'},
+  {id:'9.3.1',wsNo:9,ano:'C',action:'스타배송 도착보장 상품 리스팅 탐색 강화',task:'배송 가점 기반 상품 정렬 가점 로직 변경 및 리스팅 정책 수립',date:'2026-09-30',wk:'W40',pic:'이태영',phase:'Phase 1.5',st:'',ms:'MS-D'},
+  {id:'9.3.2',wsNo:9,ano:'C',action:'스타배송 도착보장 상품 리스팅 탐색 강화',task:'HM 모듈 및 개인화 추천 영역 내 스타배송 태그 노출 UI/UX 요구사항 정의',date:'2026-08-31',wk:'W36',pic:'이태영',phase:'Phase 1.5',st:'',ms:'MS-D'},
+  {id:'9.3.3',wsNo:9,ano:'C',action:'스타배송 도착보장 상품 리스팅 탐색 강화',task:'배송 가점 기반 상품 리스팅 탐색 통합 개발요건 BRD 작성 및 접수 완료',date:'2026-09-15',wk:'W38',pic:'이태영',phase:'Phase 1.5',st:'',ms:'MS-D'},
+  {id:'9.3.4',wsNo:9,ano:'C',action:'스타배송 도착보장 상품 리스팅 탐색 강화',task:'리스팅 탐색 강화 개발 완료 후 QA 및 효과 측정 기준 수립',date:'2026-09-30',wk:'W40',pic:'이태영',phase:'Phase 1.5',st:'',ms:'MS-D'},
   // WS10
-  {id:'10.1.1',wsNo:10,ano:'A',action:'4PL E2E 통합 시스템 비즈니스 요구사항 정의 및 검증 협업',task:'4PL E2E 개발 착수 킥오프 준비',date:'2026-09-04',wk:'W36',pic:'이욱재',phase:'Phase 2',st:'',ms:'MS-25'},
-  {id:'10.1.2',wsNo:10,ano:'A',action:'4PL E2E 통합 시스템 비즈니스 요구사항 정의 및 검증 협업',task:'4PL E2E 시스템 연동 비즈니스 요구사항(BRD) 정의 및 요청사항 작성',date:'2026-09-25',wk:'W39',pic:'이욱재',phase:'Phase 2',st:'',ms:'MS-25'},
-  {id:'10.1.3',wsNo:10,ano:'A',action:'4PL E2E 통합 시스템 비즈니스 요구사항 정의 및 검증 협업',task:'4PL E2E 시스템 구축 개발 프로세스 모니터링 및 기획 싱크 조율 시작',date:'2026-11-13',wk:'W46',pic:'이욱재',phase:'Phase 2',st:'',ms:'MS-25'},
-  {id:'10.1.4',wsNo:10,ano:'A',action:'4PL E2E 통합 시스템 비즈니스 요구사항 정의 및 검증 협업',task:'4PL E2E 시스템 기능 테스트(QA) 및 FM+4PL 통합 연동 테스트 시나리오 검증',date:'2026-12-11',wk:'W50',pic:'이욱재',phase:'Phase 2',st:'',ms:'MS-25'},
-  {id:'10.2.1',wsNo:10,ano:'B',action:'Control Tower 오픈 및 운영 가시성 고도화',task:'Control Tower v1 공식 오픈 (실시간 통합 물류 가시성 확보 및 시스템 LTS 가동)',date:'2026-12-23',wk:'W52',pic:'이욱재',phase:'Phase 2',st:'',ms:'MS-25'},
-  {id:'10.2.2',wsNo:10,ano:'B',action:'Control Tower 오픈 및 운영 가시성 고도화',task:'E2E 배송 데이터 흐름 정합성 검증 체계 구축 및 통합 모니터링 고도화',date:'2027-01-29',wk:'W5',pic:'이욱재',phase:'Phase 2',st:'',ms:'MS-25'},
-  {id:'10.2.3',wsNo:10,ano:'B',action:'Control Tower 오픈 및 운영 가시성 고도화',task:'주요 KPI 대시보드 가시성 확보 및 가동 자동 알림(Alerting) 인프라 셋업',date:'2027-01-29',wk:'W5',pic:'이욱재',phase:'Phase 2',st:'',ms:'MS-25'},
-  {id:'10.2.4',wsNo:10,ano:'B',action:'Control Tower 오픈 및 운영 가시성 고도화',task:'Control Tower 운영 안정화 점검 및 Phase 2 시스템 피드백 반영',date:'2027-02-28',wk:'W10',pic:'이욱재',phase:'Phase 2',st:'',ms:'MS-25'},
+  {id:'10.1.1',wsNo:10,ano:'A',action:'4PL E2E 통합 시스템 비즈니스 요구사항 정의 및 검증 협업',task:'4PL E2E 개발 착수 킥오프 준비',date:'2026-09-04',wk:'W36',pic:'이욱재',phase:'Phase 2',st:'',ms:'MS-I'},
+  {id:'10.1.2',wsNo:10,ano:'A',action:'4PL E2E 통합 시스템 비즈니스 요구사항 정의 및 검증 협업',task:'4PL E2E 시스템 연동 비즈니스 요구사항(BRD) 정의 및 요청사항 작성',date:'2026-09-25',wk:'W39',pic:'이욱재',phase:'Phase 2',st:'',ms:'MS-I'},
+  {id:'10.1.3',wsNo:10,ano:'A',action:'4PL E2E 통합 시스템 비즈니스 요구사항 정의 및 검증 협업',task:'4PL E2E 시스템 구축 개발 프로세스 모니터링 및 기획 싱크 조율 시작',date:'2026-11-13',wk:'W46',pic:'이욱재',phase:'Phase 2',st:'',ms:'MS-I'},
+  {id:'10.1.4',wsNo:10,ano:'A',action:'4PL E2E 통합 시스템 비즈니스 요구사항 정의 및 검증 협업',task:'4PL E2E 시스템 기능 테스트(QA) 및 FM+4PL 통합 연동 테스트 시나리오 검증',date:'2026-12-11',wk:'W50',pic:'이욱재',phase:'Phase 2',st:'',ms:'MS-I'},
+  {id:'10.2.1',wsNo:10,ano:'B',action:'Control Tower 오픈 및 운영 가시성 고도화',task:'Control Tower v1 공식 오픈 (실시간 통합 물류 가시성 확보 및 시스템 LTS 가동)',date:'2026-12-23',wk:'W52',pic:'이욱재',phase:'Phase 2',st:'',ms:'MS-I'},
+  {id:'10.2.2',wsNo:10,ano:'B',action:'Control Tower 오픈 및 운영 가시성 고도화',task:'E2E 배송 데이터 흐름 정합성 검증 체계 구축 및 통합 모니터링 고도화',date:'2027-01-29',wk:'W5',pic:'이욱재',phase:'Phase 2',st:'',ms:'MS-I'},
+  {id:'10.2.3',wsNo:10,ano:'B',action:'Control Tower 오픈 및 운영 가시성 고도화',task:'주요 KPI 대시보드 가시성 확보 및 가동 자동 알림(Alerting) 인프라 셋업',date:'2027-01-29',wk:'W5',pic:'이욱재',phase:'Phase 2',st:'',ms:'MS-I'},
+  {id:'10.2.4',wsNo:10,ano:'B',action:'Control Tower 오픈 및 운영 가시성 고도화',task:'Control Tower 운영 안정화 점검 및 Phase 2 시스템 피드백 반영',date:'2027-02-28',wk:'W10',pic:'이욱재',phase:'Phase 2',st:'',ms:'MS-I'},
   // WS11
-  {id:'11.1.1',wsNo:11,ano:'A',action:'ETA 기반 구매자 배송 경험 설계',task:'ETA 산출 로직 설계 (배송 구간별 시간 기준 정의)',date:'2026-11-28',wk:'W48',pic:'이태영',phase:'Phase 2',st:'',ms:'MS-23'},
-  {id:'11.1.2',wsNo:11,ano:'A',action:'ETA 기반 구매자 배송 경험 설계',task:'구매자향 ETA 노출 UI/UX 요구사항 정의',date:'2026-12-05',wk:'W49',pic:'이태영',phase:'Phase 2',st:'',ms:'MS-23'},
-  {id:'11.1.3',wsNo:11,ano:'A',action:'ETA 기반 구매자 배송 경험 설계',task:'ETA 기반 배송 커뮤니케이션 BRD 작성 및 개발 접수',date:'2026-12-30',wk:'W53',pic:'이태영',phase:'Phase 2',st:'',ms:'MS-23'},
-  {id:'11.2.1',wsNo:11,ano:'B',action:'Proactive CS 프로세스 수립',task:'배송 지연·이상 감지 트리거 기준 정의 (지연/분실/오배송 룰셋)',date:'2026-12-15',wk:'W51',pic:'이태영',phase:'Phase 2',st:'',ms:'MS-23'},
-  {id:'11.2.2',wsNo:11,ano:'B',action:'Proactive CS 프로세스 수립',task:'선제적 CS 대응 프로세스 설계 (자동 알림·CS 인입 전 선대응)',date:'2027-01-15',wk:'W3',pic:'이태영',phase:'Phase 2',st:'',ms:'MS-23'},
-  {id:'11.2.3',wsNo:11,ano:'B',action:'Proactive CS 프로세스 수립',task:'Proactive CS 개발 안건 도출 및 BRD 접수',date:'2027-01-30',wk:'W5',pic:'이태영',phase:'Phase 2',st:'',ms:'MS-23'},
+  {id:'11.1.1',wsNo:11,ano:'A',action:'ETA 기반 구매자 배송 경험 설계',task:'ETA 산출 로직 설계 (배송 구간별 시간 기준 정의)',date:'2026-11-28',wk:'W48',pic:'이태영',phase:'Phase 2',st:'',ms:'MS-H'},
+  {id:'11.1.2',wsNo:11,ano:'A',action:'ETA 기반 구매자 배송 경험 설계',task:'구매자향 ETA 노출 UI/UX 요구사항 정의',date:'2026-12-05',wk:'W49',pic:'이태영',phase:'Phase 2',st:'',ms:'MS-H'},
+  {id:'11.1.3',wsNo:11,ano:'A',action:'ETA 기반 구매자 배송 경험 설계',task:'ETA 기반 배송 커뮤니케이션 BRD 작성 및 개발 접수',date:'2026-12-30',wk:'W53',pic:'이태영',phase:'Phase 2',st:'',ms:'MS-H'},
+  {id:'11.2.1',wsNo:11,ano:'B',action:'Proactive CS 프로세스 수립',task:'배송 지연·이상 감지 트리거 기준 정의 (지연/분실/오배송 룰셋)',date:'2026-12-15',wk:'W51',pic:'이태영',phase:'Phase 2',st:'',ms:'MS-H'},
+  {id:'11.2.2',wsNo:11,ano:'B',action:'Proactive CS 프로세스 수립',task:'선제적 CS 대응 프로세스 설계 (자동 알림·CS 인입 전 선대응)',date:'2027-01-15',wk:'W3',pic:'이태영',phase:'Phase 2',st:'',ms:'MS-H'},
+  {id:'11.2.3',wsNo:11,ano:'B',action:'Proactive CS 프로세스 수립',task:'Proactive CS 개발 안건 도출 및 BRD 접수',date:'2027-01-30',wk:'W5',pic:'이태영',phase:'Phase 2',st:'',ms:'MS-H'},
   // WS12
-  {id:'12.1.1',wsNo:12,ano:'A',action:'Star Delivery / 4PL Order 40% 달성 추적 및 전환 기준 관리',task:'Star Delivery 40% 달성을 위한 물량 모니터링 체계 수립',date:'2026-06-27',wk:'W27',pic:'이태영',phase:'Phase 2',st:'',ms:'MS-28'},
-  {id:'12.1.2',wsNo:12,ano:'A',action:'Star Delivery / 4PL Order 40% 달성 추적 및 전환 기준 관리',task:'목표 달성률 주간 추적 및 갭 분석 보고',date:'2026-07-30',wk:'W31',pic:'이태영',phase:'Phase 2',st:'',ms:'MS-28'},
-  {id:'12.2.1',wsNo:12,ano:'B',action:'동적 Tag(Dynamic Tag) 노출 규칙 정의',task:'Dynamic Tag 부여 기준 설계 (배송 성과·속도·보장 여부 기반)',date:'2027-01-15',wk:'W3',pic:'이태영',phase:'Phase 2',st:'',ms:'MS-26'},
-  {id:'12.2.2',wsNo:12,ano:'B',action:'동적 Tag(Dynamic Tag) 노출 규칙 정의',task:'Dynamic Tag 노출 규칙 최종 확정 및 개발 BRD 작성',date:'2027-02-05',wk:'W6',pic:'이태영',phase:'Phase 2',st:'',ms:'MS-26'},
-  {id:'12.3.1',wsNo:12,ano:'C',action:'배송서비스 리뉴얼 방향성 수립',task:'스타배송 브랜드 현황 분석 및 리뉴얼 필요성 정의',date:'2026-12-30',wk:'W53',pic:'이태영',phase:'Phase 2',st:'',ms:'MS-27'},
-  {id:'12.3.2',wsNo:12,ano:'C',action:'배송서비스 리뉴얼 방향성 수립',task:'리뉴얼 방향성 수립 및 내부 리더십 승인',date:'2027-01-30',wk:'W5',pic:'이태영',phase:'Phase 2',st:'',ms:'MS-27'},
-  {id:'12.3.3',wsNo:12,ano:'C',action:'배송서비스 리뉴얼 방향성 수립',task:'배송서비스 리뉴얼 개발 요건 접수',date:'2027-02-05',wk:'W6',pic:'이태영',phase:'Phase 2',st:'',ms:'MS-27'},
+  {id:'12.1.1',wsNo:12,ano:'A',action:'Star Delivery / 4PL Order 40% 달성 추적 및 전환 기준 관리',task:'Star Delivery 40% 달성을 위한 물량 모니터링 체계 수립',date:'2026-06-27',wk:'W27',pic:'이태영',phase:'Phase 2',st:'',ms:''},
+  {id:'12.1.2',wsNo:12,ano:'A',action:'Star Delivery / 4PL Order 40% 달성 추적 및 전환 기준 관리',task:'목표 달성률 주간 추적 및 갭 분석 보고',date:'2026-07-30',wk:'W31',pic:'이태영',phase:'Phase 2',st:'',ms:''},
+  {id:'12.2.1',wsNo:12,ano:'B',action:'동적 Tag(Dynamic Tag) 노출 규칙 정의',task:'Dynamic Tag 부여 기준 설계 (배송 성과·속도·보장 여부 기반)',date:'2027-01-15',wk:'W3',pic:'이태영',phase:'Phase 2',st:'',ms:'MS-H'},
+  {id:'12.2.2',wsNo:12,ano:'B',action:'동적 Tag(Dynamic Tag) 노출 규칙 정의',task:'Dynamic Tag 노출 규칙 최종 확정 및 개발 BRD 작성',date:'2027-02-05',wk:'W6',pic:'이태영',phase:'Phase 2',st:'',ms:'MS-H'},
+  {id:'12.3.1',wsNo:12,ano:'C',action:'배송서비스 리뉴얼 방향성 수립',task:'스타배송 브랜드 현황 분석 및 리뉴얼 필요성 정의',date:'2026-12-30',wk:'W53',pic:'이태영',phase:'Phase 2',st:'',ms:'MS-H'},
+  {id:'12.3.2',wsNo:12,ano:'C',action:'배송서비스 리뉴얼 방향성 수립',task:'리뉴얼 방향성 수립 및 내부 리더십 승인',date:'2027-01-30',wk:'W5',pic:'이태영',phase:'Phase 2',st:'',ms:'MS-H'},
+  {id:'12.3.3',wsNo:12,ano:'C',action:'배송서비스 리뉴얼 방향성 수립',task:'배송서비스 리뉴얼 개발 요건 접수',date:'2027-02-05',wk:'W6',pic:'이태영',phase:'Phase 2',st:'',ms:'MS-H'},
 ];
 
 let LOGS = [];
@@ -881,6 +876,7 @@ const CUR_USER = '관리자';
 const PERSONS = ['최승범','강승구','최무창','이욱재','황병순','유주연','김승훈','유현천','이태영','하지은','김채원','김준혜','박준성','윤현지'];
 const TODAY = new Date('2026-06-10');
 let taskFilter='all', alertFilter='all', picFilter='', weekFilter='';
+let ganttCollapsed=new Set(); // 접힌 MS no 목록
 let expWs=new Set([1,2,3,4,5,6,7,8,9,10,11,12]);
 let colAct=new Set();
 // drag state
@@ -1131,12 +1127,32 @@ function openMsModal(no){
   document.getElementById('moMsSt').innerHTML=sbadge(m.status,{st:m.status,date:m.date});
   const rel=TASKS.filter(t=>t.ms===m.no);
   const el=document.getElementById('moMsActs');el.innerHTML='';
-  if(!rel.length){el.innerHTML='<div style="padding:16px;text-align:center;color:var(--tx2);font-size:12px">연결된 Task가 없습니다</div>';}
-  else rel.forEach(t=>{
-    const r=document.createElement('div');r.className='mahr';
-    r.innerHTML=`<span style="font-size:12px">${t.task}</span><span style="font-size:12px;color:var(--tx2)">${t.pic||'—'}</span><span style="font-size:12px;color:var(--tx2)">${fd(t.date)}</span><span>${sbadge(t.st,t)}</span><span></span>`;
-    el.appendChild(r);
-  });
+  if(!rel.length){
+    el.innerHTML='<div style="padding:16px;text-align:center;color:var(--tx2);font-size:13px">연결된 Task가 없습니다</div>';
+  } else {
+    // Action별 그룹핑
+    const actMap={};
+    rel.forEach(t=>{if(!actMap[t.action])actMap[t.action]=[];actMap[t.action].push(t);});
+    Object.entries(actMap).forEach(([action,tasks])=>{
+      // Action 헤더
+      const ah=document.createElement('div');
+      ah.style.cssText='padding:8px 14px;background:var(--ac-bg);border-bottom:1px solid var(--ac-bd);border-top:1px solid var(--ac-bd);display:flex;align-items:center;gap:8px;margin-top:4px;';
+      ah.innerHTML=`<span style="font-size:11px;font-weight:700;color:var(--ac-tx);flex:1;">${action}</span><span style="font-size:11px;color:var(--tx3)">${tasks.length}개 Task</span>`;
+      el.appendChild(ah);
+      // Task 헤더
+      const hdr=document.createElement('div');
+      hdr.style.cssText='display:grid;grid-template-columns:1fr 90px 100px 80px;gap:8px;padding:6px 14px;font-size:11px;font-weight:700;color:var(--tx2);background:var(--sf2);border-bottom:1px solid var(--bd);text-transform:uppercase;letter-spacing:.3px;';
+      hdr.innerHTML='<span>Task</span><span>담당자</span><span>Target Date</span><span>Status</span>';
+      el.appendChild(hdr);
+      // Task 행
+      tasks.forEach(t=>{
+        const r=document.createElement('div');
+        r.style.cssText='display:grid;grid-template-columns:1fr 90px 100px 80px;gap:8px;padding:8px 14px;border-bottom:1px solid var(--bd);align-items:center;font-size:13px;';
+        r.innerHTML=`<span style="line-height:1.4">${t.task}</span><span style="color:var(--tx2)">${t.pic||'—'}</span><span style="color:var(--tx2)">${fd(t.date)}</span><span>${sbadge(t.st,t)}</span>`;
+        el.appendChild(r);
+      });
+    });
+  }
   document.getElementById('moMs').classList.add('open');
 }
 
@@ -1301,103 +1317,202 @@ function renderLogs(){
 // ── Tab: Gantt Chart ──
 function renderGantt(){
   const wrap=document.getElementById('ganttInner');
+  const scrollWrap=document.getElementById('ganttWrap');
   wrap.innerHTML='';
 
-  // collect date range
   const allDates=[...MS.map(m=>pd(m.date)),...MS.map(m=>pd(m.startDate)),...TASKS.map(t=>pd(t.date))].filter(Boolean);
   if(!allDates.length){wrap.innerHTML='<div class="eblk" style="padding:40px">데이터 없음</div>';return;}
   const minD=new Date(Math.min(...allDates.map(d=>d.getTime())));
   const maxD=new Date(Math.max(...allDates.map(d=>d.getTime())));
-  // snap to week boundaries
   const startWk=new Date(minD);startWk.setDate(startWk.getDate()-startWk.getDay());
   const endWk=new Date(maxD);endWk.setDate(endWk.getDate()+(6-endWk.getDay())+7);
 
-  const LABEL_W=260;const WK_W=48;
-  // generate week columns
+  // ── 컬럼 너비 — 넉넉하게 ──
+  const COL_NAME=320; // 텍스트 여유롭게
+  const COL_PIC=90;
+  const COL_DATE=90;
+  const COL_ST=80;    // On Track 한줄
+  const FIXED_W=COL_NAME+COL_PIC+COL_DATE+COL_ST; // 580px
+  const WK_W=60;
+
   const weeks=[];let cur=new Date(startWk);
   while(cur<=endWk){weeks.push(new Date(cur));cur.setDate(cur.getDate()+7);}
-  const totalW=LABEL_W+weeks.length*WK_W;
+  const totalW=FIXED_W+weeks.length*WK_W;
 
-  // build header
-  let html=`<div style="position:sticky;top:0;z-index:20;background:var(--sf);border-bottom:2px solid var(--bd);display:flex;min-width:${totalW}px">`;
-  html+=`<div style="width:${LABEL_W}px;flex-shrink:0;padding:8px 12px;font-size:11px;font-weight:700;color:var(--tx2);border-right:1px solid var(--bd);background:var(--sf2)">Milestone / Action</div>`;
-  weeks.forEach((w,i)=>{
-    const wn='W'+getWeekNum(w);
+  function wkLabel(w){
+    const e=new Date(w);e.setDate(e.getDate()+6);
+    return{wn:'W'+getWeekNum(w),range:(w.getMonth()+1)+'/'+(w.getDate())+'~'+(e.getDate())};
+  }
+  function dateToX(s){
+    const d=pd(s);if(!d)return null;
+    return FIXED_W+Math.round((d-startWk)/86400000/7*WK_W);
+  }
+  const todayX=dateToX(TODAY.toISOString().slice(0,10));
+
+  function actionStatus(tasks){
+    if(tasks.every(t=>t.st==='Done'))return{label:'Done',color:'var(--done)',bg:'#e6f9f5'};
+    if(tasks.some(t=>t.st==='Delayed'||isDel(t)))return{label:'지연',color:'var(--del)',bg:'#fff0f1'};
+    if(tasks.some(t=>t.st==='On Track'))return{label:'진행중',color:'var(--ot)',bg:'#e8f1ff'};
+    return{label:'예정',color:'var(--pl)',bg:'var(--sf2)'};
+  }
+
+  // sticky 고정셀 스타일
+  const FC=(bg,extra='')=>`position:sticky;left:0;z-index:12;display:flex;flex-shrink:0;width:${FIXED_W}px;overflow:hidden;background:${bg};${extra}`;
+
+  // ── 헤더 ──
+  let html=`<div style="position:sticky;top:0;z-index:25;display:flex;min-width:${totalW}px;border-bottom:2px solid var(--bd);">`;
+  html+=`<div style="${FC('var(--sf2)','border-right:2px solid var(--bd2);')}">
+    <div style="width:28px;flex-shrink:0;box-sizing:border-box;border-right:1px solid var(--bd);"></div>
+    <div style="width:${COL_NAME-28}px;padding:9px 12px;font-size:12px;font-weight:700;color:var(--tx2);border-right:1px solid var(--bd);text-transform:uppercase;letter-spacing:.3px;white-space:nowrap;box-sizing:border-box;">Milestone / Action</div>
+    <div style="width:${COL_PIC}px;padding:9px 8px;font-size:12px;font-weight:700;color:var(--tx2);border-right:1px solid var(--bd);text-align:center;white-space:nowrap;box-sizing:border-box;">담당자</div>
+    <div style="width:${COL_DATE}px;padding:9px 8px;font-size:12px;font-weight:700;color:var(--tx2);border-right:1px solid var(--bd);text-align:center;white-space:nowrap;box-sizing:border-box;">Target Date</div>
+    <div style="width:${COL_ST}px;padding:9px 8px;font-size:12px;font-weight:700;color:var(--tx2);text-align:center;white-space:nowrap;box-sizing:border-box;">Status</div>
+  </div>`;
+  weeks.forEach(w=>{
     const isNow=getWeekNum(w)===getWeekNum(TODAY)&&w.getFullYear()===TODAY.getFullYear();
-    const mo=(w.getMonth()+1);
-    html+=`<div style="width:${WK_W}px;flex-shrink:0;text-align:center;padding:4px 2px;font-size:10px;font-weight:${isNow?800:600};color:${isNow?'var(--ac)':'var(--tx2)'};border-right:1px solid var(--bd2);background:${isNow?'#e8f1ff':'var(--sf2)'};line-height:1.3">
-      <div>${wn}</div><div style="font-size:9px;opacity:.7">${mo}/${w.getDate()}</div>
+    const {wn,range}=wkLabel(w);
+    html+=`<div style="width:${WK_W}px;flex-shrink:0;text-align:center;padding:4px 2px;font-size:11px;font-weight:${isNow?800:600};color:${isNow?'var(--ac)':'var(--tx2)'};border-right:1px solid var(--bd2);background:${isNow?'#dbeafe':'var(--sf2)'};line-height:1.4;box-sizing:border-box;">
+      <div>${wn}</div><div style="font-size:10px;color:${isNow?'var(--ac)':'var(--tx3)'};">(${range})</div>
     </div>`;
   });
   html+='</div>';
 
-  function dateToX(dateStr){
-    const d=pd(dateStr);if(!d)return null;
-    const diff=(d-startWk)/86400000;
-    return LABEL_W+Math.round(diff/7*WK_W);
-  }
-
-  // rows
+  // ── 데이터 행 ──
   MS.forEach(m=>{
+    const msNo=m.no;
+    const isExp=!ganttCollapsed.has(msNo);
     const mEnd=pd(m.date);
     const mStart=m.startDate?pd(m.startDate):null;
     const endX=mEnd?dateToX(m.date):null;
-    const startX=mStart?dateToX(m.startDate):(endX?endX-WK_W:null);
-    const isNow=mEnd&&(mEnd-TODAY)/86400000<=14&&mEnd>=TODAY;
-    const isDone=m.status==='Done';
-    const isDel2=!isDone&&mEnd&&mEnd<TODAY;
+    // startDate 있으면 사용, 없으면 null (바 미표시)
+    const startX=mStart?dateToX(m.startDate):null;
 
-    // Milestone row
-    html+=`<div style="display:flex;min-width:${totalW}px;border-bottom:1px solid var(--bd);background:#f0f4ff;position:relative;height:36px;align-items:center">`;
-    html+=`<div style="width:${LABEL_W}px;flex-shrink:0;padding:0 10px;font-size:11px;font-weight:700;color:#1e40af;border-right:1px solid var(--ws-bd);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:6px;height:100%">
-      <span style="font-size:10px;background:#1e40af;color:#fff;padding:1px 5px;border-radius:3px;flex-shrink:0">${m.no}</span>
-      <span style="overflow:hidden;text-overflow:ellipsis">${m.name}</span>
+    // ── 연결된 Task 기반 상태 자동 계산 ──
+    const mTasks=TASKS.filter(t=>t.ms===m.no);
+    let mSt;
+    if(mTasks.length===0){
+      // Task 없으면 기존 status 필드 사용
+      if(m.status==='Done') mSt={label:'Done',color:'var(--done)',bg:'#e6f9f5'};
+      else if(m.status==='On Track') mSt={label:'진행중',color:'var(--ot)',bg:'#e8f1ff'};
+      else mSt={label:'예정',color:'var(--pl)',bg:'var(--sf2)'};
+    } else if(mTasks.every(t=>t.st==='Done')){
+      mSt={label:'Done',color:'var(--done)',bg:'#e6f9f5'};
+    } else if(mTasks.some(t=>t.st==='On Track'||t.st==='Delayed'||isDel(t))){
+      mSt={label:'진행중',color:'var(--ot)',bg:'#e8f1ff'};
+    } else {
+      mSt={label:'예정',color:'var(--pl)',bg:'var(--sf2)'};
+    }
+    // 날짜 경과 체크 (Done 아닌데 End date 지남 → 지연 오버라이드)
+    const isDel2=mSt.label!=='Done'&&mEnd&&mEnd<TODAY;
+    if(isDel2) mSt={label:'지연',color:'var(--del)',bg:'#fff0f1'};
+    const isNear=mSt.label!=='Done'&&!isDel2&&mEnd&&(mEnd-TODAY)/86400000<=14&&mEnd>=TODAY;
+    if(isNear&&mSt.label==='예정') mSt={label:'임박',color:'var(--warn)',bg:'#fff7e6'};
+    // 바 색상
+    const bc=mSt.label==='Done'?'var(--done)':mSt.label==='지연'?'var(--del)':mSt.label==='임박'?'var(--warn)':mSt.label==='진행중'?'#3b82f6':'var(--pl)';
+
+    // MS 행 (접기 토글 버튼 포함)
+    html+=`<div style="display:flex;min-width:${totalW}px;border-bottom:1px solid #c7d4fb;background:#eef2ff;">`;
+    html+=`<div style="${FC('#eef2ff','border-right:2px solid #c7d4fb;')}">
+      <div data-gantt-ms="${msNo}" style="width:28px;flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;border-right:1px solid #c7d4fb;color:#1e40af;font-size:12px;min-height:40px;user-select:none;" title="${isExp?'접기':'펼치기'}">${isExp?'▾':'▸'}</div>
+      <div style="width:${COL_NAME-28}px;padding:8px 10px;font-size:12px;font-weight:700;color:#1e40af;border-right:1px solid #c7d4fb;display:flex;align-items:center;gap:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-sizing:border-box;min-height:40px;">
+        <span style="font-size:11px;background:#1e40af;color:#fff;padding:2px 6px;border-radius:3px;flex-shrink:0;">${m.no}</span>
+        <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${m.name}</span>
+      </div>
+      <div style="width:${COL_PIC}px;padding:8px 6px;font-size:12px;color:var(--tx2);border-right:1px solid #c7d4fb;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-sizing:border-box;">${m.org||'—'}</div>
+      <div style="width:${COL_DATE}px;padding:8px 6px;font-size:12px;color:var(--tx);border-right:1px solid #c7d4fb;text-align:center;white-space:nowrap;box-sizing:border-box;">${fd(m.date)}</div>
+      <div style="width:${COL_ST}px;padding:8px 6px;display:flex;align-items:center;justify-content:center;box-sizing:border-box;">
+        <span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;white-space:nowrap;background:${mSt.bg};color:${mSt.color};">${mSt.label}</span>
+      </div>
     </div>`;
-    // timeline area
-    html+=`<div style="flex:1;position:relative;height:100%;overflow:hidden">`;
-    // today line
-    const todayX=dateToX(TODAY.toISOString().slice(0,10));
-    if(todayX!==null){
-      html+=`<div style="position:absolute;left:${todayX-LABEL_W}px;top:0;bottom:0;width:2px;background:rgba(49,130,246,.3);z-index:1"></div>`;}
-    // bar
+    html+=`<div style="flex:1;position:relative;min-height:40px;overflow:hidden;">`;
+    if(todayX!==null)html+=`<div style="position:absolute;left:${todayX-FIXED_W}px;top:0;bottom:0;width:2px;background:rgba(49,130,246,.4);z-index:2;pointer-events:none;"></div>`;
     if(startX!==null&&endX!==null){
-      const bx=startX-LABEL_W;const bw=Math.max(endX-startX,WK_W/2);
-      const bc=isDone?'var(--done)':isDel2?'var(--del)':isNow?'var(--warn)':'var(--ac)';
-      html+=`<div style="position:absolute;left:${bx}px;width:${bw}px;height:14px;top:50%;transform:translateY(-50%);background:${bc};border-radius:4px;opacity:.85"></div>`;
-      // diamond endpoint
-      html+=`<div style="position:absolute;left:${bx+bw-7}px;top:50%;transform:translateY(-50%) rotate(45deg);width:10px;height:10px;background:${bc};border:2px solid #fff"></div>`;
+      const bx=Math.max(0,startX-FIXED_W);const bw=Math.max(endX-startX,WK_W/2);
+      html+=`<div style="position:absolute;left:${bx}px;width:${bw}px;height:16px;top:50%;transform:translateY(-50%);background:${bc};border-radius:4px;opacity:.88;"></div>`;
+      html+=`<div style="position:absolute;left:${bx+bw-6}px;top:50%;transform:translateY(-50%) rotate(45deg);width:10px;height:10px;background:${bc};border:2px solid #fff;z-index:1;"></div>`;
     }
     html+=`</div></div>`;
 
-    // Action rows under this milestone
+    if(!isExp)return; // 접혀있으면 액션 행 생략
+
+    // 액션 행
     const relTasks=TASKS.filter(t=>t.ms===m.no);
-    const actions={};
-    relTasks.forEach(t=>{if(!actions[t.action])actions[t.action]=[];actions[t.action].push(t);});
-    Object.entries(actions).forEach(([action,tasks])=>{
+    const actionsMap={};
+    relTasks.forEach(t=>{if(!actionsMap[t.action])actionsMap[t.action]=[];actionsMap[t.action].push(t);});
+
+    Object.entries(actionsMap).forEach(([action,tasks])=>{
       const dates=tasks.map(t=>pd(t.date)).filter(Boolean);
       if(!dates.length)return;
       const aEnd=new Date(Math.max(...dates.map(d=>d.getTime())));
       const aStart=new Date(Math.min(...dates.map(d=>d.getTime())));
       const aEndX=dateToX(aEnd.toISOString().slice(0,10));
       const aStartX=dateToX(aStart.toISOString().slice(0,10));
+      const pics=[...new Set(tasks.map(t=>t.pic).filter(Boolean))].join(', ');
+      const ast=actionStatus(tasks);
+      const wsNo=tasks[0]?.wsNo||'';
+      const aIsDone=tasks.every(t=>t.st==='Done');
+      const aIsDel=tasks.some(t=>isDel(t));
+      const abc=aIsDone?'var(--done)':aIsDel?'var(--del)':'var(--ac)';
 
-      html+=`<div style="display:flex;min-width:${totalW}px;border-bottom:1px solid #f0f2f5;background:#fff;height:28px;align-items:center">`;
-      html+=`<div style="width:${LABEL_W}px;flex-shrink:0;padding:0 10px 0 24px;font-size:10px;color:var(--ac-tx);border-right:1px solid var(--ac-bd);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;height:100%;display:flex;align-items:center">
-        ${action}
+      html+=`<div style="display:flex;min-width:${totalW}px;border-bottom:1px solid #f0f2f5;background:#fafbff;">`;
+      html+=`<div data-gantt-action="${encodeURIComponent(action)}" data-gantt-wsno="${wsNo}"
+        style="${FC('#fafbff','border-right:2px solid #e2e5ec;cursor:pointer;transition:background .12s;')}"
+        title="${action} (클릭: Task 탭 이동)">
+        <div style="width:28px;flex-shrink:0;border-right:1px solid var(--ac-bd);box-sizing:border-box;"></div>
+        <div style="width:${COL_NAME-28}px;padding:7px 8px 7px 20px;font-size:12px;color:var(--ac-tx);border-right:1px solid var(--ac-bd);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-sizing:border-box;display:flex;align-items:center;">${action}</div>
+        <div style="width:${COL_PIC}px;padding:7px 6px;font-size:11px;color:var(--tx2);border-right:1px solid var(--bd);text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-sizing:border-box;display:flex;align-items:center;justify-content:center;">${pics||'—'}</div>
+        <div style="width:${COL_DATE}px;padding:7px 6px;font-size:12px;color:var(--tx2);border-right:1px solid var(--bd);text-align:center;white-space:nowrap;box-sizing:border-box;display:flex;align-items:center;justify-content:center;">${fd(aEnd.toISOString().slice(0,10))}</div>
+        <div style="width:${COL_ST}px;padding:7px 6px;display:flex;align-items:center;justify-content:center;box-sizing:border-box;">
+          <span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;white-space:nowrap;background:${ast.bg};color:${ast.color};">${ast.label}</span>
+        </div>
       </div>`;
-      html+=`<div style="flex:1;position:relative;height:100%;overflow:hidden">`;
-      if(todayX!==null){html+=`<div style="position:absolute;left:${todayX-LABEL_W}px;top:0;bottom:0;width:1px;background:rgba(49,130,246,.2);z-index:1"></div>`;}
+      html+=`<div style="flex:1;position:relative;min-height:34px;overflow:hidden;background:#fafbff;">`;
+      if(todayX!==null)html+=`<div style="position:absolute;left:${todayX-FIXED_W}px;top:0;bottom:0;width:1px;background:rgba(49,130,246,.2);z-index:1;pointer-events:none;"></div>`;
       if(aStartX!==null&&aEndX!==null){
-        const bx=aStartX-LABEL_W;const bw=Math.max(aEndX-aStartX,WK_W/2);
-        html+=`<div style="position:absolute;left:${bx}px;width:${bw}px;height:8px;top:50%;transform:translateY(-50%);background:var(--ac-bd);border-radius:3px;border:1px solid var(--ac);opacity:.8"></div>`;
+        const bx=Math.max(0,aStartX-FIXED_W);const bw=Math.max(aEndX-aStartX,WK_W/2);
+        html+=`<div style="position:absolute;left:${bx}px;width:${bw}px;height:10px;top:50%;transform:translateY(-50%);background:${abc};border-radius:3px;opacity:.72;"></div>`;
       }
       html+=`</div></div>`;
     });
   });
 
   wrap.innerHTML=html;
-}
 
+  // 오늘 위치 스크롤
+  requestAnimationFrame(()=>{
+    if(todayX!==null) scrollWrap.scrollLeft=Math.max(0, todayX-FIXED_W-WK_W);
+  });
+
+  // MS 토글 (접기/펼치기)
+  wrap.querySelectorAll('[data-gantt-ms]').forEach(el=>{
+    el.addEventListener('click',()=>{
+      const no=el.dataset.ganttMs;
+      if(ganttCollapsed.has(no))ganttCollapsed.delete(no);
+      else ganttCollapsed.add(no);
+      renderGantt();
+    });
+  });
+
+  // 액션 클릭 → Task 탭 이동
+  wrap.querySelectorAll('[data-gantt-action]').forEach(el=>{
+    el.addEventListener('mouseenter',()=>el.style.background='#eef4ff');
+    el.addEventListener('mouseleave',()=>el.style.background='#fafbff');
+    el.addEventListener('click',()=>{
+      const action=decodeURIComponent(el.dataset.ganttAction);
+      document.querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));
+      document.querySelectorAll('.tc').forEach(c=>c.classList.remove('active'));
+      document.querySelector('.tbtn[data-tab="task"]').classList.add('active');
+      document.getElementById('tab-task').classList.add('active');
+      document.getElementById('tsrch').value=action;
+      document.querySelectorAll('.fbtn[data-tf]').forEach(b=>b.classList.remove('active'));
+      document.querySelector('.fbtn[data-tf="all"]').classList.add('active');
+      taskFilter='all';picFilter='';weekFilter='';
+      document.getElementById('picFilter').value='';
+      document.getElementById('weekFilter').value='';
+      renderTasks();
+    });
+  });
+}
 // ── XLSX Download ──
 function downloadXlsx(){
   // Build CSV-based data (pure JS, no library)
@@ -1513,13 +1628,9 @@ document.addEventListener('click',function(e){
   // charter upload zone
   if(t.id==='charterUploadZone'||t.closest('#charterUploadZone')){document.getElementById('charterFile').click();return;}
   // gantt scroll to today
-  if(t.id==='btnGanttScrollNow'){
-    const wrap=document.getElementById('ganttWrap');
-    // find today column approx
-    wrap.scrollLeft=Math.max(0,wrap.scrollLeft);
-    renderGantt();
-    return;
-  }
+  if(t.id==='btnGanttScrollNow'){renderGantt();return;}
+  if(t.id==='btnGanttColAll'){ganttCollapsed=new Set(MS.map(m=>m.no));renderGantt();return;}
+  if(t.id==='btnGanttExpAll'){ganttCollapsed.clear();renderGantt();return;}
 });
 
 // WS team blur
@@ -1727,14 +1838,25 @@ function goMs(no){
 }
 
 // ── Modals: Add Task ──
+function fillActDropdown(wsNo){
+  const ae=document.getElementById('atAct');
+  ae.innerHTML='<option value="">— Action 선택 —</option>';
+  if(!wsNo)return;
+  const actions=[...new Set(TASKS.filter(t=>t.wsNo===parseInt(wsNo)).map(t=>t.action))];
+  actions.forEach(a=>{const o=document.createElement('option');o.value=a;o.textContent=a;ae.appendChild(o);});
+  const oNew=document.createElement('option');oNew.value='__new__';oNew.textContent='+ 신규 Action 직접 입력';ae.appendChild(oNew);
+}
 function openAddTaskModal(){
   const we=document.getElementById('atWs');we.innerHTML='';
   WS.forEach(w=>{const o=document.createElement('option');o.value=w.no;o.textContent='WS'+w.no+' '+w.name;we.appendChild(o);});
+  fillActDropdown(WS[0]?.no);
+  // WS 변경 시 Action 목록 갱신
+  we.onchange=()=>fillActDropdown(we.value);
   const pe=document.getElementById('atPic');pe.innerHTML='<option value="">선택</option>';
   PERSONS.forEach(p=>{const o=document.createElement('option');o.value=p;o.textContent=p;pe.appendChild(o);});
   const me=document.getElementById('atMs');me.innerHTML='<option value="">없음</option>';
   MS.forEach(m=>{const o=document.createElement('option');o.value=m.no;o.textContent=m.no+' '+m.name.slice(0,22)+'...';me.appendChild(o);});
-  ['atAct','atTask'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('atTask').value='';
   document.getElementById('atDate').value='';
   document.getElementById('moAddTask').classList.add('open');
 }
@@ -1743,7 +1865,9 @@ function confirmAddTask(){
   const dt=document.getElementById('atDate').value;
   if(!nm||!dt){alert('Task명과 Target Date는 필수입니다.');return;}
   const wno=parseInt(document.getElementById('atWs').value);
-  TASKS.push({id:'n'+Date.now(),wsNo:wno,ano:'Z',action:document.getElementById('atAct').value.trim()||'신규 Action',task:nm,date:dt,wk:w2n(dt),pic:document.getElementById('atPic').value,phase:document.getElementById('atPhase').value,st:document.getElementById('atSt').value,ms:document.getElementById('atMs').value});
+  let actVal=document.getElementById('atAct').value;
+  if(actVal==='__new__'){actVal=prompt('신규 Action명을 입력하세요:','');if(!actVal)return;}
+  TASKS.push({id:'n'+Date.now(),wsNo:wno,ano:'Z',action:actVal||'신규 Action',task:nm,date:dt,wk:w2n(dt),pic:document.getElementById('atPic').value,phase:document.getElementById('atPhase').value,st:document.getElementById('atSt').value,ms:document.getElementById('atMs').value});
   expWs.add(wno);
   document.getElementById('moAddTask').classList.remove('open');
   renderTasks();updateSummary();renderAlerts();
@@ -1810,7 +1934,7 @@ function confirmAddWeekly(){
   // populate pic filter
   const pf=document.getElementById('picFilter');
   PERSONS.forEach(p=>{const o=document.createElement('option');o.value=p;o.textContent=p;pf.appendChild(o);});
-  updateSummary();renderTasks();renderAlerts();renderMs();renderWs();
+  updateSummary();renderTasks();renderAlerts();renderMs();renderWs();renderGantt();
 })();
 </script>
 </body>
