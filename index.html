@@ -1654,7 +1654,13 @@ document.addEventListener('change',function(e){
   const el=e.target;
   if(el.dataset.msstartdate){
     const m=MS.find(x=>x.no===el.dataset.msstartdate);
-    if(m){m.startDate=el.value;addLog(m.no,'Start Date',m.startDate||'—',el.value||'—');}
+    if(m){
+      const ov=m.startDate||'—';   // 이전값 먼저 저장
+      m.startDate=el.value;         // 새 값 반영
+      addLog(m.no,'Start Date',ov,el.value||'—');
+      renderMs();                   // 마일스톤 카드 재렌더 (값 유지)
+      if(document.getElementById('tab-gantt').classList.contains('active')) renderGantt();
+    }
     return;
   }
 });
