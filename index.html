@@ -669,7 +669,15 @@ select.si{background:#fff;border:1.5px solid var(--ac);color:var(--tx);padding:3
         <tr><td><span style="background:var(--tk-bg);color:var(--tk-tx);padding:2px 10px;border-radius:4px">세분류 Task</span></td><td>흰 배경</td><td>세부 Task — 인라인 편집 가능</td></tr>
       </tbody></table>
     </div>
-    <div class="gs"><div class="gh">📋 Charter 탭 안내</div>
+    <div class="gs"><div class="gh">💾 데이터 저장 안내</div>
+      <table class="gt"><thead><tr><th>항목</th><th>설명</th></tr></thead>
+      <tbody>
+        <tr><td>저장 방식</td><td>브라우저 <strong>localStorage</strong>에 자동 저장 — 새로고침/닫아도 유지</td></tr>
+        <tr><td>저장 범위</td><td>Agenda 이슈, Task 변경(취소·추가·수정), 주간업데이트, 편집 로그</td></tr>
+        <tr><td>주의사항</td><td>브라우저 캐시 삭제 시 데이터가 사라집니다. 중요 데이터는 XLSX 다운로드로 백업하세요.</td></tr>
+        <tr><td>데이터 초기화</td><td><button class="bs" id="btnResetStorage" style="color:var(--del);border-color:var(--del)">⚠ 저장 데이터 전체 초기화</button></td></tr>
+      </tbody></table>
+    </div>
       <table class="gt"><thead><tr><th>기능</th><th>설명</th></tr></thead>
       <tbody>
         <tr><td>문서 업로드</td><td>.docx / .pdf Charter 파일을 업로드하여 팀과 공유</td></tr>
@@ -1580,6 +1588,7 @@ function confirmAgenda(){
   document.querySelector('.tbtn[data-tab="agenda"]').classList.add('active');
   document.getElementById('tab-agenda').classList.add('active');
   renderAgenda();
+  saveAll();
 }
 
 function agendaToText(items){
@@ -1881,6 +1890,7 @@ document.addEventListener('click',function(e){
       task.cancelMemo=memo.trim();
       addLog(ct.dataset.canceltask,'취소 처리','활성','취소'+(memo.trim()?(' ('+memo.trim()+')'):''));
       renderTasks();updateSummary();renderAlerts();
+      saveAll();
     }
     return;
   }
@@ -1893,6 +1903,7 @@ document.addEventListener('click',function(e){
       task.cancelMemo='';
       addLog(rt.dataset.restoretask,'취소 복원','취소','활성');
       renderTasks();updateSummary();renderAlerts();
+      saveAll();
     }
     return;
   }
@@ -1946,11 +1957,17 @@ document.addEventListener('click',function(e){
   if(wedit){openEditWeeklyModal(parseInt(wedit.dataset.wedit));return;}
   // delete weekly
   const wdel=t.closest('[data-wdel]');
-  if(wdel){if(confirm('이 주간 업데이트를 삭제할까요?')){WEEKLY.splice(parseInt(wdel.dataset.wdel),1);renderWeeklyList();updateCharterMeta();}return;}
+  if(wdel){if(confirm('이 주간 업데이트를 삭제할까요?')){WEEKLY.splice(parseInt(wdel.dataset.wdel),1);renderWeeklyList();updateCharterMeta();saveAll();}return;}
   // charter upload zone
   if(t.id==='charterUploadZone'||t.closest('#charterUploadZone')){document.getElementById('charterFile').click();return;}
   // gantt scroll to today
-  if(t.id==='btnGanttScrollNow'){renderGantt();return;}
+  if(t.id==='btnResetStorage'){
+    if(confirm('저장된 모든 데이터(Agenda, Task 변경, 주간업데이트, 로그)를 초기화할까요?\n이 작업은 되돌릴 수 없습니다.')){
+      localStorage.removeItem(LS_KEY);
+      location.reload();
+    }
+    return;
+  }
   if(t.id==='btnGanttColAll'){ganttCollapsed=new Set(MS.map(m=>m.no));renderGantt();return;}
   if(t.id==='btnGanttExpAll'){ganttCollapsed.clear();renderGantt();return;}
   // agenda
@@ -1961,7 +1978,7 @@ document.addEventListener('click',function(e){
   const agedit=t.closest('[data-agedit]');
   if(agedit){openAgendaModal(agedit.dataset.agedit);return;}
   const agdel=t.closest('[data-agdel]');
-  if(agdel){if(confirm('이 이슈를 삭제할까요?')){AGENDA=AGENDA.filter(a=>a.id!==agdel.dataset.agdel);renderAgenda();}return;}
+  if(agdel){if(confirm('이 이슈를 삭제할까요?')){AGENDA=AGENDA.filter(a=>a.id!==agdel.dataset.agdel);renderAgenda();saveAll();}return;}
   const agcopy=t.closest('[data-agcopy]');
   if(agcopy){
     const wk=agcopy.dataset.agcopy;
@@ -1986,7 +2003,7 @@ document.addEventListener('click',function(e){
 document.addEventListener('blur',function(e){
   const el=e.target;const wno=el.dataset.wsteam;if(!wno)return;
   const ws=WS.find(w=>w.no===parseInt(wno));
-  if(ws){const ov=ws.team;ws.team=el.textContent.trim();if(ov!==ws.team){addLog('WS_'+wno,'담당팀',ov,ws.team);renderWs();}}
+  if(ws){const ov=ws.team;ws.team=el.textContent.trim();if(ov!==ws.team){addLog('WS_'+wno,'담당팀',ov,ws.team);renderWs();saveAll();}}
 },true);
 
 // search inputs
@@ -2010,8 +2027,9 @@ document.addEventListener('change',function(e){
       const ov=m.startDate||'—';   // 이전값 먼저 저장
       m.startDate=el.value;         // 새 값 반영
       addLog(m.no,'Start Date',ov,el.value||'—');
-      renderMs();                   // 마일스톤 카드 재렌더 (값 유지)
+      renderMs();
       if(document.getElementById('tab-gantt').classList.contains('active')) renderGantt();
+      saveAll();
     }
     return;
   }
@@ -2124,6 +2142,7 @@ function applyUploadedTasks(){
   renderWs();
   // if gantt is visible, re-render
   if(document.getElementById('tab-gantt').classList.contains('active'))renderGantt();
+  saveAll();
 }
 
 document.getElementById('fi').addEventListener('change',function(){
@@ -2163,14 +2182,14 @@ function editSt(el,id){
   [['','예정'],['On Track','On Track'],['Done','Done'],['Delayed','Delayed']].forEach(([v,l])=>{
     const o=document.createElement('option');o.value=v;o.textContent=l;if(t.st===v)o.selected=true;s.appendChild(o);
   });
-  s.onchange=()=>{const ov=t.st;t.st=s.value;addLog(id,'Status',ov||'예정',s.value||'예정');renderTasks();updateSummary();renderAlerts();};
+  s.onchange=()=>{const ov=t.st;t.st=s.value;addLog(id,'Status',ov||'예정',s.value||'예정');renderTasks();updateSummary();renderAlerts();saveAll();};
   s.onblur=()=>renderTasks();
   el.replaceWith(s);s.focus();
 }
 function editDt(el,id){
   const t=TASKS.find(x=>x.id===id);if(!t)return;
   const i=document.createElement('input');i.type='date';i.className='di';i.value=t.date;
-  i.onchange=()=>{const ov=t.date;t.date=i.value;t.wk=w2n(i.value);addLog(id,'Target Date',ov,i.value);renderTasks();renderAlerts();};
+  i.onchange=()=>{const ov=t.date;t.date=i.value;t.wk=w2n(i.value);addLog(id,'Target Date',ov,i.value);renderTasks();renderAlerts();saveAll();};
   i.onblur=()=>renderTasks();
   el.replaceWith(i);i.focus();
 }
@@ -2179,7 +2198,7 @@ function editPic(el,id){
   const s=document.createElement('select');s.className='si';
   const ob=document.createElement('option');ob.value='';ob.textContent='—';s.appendChild(ob);
   PERSONS.forEach(p=>{const o=document.createElement('option');o.value=p;o.textContent=p;if(t.pic===p)o.selected=true;s.appendChild(o);});
-  s.onchange=()=>{const ov=t.pic;t.pic=s.value;addLog(id,'담당자',ov||'—',s.value||'—');renderTasks();};
+  s.onchange=()=>{const ov=t.pic;t.pic=s.value;addLog(id,'담당자',ov||'—',s.value||'—');renderTasks();saveAll();};
   s.onblur=()=>renderTasks();
   el.replaceWith(s);s.focus();
 }
@@ -2242,6 +2261,7 @@ function confirmAddTask(){
   expWs.add(wno);
   document.getElementById('moAddTask').classList.remove('open');
   renderTasks();updateSummary();renderAlerts();
+  saveAll();
 }
 
 // ── Modals: Add WS ──
@@ -2256,6 +2276,7 @@ function confirmAddWs(){
   WS.push({no,name:nm,obj:document.getElementById('wnObj').value.trim(),team:document.getElementById('wnTeam').value});
   document.getElementById('moAddWs').classList.remove('open');
   renderWs();
+  saveAll();
 }
 
 // ── Modals: Weekly ──
@@ -2296,17 +2317,55 @@ function confirmAddWeekly(){
   editingWeeklyIdx=null;
   document.getElementById('moAddWeekly').classList.remove('open');
   renderWeeklyList();updateCharterMeta();
+  saveAll();
 }
+
+// ── LocalStorage 저장/불러오기 ──
+const LS_KEY = '4pl_battle_v1';
+
+function saveAll(){
+  try{
+    localStorage.setItem(LS_KEY, JSON.stringify({
+      AGENDA, WEEKLY, LOGS,
+      TASKS_OVERRIDE: TASKS,   // 전체 TASK 상태 (취소·추가 포함)
+      WS_OVERRIDE: WS,
+      MS_OVERRIDE: MS,
+    }));
+  }catch(e){console.warn('localStorage 저장 실패:', e);}
+}
+
+function loadAll(){
+  try{
+    const raw = localStorage.getItem(LS_KEY);
+    if(!raw) return;
+    const d = JSON.parse(raw);
+    if(d.AGENDA)  AGENDA  = d.AGENDA;
+    if(d.WEEKLY)  WEEKLY  = d.WEEKLY;
+    if(d.LOGS)    LOGS    = d.LOGS;
+    if(d.TASKS_OVERRIDE && d.TASKS_OVERRIDE.length) TASKS = d.TASKS_OVERRIDE;
+    if(d.WS_OVERRIDE    && d.WS_OVERRIDE.length)    WS    = d.WS_OVERRIDE;
+    if(d.MS_OVERRIDE    && d.MS_OVERRIDE.length)     MS    = d.MS_OVERRIDE;
+  }catch(e){console.warn('localStorage 불러오기 실패:', e);}
+}
+
+// 저장이 필요한 모든 함수에 saveAll() 자동 후처리
+const _renderTasks_orig = renderTasks;
+const _renderAgenda_orig = renderAgenda;
+function renderTasks(){ _renderTasks_orig(); }
+function renderAgenda(){ _renderAgenda_orig(); }
 
 // ── Init ──
 (function(){
+  loadAll(); // ← 먼저 localStorage에서 복원
   const d=TODAY;
   document.getElementById('todayLbl').textContent='기준일: '+d.getFullYear()+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'+String(d.getDate()).padStart(2,'0');
-  // populate pic filter
   const pf=document.getElementById('picFilter');
   PERSONS.forEach(p=>{const o=document.createElement('option');o.value=p;o.textContent=p;pf.appendChild(o);});
   updateSummary();renderTasks();renderAlerts();renderMs();renderWs();renderGantt();
 })();
+
+// 데이터 변경 시마다 자동 저장 — 주요 액션 후 saveAll() 호출
+document.addEventListener('4pl:save', saveAll);
 </script>
 </body>
 </html>
