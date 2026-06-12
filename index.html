@@ -270,6 +270,47 @@ select.si{background:#fff;border:1.5px solid var(--ac);color:var(--tx);padding:3
 .tag-del{background:#fff0f1;color:var(--del);}
 .tag-warn{background:#fff7e6;color:var(--warn);}
 
+.tbtn.agenda-tab{color:var(--warn);}
+.tbtn.agenda-tab.active{color:var(--warn);border-bottom-color:var(--warn);}
+
+/* ── Agenda Tab ── */
+.agenda-week-group{margin-bottom:28px;}
+.agenda-week-header{display:flex;align-items:center;gap:10px;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid var(--bd);}
+.agenda-week-badge{font-size:13px;font-weight:800;color:#fff;background:var(--warn);padding:3px 10px;border-radius:20px;}
+.agenda-week-date{font-size:13px;color:var(--tx2);}
+.agenda-week-count{font-size:12px;color:var(--tx3);background:var(--sf2);border:1px solid var(--bd);padding:2px 8px;border-radius:20px;}
+.agenda-copy-btn{margin-left:auto;padding:4px 12px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--r2);font-size:12px;color:var(--tx2);cursor:pointer;transition:all .15s;font-weight:600;}
+.agenda-copy-btn:hover{border-color:var(--warn);color:var(--warn);}
+.agenda-card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);margin-bottom:10px;transition:box-shadow .15s;}
+.agenda-card:hover{box-shadow:var(--shadow-md);}
+.agenda-card-header{padding:12px 16px;display:flex;align-items:flex-start;gap:12px;border-bottom:1px solid var(--bd);background:var(--sf);}
+.agenda-card-header.status-open{border-left:3px solid var(--del);}
+.agenda-card-header.status-discussing{border-left:3px solid var(--warn);}
+.agenda-card-header.status-resolved{border-left:3px solid var(--done);}
+.agenda-status-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+.agenda-status-open{background:var(--del);}
+.agenda-status-discussing{background:var(--warn);}
+.agenda-status-resolved{background:var(--done);}
+.agenda-issue-title{font-size:14px;font-weight:700;color:var(--tx);flex:1;line-height:1.5;}
+.agenda-badge-status{display:inline-flex;align-items:center;padding:2px 9px;border-radius:20px;font-size:12px;font-weight:700;white-space:nowrap;flex-shrink:0;}
+.agenda-bd-open{background:#fff0f1;color:var(--del);}
+.agenda-bd-discussing{background:#fff7e6;color:var(--warn);}
+.agenda-bd-resolved{background:#e6f9f5;color:var(--done);}
+.agenda-card-body{padding:12px 16px;display:flex;flex-direction:column;gap:8px;}
+.agenda-memo{font-size:13px;color:var(--tx2);line-height:1.7;white-space:pre-wrap;background:var(--sf2);border-radius:var(--r2);padding:8px 12px;border-left:3px solid var(--bd2);}
+.agenda-links{display:flex;gap:6px;flex-wrap:wrap;align-items:center;}
+.agenda-link-lbl{font-size:11px;color:var(--tx3);font-weight:700;text-transform:uppercase;letter-spacing:.4px;}
+.agenda-link-tag{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700;}
+.agenda-tag-ws{background:#e8f1ff;color:var(--p1c);}
+.agenda-tag-ms{background:#f0ebff;color:var(--p15c);}
+.agenda-card-footer{padding:8px 16px;border-top:1px solid var(--bd);display:flex;align-items:center;gap:8px;background:var(--sf2);font-size:12px;color:var(--tx2);}
+.agenda-author{font-weight:600;color:var(--tx);}
+.agenda-edit-btn{background:none;border:1px solid var(--bd);color:var(--tx2);cursor:pointer;font-size:11px;padding:3px 10px;border-radius:var(--r2);transition:all .15s;font-weight:600;}
+.agenda-edit-btn:hover{border-color:var(--ac);color:var(--ac);}
+.agenda-del-btn{background:none;border:none;color:var(--tx3);cursor:pointer;font-size:13px;padding:3px 6px;border-radius:var(--r2);transition:all .15s;}
+.agenda-del-btn:hover{color:var(--del);background:#fff0f1;}
+.agenda-empty{text-align:center;padding:40px 20px;color:var(--tx3);font-size:13px;}
+
 /* ── Cancelled Task ── */
 .tkr.cancelled td{opacity:.45;}
 .task-cancelled{text-decoration:line-through;color:var(--tx3);}
@@ -319,6 +360,7 @@ select.si{background:#fff;border:1.5px solid var(--ac);color:var(--tx);padding:3
   <button class="tbtn" data-tab="ms">Milestone</button>
   <button class="tbtn" data-tab="ws">Workstream</button>
   <button class="tbtn charter-tab" data-tab="charter">Charter</button>
+  <button class="tbtn agenda-tab" data-tab="agenda">Agenda</button>
   <button class="tbtn" data-tab="log">Log</button>
   <button class="tbtn" data-tab="guide">Guide</button>
 </div>
@@ -511,6 +553,60 @@ select.si{background:#fff;border:1.5px solid var(--ac);color:var(--tx);padding:3
     <div class="charter-section-title">📅 주간 업데이트 (Weekly Update)</div>
     <button class="add-weekly-btn" id="btnAddWeekly">+ 이번 주 업데이트 추가</button>
     <div class="weekly-list" id="weeklyList"></div>
+  </div>
+</div>
+
+<!-- Agenda Tab -->
+<div class="tc" id="tab-agenda">
+  <div class="tbar">
+    <select class="si2" id="agendaWeekFilter" style="width:140px">
+      <option value="">주차 전체</option>
+    </select>
+    <select class="si2" id="agendaStatusFilter" style="width:120px">
+      <option value="">상태 전체</option>
+      <option value="open">미해결</option>
+      <option value="discussing">논의중</option>
+      <option value="resolved">완료</option>
+    </select>
+    <div class="sp"></div>
+    <button class="bs" id="btnAgendaCopyAll" style="border-color:var(--warn);color:var(--warn);">📋 전체 텍스트 복사</button>
+    <button class="bp" id="btnAddAgenda" style="background:var(--warn);">+ 이슈 추가</button>
+  </div>
+  <div id="agendaBody" style="overflow-y:auto;max-height:calc(100vh - var(--hh) - var(--sh) - var(--th) - 80px)"></div>
+</div>
+
+<!-- Add/Edit Agenda Modal -->
+<div class="mov" id="moAgenda">
+  <div class="mo">
+    <div class="moh">
+      <div class="mot" id="moAgendaTitle">이슈 추가</div>
+      <button class="mox" id="moAgendaX">✕</button>
+    </div>
+    <div class="mob">
+      <div class="fg2">
+        <div class="fr"><label class="fl">주차 *</label><input class="fi" id="agWk" placeholder="예: W25"></div>
+        <div class="fr"><label class="fl">기준일</label><input class="fi" type="date" id="agDate"></div>
+      </div>
+      <div class="fr"><label class="fl">이슈 제목 *</label><input class="fi" id="agIssueTitle" placeholder="이슈 내용을 간략하게 입력하세요"></div>
+      <div class="fr"><label class="fl">상세 메모</label><textarea class="fta" id="agMemo" style="min-height:90px" placeholder="배경, 원인, 영향 범위 등 상세 내용을 기록하세요"></textarea></div>
+      <div class="fr"><label class="fl">상태</label>
+        <select class="fsel" id="agStatus">
+          <option value="open">🔴 미해결</option>
+          <option value="discussing">🟡 논의중</option>
+          <option value="resolved">🟢 완료</option>
+        </select>
+      </div>
+      <div class="fg2">
+        <div class="fr"><label class="fl">연계 Workstream</label><select class="fsel" id="agWs"><option value="">없음</option></select></div>
+        <div class="fr"><label class="fl">연계 Milestone</label><select class="fsel" id="agMs"><option value="">없음</option></select></div>
+      </div>
+      <div class="fr"><label class="fl">연계 Action (직접 입력)</label><input class="fi" id="agAction" placeholder="예: 3PL 협상 — CJ대한통운 계약 조건 검토"></div>
+      <div class="fr"><label class="fl">논의 결과 / 다음 액션</label><textarea class="fta" id="agResult" style="min-height:70px" placeholder="위클리 미팅 후 논의 결과 및 다음 액션을 기록하세요"></textarea></div>
+    </div>
+    <div class="mof">
+      <button class="bs" id="moAgendaCan">취소</button>
+      <button class="bp" id="moAgendaOk" style="background:var(--warn)">저장</button>
+    </div>
   </div>
 </div>
 
@@ -879,6 +975,7 @@ let TASKS = [
 ];
 
 let LOGS = [];
+let AGENDA = [];
 let WEEKLY = [];
 const CUR_USER = '관리자';
 const PERSONS = ['최승범','강승구','최무창','이욱재','황병순','유주연','김승훈','유현천','이태영','하지은','김채원','김준혜','박준성','윤현지'];
@@ -1320,6 +1417,183 @@ function updateCharterMeta(){
   }
 }
 
+// ── Agenda ──
+let editingAgendaId = null;
+let agendaWeekFilter = '', agendaStatusFilter = '';
+
+function getCurrentWeek(){
+  const n=new Date();const j=new Date(n.getFullYear(),0,1);
+  return 'W'+Math.ceil(((n-j)/86400000+j.getDay()+1)/7);
+}
+
+function renderAgenda(){
+  const el=document.getElementById('agendaBody');
+  if(!el)return;
+  el.innerHTML='';
+
+  // 필터
+  let items=AGENDA.slice();
+  if(agendaWeekFilter)items=items.filter(a=>a.wk===agendaWeekFilter);
+  if(agendaStatusFilter)items=items.filter(a=>a.status===agendaStatusFilter);
+
+  if(!items.length){
+    el.innerHTML='<div class="agenda-empty">📋 등록된 이슈가 없습니다.<br><span style="font-size:12px">+ 이슈 추가 버튼으로 금주 이슈를 기록하세요</span></div>';
+    return;
+  }
+
+  // 주차별 그룹핑
+  const wkMap={};
+  items.forEach(a=>{
+    if(!wkMap[a.wk])wkMap[a.wk]=[];
+    wkMap[a.wk].push(a);
+  });
+
+  // 주차 내림차순 정렬
+  const sortedWks=Object.keys(wkMap).sort((a,b)=>{
+    const na=parseInt(a.replace('W','')||0),nb=parseInt(b.replace('W','')||0);
+    return nb-na;
+  });
+
+  sortedWks.forEach(wk=>{
+    const group=wkMap[wk];
+    const grpDiv=document.createElement('div');grpDiv.className='agenda-week-group';
+
+    // 주차 헤더
+    const hdr=document.createElement('div');hdr.className='agenda-week-header';
+    const sampleDate=group[0].date?fd(group[0].date):'';
+    hdr.innerHTML=`
+      <span class="agenda-week-badge">${wk}</span>
+      ${sampleDate?`<span class="agenda-week-date">${sampleDate} 기준</span>`:''}
+      <span class="agenda-week-count">${group.length}건</span>
+      <button class="agenda-copy-btn" data-agcopy="${wk}">📋 ${wk} 복사</button>`;
+    grpDiv.appendChild(hdr);
+
+    // 이슈 카드
+    group.forEach(a=>{
+      const stCls={open:'status-open',discussing:'status-discussing',resolved:'status-resolved'}[a.status]||'status-open';
+      const stBdCls={open:'agenda-bd-open',discussing:'agenda-bd-discussing',resolved:'agenda-bd-resolved'}[a.status]||'agenda-bd-open';
+      const stDotCls={open:'agenda-status-open',discussing:'agenda-status-discussing',resolved:'agenda-status-resolved'}[a.status]||'agenda-status-open';
+      const stLbl={open:'🔴 미해결',discussing:'🟡 논의중',resolved:'🟢 완료'}[a.status]||'미해결';
+
+      const wsObj=a.wsId?WS.find(w=>w.no===parseInt(a.wsId)):null;
+      const msObj=a.msId?MS.find(m=>m.no===a.msId):null;
+
+      const card=document.createElement('div');card.className='agenda-card';
+      card.innerHTML=`
+        <div class="agenda-card-header ${stCls}">
+          <span class="agenda-status-dot ${stDotCls}"></span>
+          <span class="agenda-issue-title">${a.title}</span>
+          <span class="agenda-badge-status ${stBdCls}">${stLbl}</span>
+        </div>
+        <div class="agenda-card-body">
+          ${a.memo?`<div class="agenda-memo">${a.memo}</div>`:''}
+          ${(wsObj||msObj||a.action)?`<div class="agenda-links">
+            <span class="agenda-link-lbl">연계</span>
+            ${wsObj?`<span class="agenda-link-tag agenda-tag-ws">WS${wsObj.no} ${wsObj.name}</span>`:''}
+            ${msObj?`<span class="agenda-link-tag agenda-tag-ms">${msObj.no}</span>`:''}
+            ${a.action?`<span class="agenda-link-tag" style="background:var(--sf2);color:var(--tx2)">⚡ ${a.action}</span>`:''}
+          </div>`:''}
+          ${a.result?`<div style="margin-top:4px">
+            <div style="font-size:11px;font-weight:700;color:var(--done);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px">📌 논의 결과 / 다음 액션</div>
+            <div class="agenda-memo" style="border-left-color:var(--done);color:var(--tx)">${a.result}</div>
+          </div>`:''}
+        </div>
+        <div class="agenda-card-footer">
+          <span class="agenda-author">👤 관리자</span>
+          <span style="color:var(--tx3);margin:0 4px">·</span>
+          <span>${a.date?fd(a.date):'날짜 미기재'}</span>
+          <div style="margin-left:auto;display:flex;gap:6px">
+            <button class="agenda-edit-btn" data-agedit="${a.id}">수정</button>
+            <button class="agenda-del-btn" data-agdel="${a.id}" title="삭제">✕</button>
+          </div>
+        </div>`;
+      grpDiv.appendChild(card);
+    });
+    el.appendChild(grpDiv);
+  });
+
+  // 주차 필터 드롭다운 갱신
+  const wkSel=document.getElementById('agendaWeekFilter');
+  const curVal=wkSel.value;
+  wkSel.innerHTML='<option value="">주차 전체</option>';
+  const allWks=[...new Set(AGENDA.map(a=>a.wk))].sort((a,b)=>parseInt(b.replace('W',''))-parseInt(a.replace('W','')));
+  allWks.forEach(w=>{const o=document.createElement('option');o.value=w;o.textContent=w;if(w===curVal)o.selected=true;wkSel.appendChild(o);});
+}
+
+function openAgendaModal(id=null){
+  editingAgendaId=id;
+  const isEdit=id!==null;
+  const a=isEdit?AGENDA.find(x=>x.id===id):{};
+  document.getElementById('moAgendaTitle').textContent=isEdit?'이슈 수정':'이슈 추가';
+
+  // 기본값: 이번 주
+  const now=new Date();
+  const j=new Date(now.getFullYear(),0,1);
+  const defWk='W'+Math.ceil(((now-j)/86400000+j.getDay()+1)/7);
+  document.getElementById('agWk').value=a.wk||defWk;
+  document.getElementById('agDate').value=a.date||new Date().toISOString().slice(0,10);
+  document.getElementById('agIssueTitle').value=a.title||'';
+  document.getElementById('agMemo').value=a.memo||'';
+  document.getElementById('agStatus').value=a.status||'open';
+  document.getElementById('agAction').value=a.action||'';
+  document.getElementById('agResult').value=a.result||'';
+
+  // WS 드롭다운
+  const wsSel=document.getElementById('agWs');
+  wsSel.innerHTML='<option value="">없음</option>';
+  WS.forEach(w=>{const o=document.createElement('option');o.value=w.no;o.textContent='WS'+w.no+' '+w.name;if(a.wsId===String(w.no))o.selected=true;wsSel.appendChild(o);});
+
+  // MS 드롭다운
+  const msSel=document.getElementById('agMs');
+  msSel.innerHTML='<option value="">없음</option>';
+  MS.forEach(m=>{const o=document.createElement('option');o.value=m.no;o.textContent=m.no+' '+m.name.slice(0,24);if(a.msId===m.no)o.selected=true;msSel.appendChild(o);});
+
+  document.getElementById('moAgenda').classList.add('open');
+}
+
+function confirmAgenda(){
+  const title=document.getElementById('agIssueTitle').value.trim();
+  const wk=document.getElementById('agWk').value.trim();
+  if(!title||!wk){alert('주차와 이슈 제목은 필수입니다.');return;}
+  const entry={
+    id:editingAgendaId||('ag'+Date.now()),
+    wk,date:document.getElementById('agDate').value,
+    title,
+    memo:document.getElementById('agMemo').value.trim(),
+    status:document.getElementById('agStatus').value,
+    wsId:document.getElementById('agWs').value,
+    msId:document.getElementById('agMs').value,
+    action:document.getElementById('agAction').value.trim(),
+    result:document.getElementById('agResult').value.trim(),
+  };
+  if(editingAgendaId){
+    const idx=AGENDA.findIndex(x=>x.id===editingAgendaId);
+    if(idx>=0)AGENDA[idx]=entry;
+  } else {
+    AGENDA.unshift(entry);
+  }
+  editingAgendaId=null;
+  document.getElementById('moAgenda').classList.remove('open');
+  renderAgenda();
+}
+
+function agendaToText(items){
+  const stLbl={open:'[미해결]',discussing:'[논의중]',resolved:'[완료]'};
+  return items.map(a=>{
+    const wsObj=a.wsId?WS.find(w=>w.no===parseInt(a.wsId)):null;
+    const msObj=a.msId?MS.find(m=>m.no===a.msId):null;
+    let txt=`${stLbl[a.status]||'[미해결]'} ${a.title}`;
+    if(a.memo)txt+=`\n  메모: ${a.memo}`;
+    const links=[];
+    if(wsObj)links.push('WS'+wsObj.no+' '+wsObj.name);
+    if(msObj)links.push(msObj.no);
+    if(a.action)links.push(a.action);
+    if(links.length)txt+=`\n  연계: ${links.join(' / ')}`;
+    if(a.result)txt+=`\n  결과/액션: ${a.result}`;
+    return txt;
+  }).join('\n\n');
+}
+
 // ── Tab 6: Logs ──
 function renderLogs(){
   const q=document.getElementById('lsrch').value.toLowerCase();
@@ -1572,6 +1846,7 @@ document.addEventListener('click',function(e){
     if(tbtn.dataset.tab==='log')renderLogs();
     if(tbtn.dataset.tab==='charter')renderCharter();
     if(tbtn.dataset.tab==='gantt')renderGantt();
+    if(tbtn.dataset.tab==='agenda')renderAgenda();
     return;
   }
   // task filter
@@ -1673,6 +1948,33 @@ document.addEventListener('click',function(e){
   if(t.id==='btnGanttScrollNow'){renderGantt();return;}
   if(t.id==='btnGanttColAll'){ganttCollapsed=new Set(MS.map(m=>m.no));renderGantt();return;}
   if(t.id==='btnGanttExpAll'){ganttCollapsed.clear();renderGantt();return;}
+  // agenda
+  if(t.id==='btnAddAgenda'){openAgendaModal();return;}
+  if(t.id==='moAgendaX'||t.id==='moAgendaCan'){document.getElementById('moAgenda').classList.remove('open');return;}
+  if(t===document.getElementById('moAgenda')){document.getElementById('moAgenda').classList.remove('open');return;}
+  if(t.id==='moAgendaOk'){confirmAgenda();return;}
+  const agedit=t.closest('[data-agedit]');
+  if(agedit){openAgendaModal(agedit.dataset.agedit);return;}
+  const agdel=t.closest('[data-agdel]');
+  if(agdel){if(confirm('이 이슈를 삭제할까요?')){AGENDA=AGENDA.filter(a=>a.id!==agdel.dataset.agdel);renderAgenda();}return;}
+  const agcopy=t.closest('[data-agcopy]');
+  if(agcopy){
+    const wk=agcopy.dataset.agcopy;
+    const items=AGENDA.filter(a=>a.wk===wk);
+    const txt=`[${wk} 이슈 현황]\n\n`+agendaToText(items);
+    navigator.clipboard.writeText(txt).then(()=>alert(wk+' 이슈가 클립보드에 복사되었습니다.'));
+    return;
+  }
+  if(t.id==='btnAgendaCopyAll'){
+    let items=AGENDA.slice();
+    if(agendaWeekFilter)items=items.filter(a=>a.wk===agendaWeekFilter);
+    if(agendaStatusFilter)items=items.filter(a=>a.status===agendaStatusFilter);
+    const wkMap={};items.forEach(a=>{if(!wkMap[a.wk])wkMap[a.wk]=[];wkMap[a.wk].push(a);});
+    const sortedWks=Object.keys(wkMap).sort((a,b)=>parseInt(b.replace('W',''))-parseInt(a.replace('W','')));
+    const txt=sortedWks.map(wk=>`[${wk} 이슈 현황]\n\n`+agendaToText(wkMap[wk])).join('\n\n'+('─').repeat(40)+'\n\n');
+    navigator.clipboard.writeText(txt).then(()=>alert('전체 이슈가 클립보드에 복사되었습니다.'));
+    return;
+  }
 });
 
 // WS team blur
@@ -1690,6 +1992,9 @@ document.getElementById('lsrch').addEventListener('input',renderLogs);
 document.getElementById('picFilter').addEventListener('change',function(){picFilter=this.value;renderTasks();});
 // week filter
 document.getElementById('weekFilter').addEventListener('change',function(){weekFilter=this.value;renderTasks();});
+// agenda filters
+document.getElementById('agendaWeekFilter').addEventListener('change',function(){agendaWeekFilter=this.value;renderAgenda();});
+document.getElementById('agendaStatusFilter').addEventListener('change',function(){agendaStatusFilter=this.value;renderAgenda();});
 
 // MS start date change via event delegation
 document.addEventListener('change',function(e){
