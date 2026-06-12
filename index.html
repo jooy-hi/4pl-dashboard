@@ -1574,6 +1574,11 @@ function confirmAgenda(){
   }
   editingAgendaId=null;
   document.getElementById('moAgenda').classList.remove('open');
+  // Agenda 탭 활성화 후 렌더
+  document.querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tc').forEach(c=>c.classList.remove('active'));
+  document.querySelector('.tbtn[data-tab="agenda"]').classList.add('active');
+  document.getElementById('tab-agenda').classList.add('active');
   renderAgenda();
 }
 
@@ -1950,9 +1955,9 @@ document.addEventListener('click',function(e){
   if(t.id==='btnGanttExpAll'){ganttCollapsed.clear();renderGantt();return;}
   // agenda
   if(t.id==='btnAddAgenda'){openAgendaModal();return;}
+  if(t.id==='moAgendaOk'){confirmAgenda();return;}
   if(t.id==='moAgendaX'||t.id==='moAgendaCan'){document.getElementById('moAgenda').classList.remove('open');return;}
   if(t===document.getElementById('moAgenda')){document.getElementById('moAgenda').classList.remove('open');return;}
-  if(t.id==='moAgendaOk'){confirmAgenda();return;}
   const agedit=t.closest('[data-agedit]');
   if(agedit){openAgendaModal(agedit.dataset.agedit);return;}
   const agdel=t.closest('[data-agdel]');
