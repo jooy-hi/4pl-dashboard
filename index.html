@@ -1914,8 +1914,21 @@ function confirmAddTask(){
   if(!nm||!dt){alert('Task명과 Target Date는 필수입니다.');return;}
   const wno=parseInt(document.getElementById('atWs').value);
   let actVal=document.getElementById('atAct').value;
-  if(actVal==='__new__'){actVal=prompt('신규 Action명을 입력하세요:','');if(!actVal)return;}
-  TASKS.push({id:'n'+Date.now(),wsNo:wno,ano:'Z',action:actVal||'신규 Action',task:nm,date:dt,wk:w2n(dt),pic:document.getElementById('atPic').value,phase:document.getElementById('atPhase').value,st:document.getElementById('atSt').value,ms:document.getElementById('atMs').value});
+  let actAno='Z';
+  if(actVal==='__new__'){
+    actVal=prompt('신규 Action명을 입력하세요:','');if(!actVal)return;
+    // 신규 Action은 유니크한 ano 부여
+    const existingAnos=TASKS.filter(t=>t.wsNo===wno).map(t=>t.ano);
+    const used=new Set(existingAnos);
+    let newAno='Z';
+    for(let i=0;i<26;i++){const c=String.fromCharCode(90-i);if(!used.has(c)){newAno=c;break;}}
+    actAno=newAno;
+  } else if(actVal){
+    // 기존 Action 선택 시 → 해당 Action의 ano 가져오기
+    const existing=TASKS.find(t=>t.wsNo===wno&&t.action===actVal);
+    if(existing)actAno=existing.ano;
+  }
+  TASKS.push({id:'n'+Date.now(),wsNo:wno,ano:actAno,action:actVal||'신규 Action',task:nm,date:dt,wk:w2n(dt),pic:document.getElementById('atPic').value,phase:document.getElementById('atPhase').value,st:document.getElementById('atSt').value,ms:document.getElementById('atMs').value});
   expWs.add(wno);
   document.getElementById('moAddTask').classList.remove('open');
   renderTasks();updateSummary();renderAlerts();
