@@ -2019,18 +2019,22 @@ document.getElementById('agendaWeekFilter').addEventListener('change',function()
 document.getElementById('agendaStatusFilter').addEventListener('change',function(){agendaStatusFilter=this.value;renderAgenda();});
 
 // MS start date change via event delegation
+let _msDateSaving = false;
 document.addEventListener('change',function(e){
   const el=e.target;
   if(el.dataset.msstartdate){
+    if(_msDateSaving) return;
+    _msDateSaving = true;
     const m=MS.find(x=>x.no===el.dataset.msstartdate);
     if(m){
-      const ov=m.startDate||'—';   // 이전값 먼저 저장
-      m.startDate=el.value;         // 새 값 반영
+      const ov=m.startDate||'—';
+      m.startDate=el.value;
       addLog(m.no,'Start Date',ov,el.value||'—');
       renderMs();
       if(document.getElementById('tab-gantt').classList.contains('active')) renderGantt();
       saveAll();
     }
+    _msDateSaving = false;
     return;
   }
 });
@@ -2325,13 +2329,30 @@ const LS_KEY = '4pl_battle_v1';
 
 function saveAll(){
   try{
-    localStorage.setItem(LS_KEY, JSON.stringify({
-      AGENDA, WEEKLY, LOGS,
-      TASKS_OVERRIDE: TASKS,   // 전체 TASK 상태 (취소·추가 포함)
+    // 용량 절약: 원본과 동일한 필드는 delta만 저장
+    const payload = JSON.stringify({
+      AGENDA,
+      WEEKLY,
+      LOGS: LOGS.slice(-200),           // 로그는 최근 200개만
+      TASKS_OVERRIDE: TASKS,
       WS_OVERRIDE: WS,
       MS_OVERRIDE: MS,
-    }));
-  }catch(e){console.warn('localStorage 저장 실패:', e);}
+    });
+    localStorage.setItem(LS_KEY, payload);
+  }catch(e){
+    // 용량 초과 시 LOGS 없이 재시도
+    try{
+      localStorage.setItem(LS_KEY, JSON.stringify({
+        AGENDA, WEEKLY, LOGS:[],
+        TASKS_OVERRIDE: TASKS,
+        WS_OVERRIDE: WS,
+        MS_OVERRIDE: MS,
+      }));
+      console.warn('localStorage: 로그 제외 후 저장 성공');
+    }catch(e2){
+      console.error('localStorage 저장 실패 (용량 초과 가능성):', e2);
+    }
+  }
 }
 
 function loadAll(){
@@ -2347,12 +2368,6 @@ function loadAll(){
     if(d.MS_OVERRIDE    && d.MS_OVERRIDE.length)     MS    = d.MS_OVERRIDE;
   }catch(e){console.warn('localStorage 불러오기 실패:', e);}
 }
-
-// 저장이 필요한 모든 함수에 saveAll() 자동 후처리
-const _renderTasks_orig = renderTasks;
-const _renderAgenda_orig = renderAgenda;
-function renderTasks(){ _renderTasks_orig(); }
-function renderAgenda(){ _renderAgenda_orig(); }
 
 // ── Init ──
 (function(){
