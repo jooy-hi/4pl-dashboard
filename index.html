@@ -340,10 +340,10 @@ select.si{background:#fff;border:1.5px solid var(--ac);color:var(--tx);padding:3
   <div class="sblock"><div><div class="snum" id="sTot">—</div><div class="slbl">전체 Task</div></div></div>
   <div class="sdiv"></div>
   <div class="sblock" style="gap:7px">
-    <span class="badge bd-done" id="sDone">완료 —</span>
-    <span class="badge bd-ot" id="sOt">진행중 —</span>
-    <span class="badge bd-del" id="sDel">지연 —</span>
-    <span class="badge bd-pl" id="sPl">예정 —</span>
+    <span class="badge bd-done" id="sDone">Done —</span>
+    <span class="badge bd-ot" id="sOt">On Track —</span>
+    <span class="badge bd-del" id="sDel">Delayed —</span>
+    <span class="badge bd-pl" id="sPl">Planned —</span>
   </div>
   <div class="sdiv"></div>
   <div class="pwrap">
@@ -371,10 +371,10 @@ select.si{background:#fff;border:1.5px solid var(--ac);color:var(--tx);padding:3
     <input class="si2" type="text" id="tsrch" placeholder="🔍  Task 검색...">
     <div class="fbar" style="gap:6px">
       <button class="fbtn active" data-tf="all">전체</button>
-      <button class="fbtn" data-tf="Done">완료</button>
-      <button class="fbtn" data-tf="On Track">진행중</button>
-      <button class="fbtn" data-tf="delayed">지연</button>
-      <button class="fbtn" data-tf="planned">예정</button>
+      <button class="fbtn" data-tf="Done">Done</button>
+      <button class="fbtn" data-tf="On Track">On Track</button>
+      <button class="fbtn" data-tf="delayed">Delayed</button>
+      <button class="fbtn" data-tf="planned">Planned</button>
     </div>
     <select class="si2" id="picFilter" style="width:130px">
       <option value="">담당자 전체</option>
@@ -417,10 +417,10 @@ select.si{background:#fff;border:1.5px solid var(--ac);color:var(--tx);padding:3
   </div>
   <div class="s2">
     <div class="bc">
-      <div class="bh"><span style="font-size:18px">🔴</span><span class="bht">지연 Task</span><span class="bcnt" id="cntDel">0건</span></div>
+      <div class="bh"><span style="font-size:18px">🔴</span><span class="bht">Delayed Tasks</span><span class="bcnt" id="cntDel">0건</span></div>
       <div class="bb" id="alertDel"></div>
       <div style="padding:10px 14px;border-top:1px solid var(--bd);font-size:12px;color:var(--tx2);line-height:1.6;background:var(--sf2);border-radius:0 0 var(--r) var(--r);">
-        <span style="color:var(--del);font-weight:700;">지연 Task</span>란 Target Date가 오늘 기준 이미 지났으나 Status가 완료(Done)가 아닌 항목입니다.<br>
+        <span style="color:var(--del);font-weight:700;">Delayed Tasks</span>란 Target Date가 오늘 기준 이미 지났으나 Status가 Done이 아닌 항목입니다.<br>
         해당 항목의 담당자에게 진행 상황을 확인하고 일정 재조정 또는 완료 처리가 필요합니다.
       </div>
     </div>
@@ -656,7 +656,7 @@ select.si{background:#fff;border:1.5px solid var(--ac);color:var(--tx);padding:3
       <tbody>
         <tr><td><strong>Task명</strong></td><td><span class="rm">필수</span></td><td>텍스트</td><td>세분류 Task 상세 내용</td></tr>
         <tr><td><strong>Target Date</strong></td><td><span class="rm">필수</span></td><td><span class="cd">YYYY-MM-DD</span></td><td>2026-07-31</td></tr>
-        <tr><td><strong>Status</strong></td><td><span class="ro">선택</span></td><td>고정값</td><td>Done / On Track / Delayed / (빈값=예정)</td></tr>
+        <tr><td><strong>Status</strong></td><td><span class="ro">선택</span></td><td>고정값</td><td>Done / On Track / Delayed / (empty=Planned)</td></tr>
         <tr><td><strong>담당자</strong></td><td><span class="ro">선택</span></td><td>드롭다운</td><td>인라인 드롭다운으로 수정 가능</td></tr>
         <tr><td><strong>Week</strong></td><td>자동</td><td>자동계산</td><td>Target Date 기반 자동입력</td></tr>
       </tbody></table>
@@ -727,7 +727,7 @@ select.si{background:#fff;border:1.5px solid var(--ac);color:var(--tx);padding:3
           <select class="fsel" id="atPhase"><option>Phase 1</option><option>Phase 1.5</option><option>Phase 2</option></select>
         </div>
         <div class="fr"><label class="fl">Status</label>
-          <select class="fsel" id="atSt"><option value="">예정</option><option>On Track</option><option>Done</option><option>Delayed</option></select>
+          <select class="fsel" id="atSt"><option value="">Planned</option><option value="On Track">On Track</option><option value="Done">Done</option><option value="Delayed">Delayed</option></select>
         </div>
       </div>
       <div class="fr"><label class="fl">연결 마일스톤</label><select class="fsel" id="atMs"></select></div>
@@ -1027,11 +1027,11 @@ function w2n(s){const d=pd(s);if(!d)return'—';const j=new Date(d.getFullYear()
 function isDel(t){return t.st!=='Done'&&pd(t.date)&&pd(t.date)<TODAY;}
 function isWarn(t){if(t.st==='Done')return false;const d=pd(t.date);if(!d)return false;const df=(d-TODAY)/86400000;return df>=0&&df<=7;}
 function sbadge(s,t){
-  if(t&&isDel(t)&&s!=='Done')return'<span class="badge bd-del">지연</span>';
-  if(s==='Done')return'<span class="badge bd-done">완료</span>';
-  if(s==='On Track')return'<span class="badge bd-ot">진행중</span>';
-  if(s==='Delayed')return'<span class="badge bd-del">지연</span>';
-  return'<span class="badge bd-pl">예정</span>';
+  if(t&&isDel(t)&&s!=='Done')return'<span class="badge bd-del">Delayed</span>';
+  if(s==='Done')return'<span class="badge bd-done">Done</span>';
+  if(s==='On Track')return'<span class="badge bd-ot">On Track</span>';
+  if(s==='Delayed')return'<span class="badge bd-del">Delayed</span>';
+  return'<span class="badge bd-pl">Planned</span>';
 }
 function pbadge(p){
   if(!p)return'';
@@ -1060,10 +1060,10 @@ function updateSummary(){
   const pl=active.filter(t=>!t.st&&!isDel(t)).length;
   const tot=active.length,pct=tot?Math.round(done/tot*100):0;
   document.getElementById('sTot').textContent=tot;
-  document.getElementById('sDone').textContent='완료 '+done;
-  document.getElementById('sOt').textContent='진행중 '+ot;
-  document.getElementById('sDel').textContent='지연 '+del;
-  document.getElementById('sPl').textContent='예정 '+pl;
+  document.getElementById('sDone').textContent='Done '+done;
+  document.getElementById('sOt').textContent='On Track '+ot;
+  document.getElementById('sDel').textContent='Delayed '+del;
+  document.getElementById('sPl').textContent='Planned '+pl;
   document.getElementById('pFill').style.width=pct+'%';
   document.getElementById('pPct').textContent=pct+'%';
 }
@@ -1375,7 +1375,7 @@ function renderCharter(){
     d.style.cssText='display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--bd);';
     d.innerHTML=`<span class="badge ${cls}">${ph}</span>
       <span style="flex:1;font-size:12px;color:var(--tx)">${count}개 마일스톤</span>
-      <span style="font-size:11px;color:var(--done);font-weight:700">${done}완료</span>`;
+      <span style="font-size:11px;color:var(--done);font-weight:700">Done ${done}</span>`;
     mlist.appendChild(d);
   });
   // This week tasks
@@ -1683,9 +1683,9 @@ function renderGantt(){
 
   function actionStatus(tasks){
     if(tasks.every(t=>t.st==='Done'))return{label:'Done',color:'var(--done)',bg:'#e6f9f5'};
-    if(tasks.some(t=>t.st==='Delayed'||isDel(t)))return{label:'지연',color:'var(--del)',bg:'#fff0f1'};
-    if(tasks.some(t=>t.st==='On Track'))return{label:'진행중',color:'var(--ot)',bg:'#e8f1ff'};
-    return{label:'예정',color:'var(--pl)',bg:'var(--sf2)'};
+    if(tasks.some(t=>t.st==='Delayed'||isDel(t)))return{label:'Delayed',color:'var(--del)',bg:'#fff0f1'};
+    if(tasks.some(t=>t.st==='On Track'))return{label:'On Track',color:'var(--ot)',bg:'#e8f1ff'};
+    return{label:'Planned',color:'var(--pl)',bg:'var(--sf2)'};
   }
 
   // sticky 고정셀 스타일
@@ -1725,22 +1725,22 @@ function renderGantt(){
     if(mTasks.length===0){
       // Task 없으면 기존 status 필드 사용
       if(m.status==='Done') mSt={label:'Done',color:'var(--done)',bg:'#e6f9f5'};
-      else if(m.status==='On Track') mSt={label:'진행중',color:'var(--ot)',bg:'#e8f1ff'};
-      else mSt={label:'예정',color:'var(--pl)',bg:'var(--sf2)'};
+      else if(m.status==='On Track') mSt={label:'On Track',color:'var(--ot)',bg:'#e8f1ff'};
+      else mSt={label:'Planned',color:'var(--pl)',bg:'var(--sf2)'};
     } else if(mTasks.every(t=>t.st==='Done')){
       mSt={label:'Done',color:'var(--done)',bg:'#e6f9f5'};
     } else if(mTasks.some(t=>t.st==='On Track'||t.st==='Delayed'||isDel(t))){
-      mSt={label:'진행중',color:'var(--ot)',bg:'#e8f1ff'};
+      mSt={label:'On Track',color:'var(--ot)',bg:'#e8f1ff'};
     } else {
-      mSt={label:'예정',color:'var(--pl)',bg:'var(--sf2)'};
+      mSt={label:'Planned',color:'var(--pl)',bg:'var(--sf2)'};
     }
     // 날짜 경과 체크 (Done 아닌데 End date 지남 → 지연 오버라이드)
     const isDel2=mSt.label!=='Done'&&mEnd&&mEnd<TODAY;
-    if(isDel2) mSt={label:'지연',color:'var(--del)',bg:'#fff0f1'};
+    if(isDel2) mSt={label:'Delayed',color:'var(--del)',bg:'#fff0f1'};
     const isNear=mSt.label!=='Done'&&!isDel2&&mEnd&&(mEnd-TODAY)/86400000<=14&&mEnd>=TODAY;
-    if(isNear&&mSt.label==='예정') mSt={label:'임박',color:'var(--warn)',bg:'#fff7e6'};
+    if(isNear&&mSt.label==='Planned') mSt={label:'Upcoming',color:'var(--warn)',bg:'#fff7e6'};
     // 바 색상
-    const bc=mSt.label==='Done'?'var(--done)':mSt.label==='지연'?'var(--del)':mSt.label==='임박'?'var(--warn)':mSt.label==='진행중'?'#3b82f6':'var(--pl)';
+    const bc=mSt.label==='Done'?'var(--done)':mSt.label==='Delayed'?'var(--del)':mSt.label==='Upcoming'?'var(--warn)':mSt.label==='On Track'?'#3b82f6':'var(--pl)';
 
     // MS 행 (접기 토글 버튼 포함)
     html+=`<div style="display:flex;min-width:${totalW}px;border-bottom:1px solid #c7d4fb;background:#eef2ff;">`;
@@ -1851,7 +1851,7 @@ function downloadXlsx(){
   const headers=['ID','WS No','WS Name','Action','Task','Target Date','Week','담당자','Phase','Status','Milestone'];
   const rows=TASKS.map(t=>{
     const ws=WS.find(w=>w.no===t.wsNo)||{};
-    return [t.id,t.wsNo,ws.name||'',t.action,t.task,t.date,t.wk||w2n(t.date),t.pic||'',t.phase,t.st||'예정',t.ms||''];
+    return [t.id,t.wsNo,ws.name||'',t.action,t.task,t.date,t.wk||w2n(t.date),t.pic||'',t.phase,t.st||'Planned',t.ms||''];
   });
 
   // BOM + CSV
@@ -2208,10 +2208,10 @@ document.getElementById('btnUploadCancel').addEventListener('click',function(){
 function editSt(el,id){
   const t=TASKS.find(x=>x.id===id);if(!t)return;
   const s=document.createElement('select');s.className='si';
-  [['','예정'],['On Track','On Track'],['Done','Done'],['Delayed','Delayed']].forEach(([v,l])=>{
+  [['','Planned'],['On Track','On Track'],['Done','Done'],['Delayed','Delayed']].forEach(([v,l])=>{
     const o=document.createElement('option');o.value=v;o.textContent=l;if(t.st===v)o.selected=true;s.appendChild(o);
   });
-  s.onchange=()=>{const ov=t.st;t.st=s.value;addLog(id,'Status',ov||'예정',s.value||'예정');renderTasks();updateSummary();renderAlerts();saveAll();};
+  s.onchange=()=>{const ov=t.st;t.st=s.value;addLog(id,'Status',ov||'Planned',s.value||'Planned');renderTasks();updateSummary();renderAlerts();saveAll();};
   s.onblur=()=>renderTasks();
   el.replaceWith(s);s.focus();
 }
