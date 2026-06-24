@@ -1441,7 +1441,7 @@
       "wk": "W27",
       "pic": "유주연",
       "phase": "Phase 1",
-      "st": "",
+      "st": "Done",
       "ms": "MS-D"
     },
     {
@@ -1454,7 +1454,7 @@
       "wk": "W29",
       "pic": "김채원",
       "phase": "Phase 1",
-      "st": "",
+      "st": "Done",
       "ms": "MS-D"
     },
     {
@@ -2346,7 +2346,23 @@
   "AGENDA": [],
   "LOGS": [
     {
-      "ts": "2026-06-24 11:08",
+      "ts": "2026-06-24 11:17",
+      "user": "관리자",
+      "id": "5.D.99",
+      "field": "Status",
+      "ov": "Planned",
+      "nv": "Done"
+    },
+    {
+      "ts": "2026-06-24 11:17",
+      "user": "관리자",
+      "id": "5.D.98",
+      "field": "Status",
+      "ov": "Planned",
+      "nv": "Done"
+    },
+    {
+      "ts": "2026-06-24 11:04",
       "user": "관리자",
       "id": "5.A.91",
       "field": "Status",
