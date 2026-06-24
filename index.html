@@ -2388,19 +2388,17 @@ function confirmAddWeekly(){
 }
 
 // ── GitHub 연동 저장/불러오기 ──
-const GITHUB_DATA_URL = 'https://raw.githubusercontent.com/jooy-hi/4pl-dashboard/main/data.json';
+const GITHUB_DATA_URL = 'https://cdn.jsdelivr.net/gh/jooy-hi/4pl-dashboard@main/data.json';
 const LS_KEY = '4pl_battle_v1'; // fallback용
 
 function saveAll(){
-  // 읽기 전용 공유 모드: localStorage에만 개인 변경사항 저장
+  // TASKS/WS/MS는 GitHub가 단일 소스 — localStorage에 저장 안 함
+  // WEEKLY/AGENDA/LOGS만 localStorage에 임시 보관 (GitHub 저장 전 백업용)
   try{
     const payload = JSON.stringify({
       AGENDA,
       WEEKLY,
       LOGS: LOGS.slice(-200),
-      TASKS_OVERRIDE: TASKS,
-      WS_OVERRIDE: WS,
-      MS_OVERRIDE: MS,
     });
     localStorage.setItem(LS_KEY, payload);
   }catch(e){
@@ -2426,7 +2424,7 @@ async function loadAll(){
   }catch(e){
     console.warn('GitHub fetch 실패, localStorage fallback:', e);
   }
-  // 2) fetch 실패 시 localStorage fallback
+  // 2) fetch 실패 시 localStorage에서 WEEKLY/AGENDA/LOGS만 복원
   try{
     const raw = localStorage.getItem(LS_KEY);
     if(!raw) return;
@@ -2434,9 +2432,7 @@ async function loadAll(){
     if(d.AGENDA)  AGENDA  = d.AGENDA;
     if(d.WEEKLY)  WEEKLY  = d.WEEKLY;
     if(d.LOGS)    LOGS    = d.LOGS;
-    if(d.TASKS_OVERRIDE && d.TASKS_OVERRIDE.length) TASKS = d.TASKS_OVERRIDE;
-    if(d.WS_OVERRIDE    && d.WS_OVERRIDE.length)    WS    = d.WS_OVERRIDE;
-    if(d.MS_OVERRIDE    && d.MS_OVERRIDE.length)     MS    = d.MS_OVERRIDE;
+    // TASKS/WS/MS는 GitHub 데이터만 신뢰 — localStorage에서 복원 안 함
   }catch(e){console.warn('localStorage 불러오기 실패:', e);}
 }
 
