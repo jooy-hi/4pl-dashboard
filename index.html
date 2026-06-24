@@ -796,6 +796,42 @@ select.si{background:#fff;border:1.5px solid var(--ac);color:var(--tx);padding:3
   </div>
 </div>
 
+
+<!-- GitHub PAT 설정 Modal -->
+<div class="mov" id="moPAT">
+  <div class="mo" style="width:480px">
+    <div class="moh">
+      <div class="mot">🔑 GitHub 저장 설정</div>
+      <button class="mox" id="moPATX">✕</button>
+    </div>
+    <div class="mob">
+      <div style="background:#fff7e6;border:1px solid #ffd591;border-radius:8px;padding:12px 14px;margin-bottom:16px;font-size:13px;color:#874d00;line-height:1.6">
+        ⚠️ PAT는 이 브라우저에만 저장됩니다. 공유 URL을 통해 다른 사람에게 노출되지 않습니다.
+      </div>
+      <div class="fr">
+        <label class="fl">GitHub Personal Access Token</label>
+        <input class="fi" id="patInput" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+      </div>
+      <div style="font-size:13px;color:var(--tx2);margin-top:4px;line-height:1.6">
+        발급 경로: GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)<br>
+        필요 scope: <strong>repo</strong>
+      </div>
+    </div>
+    <div class="mof">
+      <button class="bs" id="moPATCan">취소</button>
+      <button class="bp" id="moPATOk">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- GitHub 저장 중 오버레이 -->
+<div class="mov" id="moSaving" style="pointer-events:none">
+  <div style="background:#fff;border-radius:12px;padding:24px 32px;text-align:center;box-shadow:0 4px 24px rgba(0,0,0,.15)">
+    <div style="font-size:28px;margin-bottom:8px">⏳</div>
+    <div style="font-size:15px;font-weight:700;color:var(--tx)" id="savingMsg">GitHub에 저장 중...</div>
+  </div>
+</div>
+
 <script>
 
 // ── DATA (preserved from previous version) ──
@@ -2424,8 +2460,9 @@ const GITHUB_FILE = 'data.json';
 const GITHUB_API  = `https://api.github.com/repos/${GITHUB_REPO}/contents/${GITHUB_FILE}`;
 
 function openPATModal(){
-  const stored = localStorage.getItem(PAT_KEY) || '';
-  document.getElementById('patInput').value = stored;
+  const pat = localStorage.getItem(PAT_KEY);
+  if(pat){ saveToGitHub(); return; }
+  document.getElementById('patInput').value = '';
   document.getElementById('moPAT').classList.add('open');
 }
 document.getElementById('moPATX').onclick   = () => document.getElementById('moPAT').classList.remove('open');
@@ -2492,48 +2529,9 @@ async function saveToGitHub(){
   }
 }
 
-// btnGitSave 클릭 시: PAT 있으면 바로 저장, 없으면 모달
-document.getElementById('btnGitSave').onclick = () => {
-  const pat = localStorage.getItem(PAT_KEY);
-  if(pat){ saveToGitHub(); } else { openPATModal(); }
-};
+// btnGitSave: HTML의 onclick="openPATModal()" 에서 직접 호출
+// openPATModal → PAT 있으면 saveToGitHub, 없으면 모달 표시
 
 </script>
-
-<!-- GitHub PAT 설정 Modal -->
-<div class="mov" id="moPAT">
-  <div class="mo" style="width:480px">
-    <div class="moh">
-      <div class="mot">🔑 GitHub 저장 설정</div>
-      <button class="mox" id="moPATX">✕</button>
-    </div>
-    <div class="mob">
-      <div style="background:#fff7e6;border:1px solid #ffd591;border-radius:8px;padding:12px 14px;margin-bottom:16px;font-size:13px;color:#874d00;line-height:1.6">
-        ⚠️ PAT는 이 브라우저에만 저장됩니다. 공유 URL을 통해 다른 사람에게 노출되지 않습니다.
-      </div>
-      <div class="fr">
-        <label class="fl">GitHub Personal Access Token</label>
-        <input class="fi" id="patInput" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
-      </div>
-      <div style="font-size:13px;color:var(--tx2);margin-top:4px;line-height:1.6">
-        발급 경로: GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)<br>
-        필요 scope: <strong>repo</strong>
-      </div>
-    </div>
-    <div class="mof">
-      <button class="bs" id="moPATCan">취소</button>
-      <button class="bp" id="moPATOk">저장</button>
-    </div>
-  </div>
-</div>
-
-<!-- GitHub 저장 중 오버레이 -->
-<div class="mov" id="moSaving" style="pointer-events:none">
-  <div style="background:#fff;border-radius:12px;padding:24px 32px;text-align:center;box-shadow:0 4px 24px rgba(0,0,0,.15)">
-    <div style="font-size:28px;margin-bottom:8px">⏳</div>
-    <div style="font-size:15px;font-weight:700;color:var(--tx)" id="savingMsg">GitHub에 저장 중...</div>
-  </div>
-</div>
-
 </body>
 </html>
