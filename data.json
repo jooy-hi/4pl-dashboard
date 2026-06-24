@@ -1441,7 +1441,7 @@
       "wk": "W27",
       "pic": "유주연",
       "phase": "Phase 1",
-      "st": "Done",
+      "st": "",
       "ms": "MS-D"
     },
     {
@@ -1454,7 +1454,7 @@
       "wk": "W29",
       "pic": "김채원",
       "phase": "Phase 1",
-      "st": "Done",
+      "st": "",
       "ms": "MS-D"
     },
     {
@@ -1727,7 +1727,7 @@
       "wk": "W24",
       "pic": "김채원",
       "phase": "Phase 1",
-      "st": "",
+      "st": "Done",
       "ms": "MS-C"
     },
     {
@@ -1740,7 +1740,7 @@
       "wk": "W24",
       "pic": "김채원",
       "phase": "Phase 1",
-      "st": "",
+      "st": "Done",
       "ms": "MS-C"
     },
     {
@@ -1766,7 +1766,7 @@
       "wk": "W25",
       "pic": "김채원",
       "phase": "Phase 1",
-      "st": "",
+      "st": "Done",
       "ms": "MS-C"
     },
     {
@@ -2346,17 +2346,25 @@
   "AGENDA": [],
   "LOGS": [
     {
-      "ts": "2026-06-24 11:17",
+      "ts": "2026-06-24 11:18",
       "user": "관리자",
-      "id": "5.D.99",
+      "id": "7.D.123",
       "field": "Status",
       "ov": "Planned",
       "nv": "Done"
     },
     {
-      "ts": "2026-06-24 11:17",
+      "ts": "2026-06-24 11:18",
       "user": "관리자",
-      "id": "5.D.98",
+      "id": "7.C.121",
+      "field": "Status",
+      "ov": "Planned",
+      "nv": "Done"
+    },
+    {
+      "ts": "2026-06-24 11:18",
+      "user": "관리자",
+      "id": "7.C.120",
       "field": "Status",
       "ov": "Planned",
       "nv": "Done"
