@@ -1350,7 +1350,7 @@
       "wk": "W25",
       "pic": "유주연",
       "phase": "Phase 1",
-      "st": "",
+      "st": "Done",
       "ms": "MS-D"
     },
     {
@@ -2344,5 +2344,14 @@
   ],
   "WEEKLY": [],
   "AGENDA": [],
-  "LOGS": []
+  "LOGS": [
+    {
+      "ts": "2026-06-24 11:03",
+      "user": "관리자",
+      "id": "5.A.91",
+      "field": "Status",
+      "ov": "Planned",
+      "nv": "Done"
+    }
+  ]
 }
