@@ -416,7 +416,7 @@ select.si{background:#fff;border:1.5px solid var(--ac);color:var(--tx);padding:3
 
 <!-- Monthly Plan Tab -->
 <div class="tc active" id="tab-monthly">
-  <div class="tbar" style="margin-bottom:16px">
+  <div class="tbar" style="position:sticky;top:0;z-index:20;background:var(--sf);padding:10px 0;margin-bottom:16px;">
     <span style="font-size:15px;color:var(--tx);font-weight:700">📅 Monthly Plan</span>
     <select class="si2" id="mpMonthFilter" style="width:130px">
       <option value="">전체 월</option>
@@ -2068,6 +2068,7 @@ function renderMonthly(){
   const el=document.getElementById('monthlyBody');
   if(!el)return;
   el.innerHTML='';
+
   const moF=(document.getElementById('mpMonthFilter')||{}).value||'';
   const phF=(document.getElementById('monthlyPhaseFilter')||{}).value||'';
   const wsF=(document.getElementById('monthlyWsFilter')||{}).value||'';
@@ -2076,8 +2077,7 @@ function renderMonthly(){
   let tasks=TASKS.filter(t=>!t.cancelled);
   if(moF)tasks=tasks.filter(t=>{
     const d=pd(t.date);if(!d)return false;
-    const k=d.getFullYear()+'.'+(d.getMonth()+1).toString().padStart(2,'0');
-    return k===moF;
+    return (d.getFullYear()+'.'+(d.getMonth()+1).toString().padStart(2,'0'))===moF;
   });
   if(phF)tasks=tasks.filter(t=>t.phase===phF);
   if(wsF)tasks=tasks.filter(t=>String(t.wsNo)===wsF);
@@ -2088,88 +2088,107 @@ function renderMonthly(){
     return;
   }
 
-  const monthMap={};
-  tasks.forEach(t=>{
-    const d=pd(t.date);if(!d)return;
-    const key=d.getFullYear()+'.'+(d.getMonth()+1).toString().padStart(2,'0');
-    if(!monthMap[key])monthMap[key]=[];
-    monthMap[key].push(t);
-  });
-
   const MONTH_KO=['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
 
-  Object.keys(monthMap).sort().forEach(mk=>{
+  // 월별 그룹
+  const monthOrder=[];const monthMap={};
+  tasks.forEach(t=>{
+    const d=pd(t.date);if(!d)return;
+    const mk=d.getFullYear()+'.'+(d.getMonth()+1).toString().padStart(2,'0');
+    if(!monthMap[mk]){monthMap[mk]=[];monthOrder.push(mk);}
+    monthMap[mk].push(t);
+  });
+  monthOrder.sort();
+
+  monthOrder.forEach(mk=>{
     const [yr,mo]=mk.split('.');
-    const monthTasks=monthMap[mk].sort((a,b)=>a.date.localeCompare(b.date));
+    const mLabel=yr+'년 '+MONTH_KO[parseInt(mo)-1];
+    const mTasks=monthMap[mk];
+
+    // ── 월 섹션 ──
     const sec=document.createElement('div');sec.className='month-section';
 
     // 월 헤더
-    const hdr=document.createElement('div');hdr.className='month-header';
-    hdr.innerHTML='<span class="month-badge">'+yr+'년 '+MONTH_KO[parseInt(mo)-1]+'</span>'
-      +'<span class="month-count">'+monthTasks.length+'건</span>';
-    sec.appendChild(hdr);
+    const mHdr=document.createElement('div');mHdr.className='month-header';
+    mHdr.innerHTML='<span class="month-badge">'+mLabel+'</span>'
+      +'<span class="month-count">'+mTasks.length+'건</span>';
+    sec.appendChild(mHdr);
 
     // WS별 그룹
-    const wsOrder=[];const wsMap2={};
-    monthTasks.forEach(t=>{
-      const ws=WS.find(w=>w.no===t.wsNo)||{no:t.wsNo,name:'Unknown'};
-      const wk='WS'+ws.no+' '+ws.name;
-      if(!wsMap2[wk]){wsMap2[wk]=[];wsOrder.push(wk);}
-      wsMap2[wk].push(t);
+    const wsOrder=[];const wsGrpMap={};
+    mTasks.forEach(t=>{
+      if(!wsGrpMap[t.wsNo]){wsGrpMap[t.wsNo]=[];wsOrder.push(t.wsNo);}
+      wsGrpMap[t.wsNo].push(t);
     });
 
-    wsOrder.forEach(wsLabel=>{
-      const wsTasks=wsMap2[wsLabel];
-      const wsGrp=document.createElement('div');wsGrp.className='month-ws-group';
-      // WS 라벨
-      const wlDiv=document.createElement('div');wlDiv.className='month-ws-label';wlDiv.textContent=wsLabel;
-      wsGrp.appendChild(wlDiv);
-      // 헤더행
-      const hdrRow=document.createElement('div');hdrRow.className='month-task-hdr';
-      hdrRow.innerHTML='<span>Action</span><span>Task</span><span>Week</span><span>Target Date</span><span>담당자</span><span>Status</span>';
-      wsGrp.appendChild(hdrRow);
+    wsOrder.forEach(wsNo=>{
+      const wsTasks=wsGrpMap[wsNo];
+      const ws=WS.find(w=>w.no===wsNo)||{no:wsNo,name:'Unknown',team:''};
 
-      // Action별 그룹 (rowspan 효과를 flex로 구현)
+      // WS 라벨
+      const wsGrp=document.createElement('div');wsGrp.className='month-ws-group';
+      const wsLbl=document.createElement('div');wsLbl.className='month-ws-label';
+      wsLbl.textContent='WS'+ws.no+' '+ws.name;
+      wsGrp.appendChild(wsLbl);
+
+      // Action별 그룹
       const actOrder=[];const actMap={};
       wsTasks.forEach(t=>{
         if(!actMap[t.action]){actMap[t.action]=[];actOrder.push(t.action);}
         actMap[t.action].push(t);
       });
 
+      // 헤더행
+      const hdrRow=document.createElement('div');hdrRow.className='month-task-hdr';
+      hdrRow.innerHTML='<span>Action</span><span>Task</span><span>Week</span><span>Target Date</span><span>담당자</span><span>Status</span>';
+      wsGrp.appendChild(hdrRow);
+
       actOrder.forEach((action,ai)=>{
         const aTasks=actMap[action];
         const isLastAct=(ai===actOrder.length-1);
-        // Action 그룹 wrapper
+
+        // Action 그룹: flex로 Action셀(좌) + Task목록(우)
         const actGrp=document.createElement('div');
-        actGrp.style.cssText='display:grid;grid-template-columns:240px 1fr;border-bottom:'+(isLastAct?'1px solid var(--sf2)':'2px solid #c4c9d4')+';';
-        // Action 셀 (세로 중앙)
+        actGrp.style.cssText='display:grid;grid-template-columns:240px 1fr;'
+          +'border-bottom:'+(isLastAct?'1px solid var(--sf2)':'2px solid #c4c9d4')+';'
+          +'background:var(--sf);margin-bottom:3px;box-shadow:var(--shadow);border-radius:4px;overflow:hidden;';
+
+        // Action 셀
         const actCell=document.createElement('div');
-        actCell.style.cssText='width:240px;min-width:240px;padding:9px 12px;font-size:12px;font-weight:600;color:var(--tx);background:var(--sf2);border-right:1px solid var(--bd);display:flex;align-items:center;word-break:keep-all;line-height:1.5;';
+        actCell.style.cssText='padding:10px 14px;font-size:13px;font-weight:600;color:var(--tx);'
+          +'background:var(--sf2);border-right:1px solid var(--bd);'
+          +'display:flex;align-items:center;word-break:keep-all;line-height:1.5;';
         actCell.textContent=action;
         actGrp.appendChild(actCell);
+
         // Task 목록 컬럼
         const taskCol=document.createElement('div');
         taskCol.style.cssText='display:flex;flex-direction:column;';
+
         aTasks.forEach((t,ti)=>{
           const del=isDel(t);const warn=isWarn(t)&&!del;
           const isLast=(ti===aTasks.length-1);
           const row=document.createElement('div');
-          row.className='month-task-row';
-          row.style.cssText='display:grid;grid-template-columns:1fr 80px 100px 80px 90px;gap:8px;padding:9px 12px;font-size:13px;align-items:center;background:var(--sf);min-height:44px;border-bottom:'+(isLast?'none':'1px solid var(--sf2)')+';box-shadow:none;border-radius:0;margin-bottom:0;';
+          row.style.cssText='display:grid;grid-template-columns:1fr 80px 100px 80px 90px;gap:8px;'
+            +'padding:9px 12px;font-size:13px;align-items:center;min-height:44px;'
+            +'border-bottom:'+(isLast?'none':'1px solid var(--sf2)')+';';
           if(del)row.style.borderLeft='3px solid var(--del)';
           else if(warn)row.style.borderLeft='3px solid var(--warn)';
-          const icon=del?'<span style="color:var(--del);font-size:10px">⚠ </span>':warn?'<span style="color:var(--warn);font-size:10px">⏰ </span>':'';
-          // status: Task탭 데이터 연동 (읽기전용 badge)
-          row.innerHTML='<span style="line-height:1.5">'+icon+t.task+'</span>'
+
+          const icon=del?'<span style="color:var(--del);font-size:10px">⚠ </span>'
+                    :warn?'<span style="color:var(--warn);font-size:10px">⏰ </span>':'';
+          row.innerHTML='<span style="line-height:1.5;color:var(--tk-tx)">'+icon+t.task+'</span>'
             +'<span style="font-size:11px;color:var(--tx2)">'+(t.wk||'')+'</span>'
-            +'<span style="font-size:12px'+(del?';color:var(--del);font-weight:600':'')+'">'+ fd(t.date)+'</span>'
+            +'<span style="font-size:12px;'+(del?'color:var(--del);font-weight:600':'color:var(--tx2)')+'">'+fd(t.date)+'</span>'
             +'<span style="font-size:12px;color:var(--tx2)">'+(t.pic||'—')+'</span>'
             +'<span>'+sbadge(t.st,t)+'</span>';
           taskCol.appendChild(row);
         });
+
         actGrp.appendChild(taskCol);
         wsGrp.appendChild(actGrp);
       });
+
       sec.appendChild(wsGrp);
     });
     el.appendChild(sec);
@@ -2247,26 +2266,37 @@ async function saveToGitHub(){
   const pat = localStorage.getItem(PAT_KEY);
   if(!pat){ openPATModal(); return; }
 
-  // Show saving overlay
   const mo = document.getElementById('moSaving');
   const msg = document.getElementById('savingMsg');
   mo.style.display = 'flex';
   msg.textContent = 'GitHub 파일 정보 조회 중...';
 
   try{
-    // Get current file SHA (required for update)
+    // 파일 존재 여부 확인 (SHA 획득)
     const infoRes = await fetch(GITHUB_API, {
       headers: { 'Authorization': 'token ' + pat, 'Accept': 'application/vnd.github.v3+json' }
     });
-    if(!infoRes.ok){ throw new Error('파일 정보 조회 실패: ' + infoRes.status); }
-    const info = await infoRes.json();
-    const sha  = info.sha;
+
+    let sha = null;
+    if(infoRes.ok){
+      const info = await infoRes.json();
+      sha = info.sha;  // 파일 존재 → SHA 사용
+    } else if(infoRes.status === 404){
+      sha = null;       // 파일 없음 → 새로 생성
+    } else {
+      throw new Error('파일 정보 조회 실패: ' + infoRes.status);
+    }
 
     msg.textContent = 'data.json 업로드 중...';
 
-    // Build payload
-    const data = { WS, MS, TASKS, WEEKLY, AGENDA, LOGS: LOGS.slice(-200) };
+    const data = { WS, MS, TASKS };
     const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
+
+    const body = {
+      message: '대시보드 데이터 업데이트 ' + new Date().toLocaleString('ko-KR'),
+      content,
+    };
+    if(sha) body.sha = sha;  // 기존 파일 업데이트 시에만 SHA 포함
 
     const putRes = await fetch(GITHUB_API, {
       method: 'PUT',
@@ -2275,11 +2305,7 @@ async function saveToGitHub(){
         'Accept': 'application/vnd.github.v3+json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({
-        message: '대시보드 데이터 업데이트 ' + new Date().toLocaleString('ko-KR'),
-        content,
-        sha
-      })
+      body: JSON.stringify(body)
     });
 
     if(!putRes.ok){
@@ -2296,7 +2322,6 @@ async function saveToGitHub(){
     console.error(e);
   }
 }
-
 // btnGitSave: HTML의 onclick="openPATModal()" 에서 직접 호출
 // openPATModal → PAT 있으면 saveToGitHub, 없으면 모달 표시
 
