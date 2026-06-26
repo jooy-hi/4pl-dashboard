@@ -289,6 +289,10 @@ select.si{background:#fff;border:1.5px solid var(--ac);color:var(--tx);padding:3
 /* Gantt */
 #ganttWrap{border:1px solid var(--bd);border-radius:var(--r);background:var(--sf);box-shadow:var(--shadow);}
 </style>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
 
@@ -296,7 +300,6 @@ select.si{background:#fff;border:1.5px solid var(--ac);color:var(--tx);padding:3
   <div class="logo">4PL <span>Key Battle</span><span class="logo-pill">BETA</span></div>
   <div class="header-meta" id="todayLbl"></div>
   <button class="bs" onclick="location.reload()" style="font-size:13px;padding:4px 12px;margin-left:8px;" title="GitHub에서 최신 데이터 다시 불러오기">🔄 새로고침</button>
-  <button class="bs bs-ac" onclick="saveToGitHub()" id="btnGitSave" style="font-size:13px;padding:4px 14px;margin-left:6px;background:var(--ac);color:#fff;border-color:var(--ac);">💾 GitHub 저장</button>
 </div>
 
 <div class="sbar">
@@ -438,30 +441,8 @@ select.si{background:#fff;border:1.5px solid var(--ac);color:var(--tx);padding:3
 </div>
 
 
-<!-- PAT Modal -->
-<div class="mov" id="moPAT">
-  <div class="moc" style="max-width:420px">
-    <div class="moh">🔑 GitHub PAT 설정</div>
-    <div style="padding:16px 20px;font-size:13px;color:var(--tx2);line-height:1.6;">
-      GitHub Personal Access Token을 입력하세요.<br>
-      <span style="font-size:11px;opacity:.7;">Settings → Developer settings → Personal access tokens → <b>repo</b> 권한 필요</span>
-    </div>
-    <div style="padding:0 20px 16px">
-      <input class="si2" id="patInput" type="password" placeholder="ghp_xxxxxxxxxxxxxx" style="width:100%;box-sizing:border-box;">
-    </div>
-    <div class="mof">
-      <button class="bs" id="moPATCan">취소</button>
-      <button class="bs bs-ac" id="moPATOk" style="background:var(--ac);color:#fff;border-color:var(--ac);">저장 후 업로드</button>
-    </div>
-  </div>
-</div>
-<!-- Saving Modal -->
-<div class="mov" id="moSaving" style="display:none">
-  <div class="moc" style="max-width:300px;text-align:center;padding:32px 24px;">
-    <div style="font-size:28px;margin-bottom:12px;">⏳</div>
-    <div id="savingMsg" style="font-size:14px;color:var(--tx);">저장 중...</div>
-  </div>
-</div>
+
+
 
 <!-- WS Tasks Modal -->
 <div class="mov" id="moWsTasks">
@@ -642,13 +623,21 @@ select.si{background:#fff;border:1.5px solid var(--ac);color:var(--tx);padding:3
 
 
 <script>
-// ── GitHub 설정 ──
-const GITHUB_OWNER = 'jooy-hi';
-const GITHUB_REPO  = '4pl-dashboard';
-const GITHUB_FILE  = 'data.json';
-const GITHUB_API   = 'https://api.github.com/repos/' + GITHUB_OWNER + '/' + GITHUB_REPO + '/contents/' + GITHUB_FILE;
-const GITHUB_DATA_URL = 'https://cdn.jsdelivr.net/gh/' + GITHUB_OWNER + '/' + GITHUB_REPO + '@main/' + GITHUB_FILE;
-const PAT_KEY = '4pl_gh_pat';
+// ── Firebase 초기화 ──
+const firebaseConfig = {
+  apiKey: "AIzaSyAv5zegt7ymTz5ES0mSylbZhBh3lUtPK7A",
+  authDomain: "pldashboard-1e295.firebaseapp.com",
+  projectId: "pldashboard-1e295",
+  storageBucket: "pldashboard-1e295.firebasestorage.app",
+  messagingSenderId: "784244525018",
+  appId: "1:784244525018:web:ec97a2579fc92bb57ea2e3",
+  measurementId: "G-ZDYQDR0K8J"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const STATUS_DOC = db.collection('dashboard').doc('status');
+
+
 
 
 
@@ -2184,141 +2173,13 @@ function initMonthlyFilters(){
 // ── GitHub Status 연동 ──
 // Status만 { taskId: statusValue } 형태로 data.json에 저장
 
-async function loadStatus(){
-  try{
-    const res = await fetch(GITHUB_DATA_URL + '?t=' + Date.now());
-    if(!res.ok) return;
-    const d = await res.json();
-    if(d.STATUS && typeof d.STATUS === 'object'){
-      // HTML 내장 TASKS에 Status 덮어쓰기
-      Object.entries(d.STATUS).forEach(([id, st])=>{
-        const t = TASKS.find(x=>x.id===id);
-        if(t) t.st = st;
-      });
-      console.log('✅ Status 로드 완료:', Object.keys(d.STATUS).length + '건');
-    }
-  }catch(e){
-    console.warn('Status 로드 실패:', e);
-  }
-}
 
-function openPATModal(){
-  document.getElementById('moPAT').classList.add('open');
-}
 
-async function saveStatus(){
-  const pat = localStorage.getItem(PAT_KEY);
-  if(!pat) return; // PAT 없으면 로컬만 (경고 없이)
 
-  // 변경된 Status 수집 { id: st }
-  const STATUS = {};
-  TASKS.forEach(t=>{ STATUS[t.id] = t.st; });
 
-  try{
-    // 최신 SHA 조회
-    const infoRes = await fetch(GITHUB_API + '?t=' + Date.now(), {
-      headers: { 'Authorization': 'token ' + pat, 'Accept': 'application/vnd.github.v3+json', 'Cache-Control': 'no-cache' }
-    });
-    let sha = null;
-    if(infoRes.ok){ const info = await infoRes.json(); sha = info.sha; }
-    else if(infoRes.status !== 404) return; // 401 등은 조용히 실패
 
-    const existing = sha ? await (await fetch(GITHUB_API, {
-      headers:{ 'Authorization':'token '+pat, 'Accept':'application/vnd.github.v3+json' }
-    })).json() : {content:''};
 
-    // 기존 data.json 파싱 후 STATUS 업데이트
-    let data = {};
-    try{
-      if(existing.content){
-        data = JSON.parse(atob(existing.content.replace(/\n/g,'')));
-      }
-    }catch(e){}
-    data.STATUS = STATUS;
 
-    const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
-    const body = { message: 'Status 업데이트 ' + new Date().toLocaleString('ko-KR'), content };
-    if(sha) body.sha = sha;
-
-    const putRes = await fetch(GITHUB_API, {
-      method: 'PUT',
-      headers: { 'Authorization': 'token ' + pat, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    });
-
-    if(putRes.ok){
-      console.log('✅ Status GitHub 저장 완료');
-    } else {
-      // SHA 불일치 시 1회 재시도
-      if(putRes.status === 409 || putRes.status === 422){
-        const r2 = await fetch(GITHUB_API + '?t=' + Date.now(), {
-          headers:{ 'Authorization':'token '+pat, 'Accept':'application/vnd.github.v3+json', 'Cache-Control':'no-cache' }
-        });
-        if(r2.ok){ body.sha=(await r2.json()).sha; }
-        await fetch(GITHUB_API, { method:'PUT', headers:{'Authorization':'token '+pat,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'}, body:JSON.stringify(body) });
-      }
-    }
-  }catch(e){
-    console.warn('Status 저장 실패 (조용히):', e);
-  }
-}
-
-async function saveToGitHub(){
-  const pat = localStorage.getItem(PAT_KEY);
-  if(!pat){ openPATModal(); return; }
-
-  const mo=document.getElementById('moSaving');
-  const msg=document.getElementById('savingMsg');
-  mo.style.display='flex';
-  msg.textContent='GitHub SHA 조회 중...';
-
-  try{
-    const infoRes = await fetch(GITHUB_API + '?t=' + Date.now(), {
-      headers:{ 'Authorization':'token '+pat, 'Accept':'application/vnd.github.v3+json', 'Cache-Control':'no-cache' }
-    });
-    let sha=null, data={};
-    if(infoRes.ok){
-      const info=await infoRes.json();
-      sha=info.sha;
-      try{ data=JSON.parse(atob(info.content.replace(/\n/g,''))); }catch(e){}
-    } else if(infoRes.status===401){ throw new Error('PAT 인증 실패 — repo 권한을 확인하세요.'); }
-    else if(infoRes.status!==404){ throw new Error('조회 실패: '+infoRes.status); }
-
-    // STATUS 업데이트
-    const STATUS={};
-    TASKS.forEach(t=>{ STATUS[t.id]=t.st; });
-    data.STATUS = STATUS;
-
-    msg.textContent='저장 중...';
-    const content=btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
-    const body={ message:'Status 동기화 '+new Date().toLocaleString('ko-KR'), content };
-    if(sha) body.sha=sha;
-
-    const putRes=await fetch(GITHUB_API,{
-      method:'PUT',
-      headers:{'Authorization':'token '+pat,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},
-      body:JSON.stringify(body)
-    });
-
-    if(!putRes.ok){
-      const err=await putRes.json().catch(()=>({}));
-      if(putRes.status===409||putRes.status===422){
-        msg.textContent='SHA 재시도 중...';
-        const r2=await fetch(GITHUB_API+'?t='+Date.now(),{headers:{'Authorization':'token '+pat,'Accept':'application/vnd.github.v3+json','Cache-Control':'no-cache'}});
-        if(r2.ok) body.sha=(await r2.json()).sha;
-        const p2=await fetch(GITHUB_API,{method:'PUT',headers:{'Authorization':'token '+pat,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},body:JSON.stringify(body)});
-        if(!p2.ok) throw new Error((await p2.json().catch(()=>({}))).message||'재시도 실패');
-      } else { throw new Error(err.message||'저장 실패: '+putRes.status); }
-    }
-
-    msg.textContent='✅ 저장 완료!';
-    setTimeout(()=>{ mo.style.display='none'; },1500);
-  }catch(e){
-    mo.style.display='none';
-    alert('❌ GitHub 저장 실패:\n'+e.message);
-    console.error(e);
-  }
-}
 
 
 
@@ -2327,10 +2188,46 @@ document.getElementById('moPATCan').onclick=()=>document.getElementById('moPAT')
 document.getElementById('moPATOk').onclick=()=>{
   const val=document.getElementById('patInput').value.trim();
   if(!val){alert('PAT를 입력해주세요.');return;}
+  const repoVal=document.getElementById('patRepoInput').value.trim();
+  if(repoVal && repoVal.includes('/')){
+    localStorage.setItem('4pl_repo', repoVal.split('/')[1]);
+  }
   localStorage.setItem(PAT_KEY,val);
   document.getElementById('moPAT').classList.remove('open');
-  saveToGitHub();
+  location.reload(); // repo명 변경 반영 후 재시작
 };
+
+
+// ── Firebase Status 연동 ──
+async function loadStatus(){
+  try{
+    const doc = await STATUS_DOC.get();
+    if(doc.exists){
+      const data = doc.data();
+      if(data.STATUS){
+        Object.entries(data.STATUS).forEach(([id, st])=>{
+          const t = TASKS.find(x=>x.id===id);
+          if(t) t.st = st;
+        });
+        console.log('✅ Firebase Status 로드:', Object.keys(data.STATUS).length+'건');
+      }
+    }
+  }catch(e){
+    console.warn('Firebase 로드 실패:', e);
+  }
+}
+
+async function saveStatus(){
+  try{
+    const STATUS = {};
+    TASKS.forEach(t=>{ STATUS[t.id] = t.st; });
+    await STATUS_DOC.set({ STATUS }, { merge: true });
+    console.log('✅ Firebase Status 저장 완료');
+  }catch(e){
+    console.warn('Firebase 저장 실패:', e);
+  }
+}
+
 
 // ── Init ──
 (async function(){
