@@ -232,7 +232,7 @@
       "wk": "W25",
       "pic": "최승범",
       "phase": "Phase 1",
-      "st": "",
+      "st": "Delayed",
       "ms": "MS-A"
     },
     {
@@ -245,7 +245,7 @@
       "wk": "W26",
       "pic": "최승범",
       "phase": "Phase 1",
-      "st": "",
+      "st": "On Track",
       "ms": "MS-A"
     },
     {
@@ -2345,6 +2345,46 @@
   "WEEKLY": [],
   "AGENDA": [],
   "LOGS": [
+    {
+      "ts": "2026-06-26 11:25",
+      "user": "관리자",
+      "id": "1.B.7",
+      "field": "Status",
+      "ov": "Delayed",
+      "nv": "Planned"
+    },
+    {
+      "ts": "2026-06-26 11:25",
+      "user": "관리자",
+      "id": "1.B.7",
+      "field": "Status",
+      "ov": "Planned",
+      "nv": "Delayed"
+    },
+    {
+      "ts": "2026-06-26 11:25",
+      "user": "관리자",
+      "id": "1.B.6",
+      "field": "Status",
+      "ov": "Delayed",
+      "nv": "On Track"
+    },
+    {
+      "ts": "2026-06-26 11:25",
+      "user": "관리자",
+      "id": "1.B.6",
+      "field": "Status",
+      "ov": "Planned",
+      "nv": "Delayed"
+    },
+    {
+      "ts": "2026-06-26 11:24",
+      "user": "관리자",
+      "id": "1.B.5",
+      "field": "Status",
+      "ov": "Planned",
+      "nv": "Delayed"
+    },
     {
       "ts": "2026-06-26 11:24",
       "user": "관리자",
