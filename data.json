@@ -306,8 +306,8 @@
       "ano": "C",
       "action": "제휴 FM 협력사 계약 체결",
       "task": "제휴 FM 시행 지역별 협력사 핫라인 확보",
-      "date": "2026-06-26",
-      "wk": "W26",
+      "date": "2026-07-03",
+      "wk": "W27",
       "pic": "강승구",
       "phase": "Phase 1",
       "st": "",
@@ -414,7 +414,7 @@
       "wk": "W28",
       "pic": "최승범",
       "phase": "Phase 1",
-      "st": "",
+      "st": "On Track",
       "ms": "MS-E"
     },
     {
@@ -453,7 +453,7 @@
       "wk": "W26",
       "pic": "최승범",
       "phase": "Phase 1",
-      "st": "",
+      "st": "On Track",
       "ms": "MS-E"
     },
     {
@@ -1090,7 +1090,7 @@
       "wk": "W23",
       "pic": "이욱재",
       "phase": "Phase 1",
-      "st": "",
+      "st": "Done",
       "ms": "MS-B"
     },
     {
@@ -1103,7 +1103,7 @@
       "wk": "W25",
       "pic": "이욱재",
       "phase": "Phase 1",
-      "st": "",
+      "st": "On Track",
       "ms": "MS-B"
     },
     {
@@ -1454,7 +1454,7 @@
       "wk": "W29",
       "pic": "김채원",
       "phase": "Phase 1",
-      "st": "Done",
+      "st": "",
       "ms": "MS-D"
     },
     {
@@ -1727,7 +1727,7 @@
       "wk": "W24",
       "pic": "김채원",
       "phase": "Phase 1",
-      "st": "Done",
+      "st": "",
       "ms": "MS-C"
     },
     {
@@ -1740,7 +1740,7 @@
       "wk": "W24",
       "pic": "김채원",
       "phase": "Phase 1",
-      "st": "Done",
+      "st": "",
       "ms": "MS-C"
     },
     {
@@ -1766,7 +1766,7 @@
       "wk": "W25",
       "pic": "김채원",
       "phase": "Phase 1",
-      "st": "Done",
+      "st": "",
       "ms": "MS-C"
     },
     {
@@ -2345,6 +2345,30 @@
   "WEEKLY": [],
   "AGENDA": [],
   "LOGS": [
+    {
+      "ts": "2026-06-26 11:09",
+      "user": "관리자",
+      "id": "1.C.11",
+      "field": "Target Date",
+      "ov": "2026-06-26",
+      "nv": "2026-07-03"
+    },
+    {
+      "ts": "2026-06-26 11:09",
+      "user": "관리자",
+      "id": "1.A.3",
+      "field": "Status",
+      "ov": "Planned",
+      "nv": "Planned"
+    },
+    {
+      "ts": "2026-06-26 11:09",
+      "user": "관리자",
+      "id": "1.A.3",
+      "field": "Status",
+      "ov": "Planned",
+      "nv": "Planned"
+    },
     {
       "ts": "2026-06-24 11:18",
       "user": "관리자",
