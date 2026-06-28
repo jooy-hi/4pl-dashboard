@@ -290,9 +290,6 @@ select.si{background:#fff;border:1.5px solid var(--ac);color:var(--tx);padding:3
 #ganttWrap{border:1px solid var(--bd);border-radius:var(--r);background:var(--sf);box-shadow:var(--shadow);}
 </style>
 
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
 
@@ -622,20 +619,9 @@ select.si{background:#fff;border:1.5px solid var(--ac);color:var(--tx);padding:3
 <!-- GitHub 저장 중 오버레이 -->
 
 
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <script>
-// ── Firebase 초기화 ──
-const firebaseConfig = {
-  apiKey: "AIzaSyAv5zegt7ymTz5ES0mSylbZhBh3lUtPK7A",
-  authDomain: "pldashboard-1e295.firebaseapp.com",
-  projectId: "pldashboard-1e295",
-  storageBucket: "pldashboard-1e295.firebasestorage.app",
-  messagingSenderId: "784244525018",
-  appId: "1:784244525018:web:ec97a2579fc92bb57ea2e3",
-  measurementId: "G-ZDYQDR0K8J"
-};
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-const STATUS_DOC = db.collection('dashboard').doc('status');
 
 
 
@@ -2184,47 +2170,58 @@ function initMonthlyFilters(){
 
 
 // PAT 모달 핸들러
-document.getElementById('moPATCan').onclick=()=>document.getElementById('moPAT').classList.remove('open');
-document.getElementById('moPATOk').onclick=()=>{
-  const val=document.getElementById('patInput').value.trim();
-  if(!val){alert('PAT를 입력해주세요.');return;}
-  const repoVal=document.getElementById('patRepoInput').value.trim();
-  if(repoVal && repoVal.includes('/')){
-    localStorage.setItem('4pl_repo', repoVal.split('/')[1]);
-  }
-  localStorage.setItem(PAT_KEY,val);
-  document.getElementById('moPAT').classList.remove('open');
-  location.reload(); // repo명 변경 반영 후 재시작
+
+
+
+
+// ── Firebase ──
+const firebaseConfig = {
+  apiKey: "AIzaSyAv5zegt7ymTz5ES0mSylbZhBh3lUtPK7A",
+  authDomain: "pldashboard-1e295.firebaseapp.com",
+  projectId: "pldashboard-1e295",
+  storageBucket: "pldashboard-1e295.firebasestorage.app",
+  messagingSenderId: "784244525018",
+  appId: "1:784244525018:web:ec97a2579fc92bb57ea2e3"
 };
+let db = null;
+let STATUS_DOC = null;
+try {
+  firebase.initializeApp(firebaseConfig);
+  db = firebase.firestore();
+  STATUS_DOC = db.collection('dashboard').doc('status');
+  console.log('✅ Firebase 초기화 완료');
+} catch(e) {
+  console.warn('Firebase 초기화 실패:', e);
+}
 
-
-// ── Firebase Status 연동 ──
 async function loadStatus(){
-  try{
+  if(!STATUS_DOC) return;
+  try {
     const doc = await STATUS_DOC.get();
-    if(doc.exists){
+    if(doc.exists) {
       const data = doc.data();
-      if(data.STATUS){
-        Object.entries(data.STATUS).forEach(([id, st])=>{
-          const t = TASKS.find(x=>x.id===id);
+      if(data && data.STATUS) {
+        Object.entries(data.STATUS).forEach(([id, st]) => {
+          const t = TASKS.find(x => x.id === id);
           if(t) t.st = st;
         });
-        console.log('✅ Firebase Status 로드:', Object.keys(data.STATUS).length+'건');
+        console.log('✅ Status 로드:', Object.keys(data.STATUS).length + '건');
       }
     }
-  }catch(e){
-    console.warn('Firebase 로드 실패:', e);
+  } catch(e) {
+    console.warn('Status 로드 실패:', e);
   }
 }
 
 async function saveStatus(){
-  try{
+  if(!STATUS_DOC) return;
+  try {
     const STATUS = {};
-    TASKS.forEach(t=>{ STATUS[t.id] = t.st; });
+    TASKS.forEach(t => { STATUS[t.id] = t.st; });
     await STATUS_DOC.set({ STATUS }, { merge: true });
-    console.log('✅ Firebase Status 저장 완료');
-  }catch(e){
-    console.warn('Firebase 저장 실패:', e);
+    console.log('✅ Status 저장 완료');
+  } catch(e) {
+    console.warn('Status 저장 실패:', e);
   }
 }
 
@@ -2235,7 +2232,8 @@ async function saveStatus(){
   document.getElementById('todayLbl').textContent='기준일: '+d.getFullYear()+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'+String(d.getDate()).padStart(2,'0');
   const pf=document.getElementById('picFilter');
   PERSONS.forEach(p=>{const o=document.createElement('option');o.value=p;o.textContent=p;pf.appendChild(o);});
-  updateSummary();renderTasks();renderMs();renderWs();renderGantt();
+  try{await loadStatus();}catch(e){console.warn(e);}
+  updateSummary();renderTasks();renderMs();renderWs();renderGantt();initMonthlyFilters();renderMonthly();
 })();
 
 // 데이터 변경 시마다 자동 저장 — 주요 액션 후  호출
