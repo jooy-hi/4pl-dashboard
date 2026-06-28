@@ -619,8 +619,6 @@ select.si{background:#fff;border:1.5px solid var(--ac);color:var(--tx);padding:3
 <!-- GitHub 저장 중 오버레이 -->
 
 
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <script>
 
 
@@ -831,7 +829,7 @@ let AGENDA = [];
 let WEEKLY = [];
 const CUR_USER = '관리자';
 const PERSONS = ['최승범','강승구','최무창','이욱재','황병순','유주연','김승훈','유현천','이태영','하지은','김채원','김준혜','박준성','윤현지'];
-const TODAY = new Date('2026-06-17');
+const TODAY = new Date();
 let taskFilter='all', alertFilter='all', picFilter='', weekFilter='';
 let ganttCollapsed=new Set(); // 접힌 MS no 목록
 let expWs=new Set([1,2,3,4,5,6,7,8,9,10,11,12]);
@@ -1869,7 +1867,7 @@ function editSt(el,id){
       const ov=t.st;t.st=v;
       addLog(id,'Status',ov||'Planned',v||'Planned');
       updateSummary();
-      saveStatus();
+      if(window.saveStatus)window.saveStatus();
       picker.remove();
       if(taskFilter!=='all'){
         taskFilter='all';
@@ -2174,70 +2172,72 @@ function initMonthlyFilters(){
 
 
 
-// ── Firebase ──
-const firebaseConfig = {
-  apiKey: "AIzaSyAv5zegt7ymTz5ES0mSylbZhBh3lUtPK7A",
-  authDomain: "pldashboard-1e295.firebaseapp.com",
-  projectId: "pldashboard-1e295",
-  storageBucket: "pldashboard-1e295.firebasestorage.app",
-  messagingSenderId: "784244525018",
-  appId: "1:784244525018:web:ec97a2579fc92bb57ea2e3"
-};
-let db = null;
-let STATUS_DOC = null;
-try {
-  firebase.initializeApp(firebaseConfig);
-  db = firebase.firestore();
-  STATUS_DOC = db.collection('dashboard').doc('status');
-  console.log('✅ Firebase 초기화 완료');
-} catch(e) {
-  console.warn('Firebase 초기화 실패:', e);
-}
-
-async function loadStatus(){
-  if(!STATUS_DOC) return;
-  try {
-    const doc = await STATUS_DOC.get();
-    if(doc.exists) {
-      const data = doc.data();
-      if(data && data.STATUS) {
-        Object.entries(data.STATUS).forEach(([id, st]) => {
-          const t = TASKS.find(x => x.id === id);
-          if(t) t.st = st;
-        });
-        console.log('✅ Status 로드:', Object.keys(data.STATUS).length + '건');
-      }
-    }
-  } catch(e) {
-    console.warn('Status 로드 실패:', e);
-  }
-}
-
-async function saveStatus(){
-  if(!STATUS_DOC) return;
-  try {
-    const STATUS = {};
-    TASKS.forEach(t => { STATUS[t.id] = t.st; });
-    await STATUS_DOC.set({ STATUS }, { merge: true });
-    console.log('✅ Status 저장 완료');
-  } catch(e) {
-    console.warn('Status 저장 실패:', e);
-  }
-}
-
-
 // ── Init ──
-(async function(){
+(function(){
   const d=TODAY;
   document.getElementById('todayLbl').textContent='기준일: '+d.getFullYear()+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'+String(d.getDate()).padStart(2,'0');
   const pf=document.getElementById('picFilter');
   PERSONS.forEach(p=>{const o=document.createElement('option');o.value=p;o.textContent=p;pf.appendChild(o);});
-  try{await loadStatus();}catch(e){console.warn(e);}
   updateSummary();renderTasks();renderMs();renderWs();renderGantt();initMonthlyFilters();renderMonthly();
 })();
 
 // 데이터 변경 시마다 자동 저장 — 주요 액션 후  호출
 
 </script>
+
+<!-- Firebase: 메인 렌더와 완전 독립 실행 -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script>
+(function(){
+  try{
+    const cfg={
+      apiKey:"AIzaSyAv5zegt7ymTz5ES0mSylbZhBh3lUtPK7A",
+      authDomain:"pldashboard-1e295.firebaseapp.com",
+      projectId:"pldashboard-1e295",
+      storageBucket:"pldashboard-1e295.firebasestorage.app",
+      messagingSenderId:"784244525018",
+      appId:"1:784244525018:web:ec97a2579fc92bb57ea2e3"
+    };
+    firebase.initializeApp(cfg);
+    const db=firebase.firestore();
+    const DOC=db.collection('dashboard').doc('status');
+
+    // 로드: 페이지 렌더 완료 후 Status만 덮어씌우고 재렌더
+    DOC.get().then(doc=>{
+      if(doc.exists){
+        const s=doc.data().STATUS||{};
+        let changed=false;
+        Object.entries(s).forEach(([id,st])=>{
+          const t=window.TASKS&&window.TASKS.find(x=>x.id===id);
+          if(t&&t.st!==st){t.st=st;changed=true;}
+        });
+        if(changed&&window.renderTasks){
+          window.renderTasks();
+          window.updateSummary&&window.updateSummary();
+          window.renderMonthly&&window.renderMonthly();
+          console.log('✅ Firebase Status 적용');
+        }
+      }
+    }).catch(e=>console.warn('Firebase 로드 실패:',e));
+
+    // 저장: TASKS의 Status를 Firestore에 저장
+    window.saveStatus=function(){
+      if(!window.TASKS)return;
+      const STATUS={};
+      window.TASKS.forEach(t=>{STATUS[t.id]=t.st;});
+      DOC.set({STATUS},{merge:true})
+        .then(()=>console.log('✅ Status 저장'))
+        .catch(e=>console.warn('저장 실패:',e));
+    };
+
+    console.log('✅ Firebase 초기화 완료');
+  }catch(e){
+    console.warn('Firebase 초기화 실패 (무시):',e);
+    window.saveStatus=function(){};
+  }
+})();
+</script>
+
 </body>
 </html>
