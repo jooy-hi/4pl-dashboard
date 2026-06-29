@@ -56,6 +56,7 @@ body{background:var(--bg);color:var(--tx);font-family:var(--fnt);font-size:15px;
 /* ── Tab Content ── */
 .tc{display:none;overflow-y:auto;padding:24px 28px;flex:1;}
 .tc.active{display:block;}
+#tab-monthly.active{display:flex !important;flex-direction:column;overflow-y:hidden;}
 
 /* ── Badges ── */
 .badge{display:inline-flex;align-items:center;padding:2px 9px;border-radius:20px;font-size:13px;font-weight:600;white-space:nowrap;}
@@ -297,6 +298,8 @@ select.si{background:#fff;border:1.5px solid var(--ac);color:var(--tx);padding:3
   <div class="logo">4PL <span>Key Battle</span><span class="logo-pill">BETA</span></div>
   <div class="header-meta" id="todayLbl"></div>
   <button class="bs" onclick="location.reload()" style="font-size:13px;padding:4px 12px;margin-left:8px;" title="GitHub에서 최신 데이터 다시 불러오기">🔄 새로고침</button>
+  <button id="btnSave" onclick="manualSave()" style="font-size:13px;padding:4px 16px;margin-left:6px;background:#2563eb;color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:600;">💾 저장</button>
+  <span id="saveMsg" style="font-size:12px;margin-left:8px;color:#16a34a;display:none;"></span>
 </div>
 
 <div class="sbar">
@@ -415,8 +418,8 @@ select.si{background:#fff;border:1.5px solid var(--ac);color:var(--tx);padding:3
 
 
 <!-- Monthly Plan Tab -->
-<div class="tc active" id="tab-monthly">
-  <div class="tbar" style="position:sticky;top:0;z-index:20;background:var(--sf);padding:10px 0;margin-bottom:16px;">
+<div class="tc active" id="tab-monthly" style="overflow-y:hidden;">
+  <div class="tbar" style="margin-bottom:12px;">
     <span style="font-size:15px;color:var(--tx);font-weight:700">📅 Monthly Plan</span>
     <select class="si2" id="mpMonthFilter" style="width:130px">
       <option value="">전체 월</option>
@@ -434,7 +437,9 @@ select.si{background:#fff;border:1.5px solid var(--ac);color:var(--tx);padding:3
       <option value="">담당자 전체</option>
     </select>
   </div>
-  <div id="monthlyBody"></div>
+  <div style="overflow-y:auto;max-height:calc(100vh - var(--hh) - var(--sh) - var(--th) - 90px);">
+    <div id="monthlyBody"></div>
+  </div>
 </div>
 
 
@@ -1867,7 +1872,6 @@ function editSt(el,id){
       const ov=t.st;t.st=v;
       addLog(id,'Status',ov||'Planned',v||'Planned');
       updateSummary();
-      if(window.saveStatus)window.saveStatus();
       picker.remove();
       if(taskFilter!=='all'){
         taskFilter='all';
@@ -2172,12 +2176,56 @@ function initMonthlyFilters(){
 
 
 
+
+// ── 수동 저장 ──
+function manualSave(){
+  if(!window.saveStatus){
+    alert('Firebase 연결이 필요합니다. 잠시 후 다시 시도해주세요.');
+    return;
+  }
+  const btn=document.getElementById('btnSave');
+  const msg=document.getElementById('saveMsg');
+  btn.disabled=true;
+  btn.textContent='저장 중...';
+
+  // saveStatus를 Promise로 감싸서 완료 처리
+  try{
+    const STATUS={};
+    window.TASKS.forEach(t=>{STATUS[t.id]=t.st;});
+    window._fbDOC.set({STATUS},{merge:true})
+      .then(()=>{
+        btn.disabled=false;
+        btn.textContent='💾 저장';
+        msg.textContent='✅ 저장 완료!';
+        msg.style.display='inline';
+        setTimeout(()=>{msg.style.display='none';},2500);
+        console.log('✅ 수동 저장 완료');
+      })
+      .catch(e=>{
+        btn.disabled=false;
+        btn.textContent='💾 저장';
+        alert('저장 실패: '+e.message);
+      });
+  }catch(e){
+    btn.disabled=false;
+    btn.textContent='💾 저장';
+    alert('저장 실패: '+e.message);
+  }
+}
+
+
 // ── Init ──
 (function(){
   const d=TODAY;
   document.getElementById('todayLbl').textContent='기준일: '+d.getFullYear()+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'+String(d.getDate()).padStart(2,'0');
   const pf=document.getElementById('picFilter');
   PERSONS.forEach(p=>{const o=document.createElement('option');o.value=p;o.textContent=p;pf.appendChild(o);});
+  // 전역 노출 (Firebase 연동용)
+  window.TASKS=TASKS;
+  window.WS=WS;
+  window.renderTasks=renderTasks;
+  window.renderMonthly=renderMonthly;
+  window.updateSummary=updateSummary;
   updateSummary();renderTasks();renderMs();renderWs();renderGantt();initMonthlyFilters();renderMonthly();
 })();
 
@@ -2202,6 +2250,7 @@ function initMonthlyFilters(){
     firebase.initializeApp(cfg);
     const db=firebase.firestore();
     const DOC=db.collection('dashboard').doc('status');
+    window._fbDOC=DOC;  // 수동 저장용 전역 노출
 
     // 로드: 페이지 렌더 완료 후 Status만 덮어씌우고 재렌더
     DOC.get().then(doc=>{
