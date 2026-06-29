@@ -70,7 +70,8 @@ body{background:var(--bg);color:var(--tx);font-family:var(--fnt);font-size:15px;
 .bd-p2{background:#e0f6ff;color:var(--p2c);}
 
 /* ── Table with hierarchy colors ── */
-.touter{border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);}
+.touter{border:1px solid var(--bd);border-radius:var(--r);overflow:auto;box-shadow:var(--shadow);}
+.touter table{min-width:900px;}
 .tscroll{overflow-x:auto;overflow-y:auto;max-height:calc(100vh - var(--hh) - var(--sh) - var(--th) - 104px);}
 table{width:100%;border-collapse:collapse;}
 thead{position:sticky;top:0;z-index:10;}
@@ -277,9 +278,9 @@ select.si{background:#fff;border:1.5px solid var(--ac);color:var(--tx);padding:3
 .month-count{font-size:12px;color:var(--tx3);background:var(--sf2);border:1px solid var(--bd);padding:2px 10px;border-radius:20px;}
 .month-ws-group{margin-bottom:16px;}
 .month-ws-label{font-size:12px;font-weight:700;color:var(--ws-tx);background:var(--ws-bg);border:1px solid var(--ws-bd);padding:4px 12px;border-radius:6px;display:inline-block;margin-bottom:6px;}
-.month-task-row{display:grid;grid-template-columns:240px 1fr 80px 100px 80px 90px;gap:8px;padding:8px 12px;border-bottom:1px solid var(--sf2);font-size:13px;align-items:center;background:var(--sf);border-radius:4px;margin-bottom:3px;box-shadow:var(--shadow);min-height:44px;}
+.month-task-row{display:grid;grid-template-columns:240px 1fr 100px 90px 100px 80px 80px;gap:8px;padding:8px 12px;border-bottom:1px solid var(--sf2);font-size:13px;align-items:center;background:var(--sf);border-radius:4px;margin-bottom:3px;box-shadow:var(--shadow);min-height:44px;}
 .month-task-row:hover{background:#f8fbff;}
-.month-task-hdr{font-size:11px;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:.3px;background:var(--sf2);border-radius:4px;padding:5px 12px;margin-bottom:6px;display:grid;grid-template-columns:240px 1fr 80px 100px 80px 90px;gap:8px;}
+.month-task-hdr{font-size:11px;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:.3px;background:var(--sf2);border-radius:4px;padding:5px 12px;margin-bottom:6px;display:grid;grid-template-columns:240px 1fr 100px 90px 100px 80px 80px;gap:8px;}
 
 /* scrollbar */
 ::-webkit-scrollbar{width:5px;height:5px;}
@@ -359,10 +360,11 @@ select.si{background:#fff;border:1.5px solid var(--ac);color:var(--tx);padding:3
     <table><thead><tr>
       <th style="width:30px"></th>
       <th>Workstream / Action / Task</th>
-      <th style="width:94px">Status</th>
       <th style="width:112px">Target Date</th>
-      <th style="width:54px">Week</th>
+      <th style="width:94px">Status</th>
+      <th style="width:100px">업데이트일자</th>
       <th style="width:88px">담당자</th>
+      <th style="width:54px">Week</th>
       <th style="width:90px">Phase</th>
       <th style="width:88px">마일스톤</th>
       <th style="width:34px"></th>
@@ -996,10 +998,11 @@ function renderTasks(){
           :`<button class="dbtn" data-canceltask="${t.id}" title="취소 처리">✕</button>`;
         tr.innerHTML=`<td></td>
           <td style="padding-left:36px;line-height:1.4">${taskNameHtml}</td>
-          <td>${isCancelled?`<span class="cancel-badge">취소됨</span>`:`<span class="editable" data-sted="${t.id}">${sbadge(t.st,t)}</span>`}</td>
           <td style="font-size:12px;${del?'color:var(--del)':''}">${isCancelled?`<span style="color:var(--tx3)">${fd(t.date)}</span>`:`<span class="editable" data-dated="${t.id}" style="font-size:12px;${del?'color:var(--del)':''}">${fd(t.date)}</span>`}</td>
-          <td style="font-size:11px;color:var(--tx2)">${t.wk||w2n(t.date)}</td>
+          <td>${isCancelled?`<span class="cancel-badge">취소됨</span>`:`<span class="editable" data-sted="${t.id}">${sbadge(t.st,t)}</span>`}</td>
+          <td style="font-size:11px;color:var(--tx3)">${t.stUpdated?fd(t.stUpdated):'—'}</td>
           <td style="font-size:12px">${isCancelled?`<span style="color:var(--tx3)">${t.pic||'—'}</span>`:`<span class="editable" data-piced="${t.id}" style="font-size:12px">${t.pic||'—'}</span>`}</td>
+          <td style="font-size:11px;color:var(--tx2)">${t.wk||w2n(t.date)}</td>
           <td>${isCancelled?'':pbadge(t.phase)}</td>
           <td>${isCancelled?'':msh}</td>
           <td>${actionCell}</td>`;
@@ -1874,6 +1877,7 @@ function editSt(el,id){
     item.addEventListener('mousedown',e=>{
       e.preventDefault();e.stopPropagation();
       const ov=t.st;t.st=v;
+      t.stUpdated=new Date().toISOString().slice(0,10);
       addLog(id,'Status',ov||'Planned',v||'Planned');
       updateSummary();
       picker.remove();
@@ -2073,7 +2077,7 @@ function renderMonthly(){
 
       // 헤더행
       const hdrRow=document.createElement('div');hdrRow.className='month-task-hdr';
-      hdrRow.innerHTML='<span>Action</span><span>Task</span><span>Week</span><span>Target Date</span><span>담당자</span><span>Status</span>';
+      hdrRow.innerHTML='<span>Action</span><span>Task</span><span>Target Date</span><span>Status</span><span>업데이트일자</span><span>담당자</span><span>Week</span>';
       wsGrp.appendChild(hdrRow);
 
       actOrder.forEach((action,ai)=>{
@@ -2102,7 +2106,7 @@ function renderMonthly(){
           const del=isDel(t);const warn=isWarn(t)&&!del;
           const isLast=(ti===aTasks.length-1);
           const row=document.createElement('div');
-          row.style.cssText='display:grid;grid-template-columns:1fr 80px 100px 80px 90px;gap:8px;'
+          row.style.cssText='display:grid;grid-template-columns:1fr 100px 90px 100px 80px 80px;gap:8px;'
             +'padding:9px 12px;font-size:13px;align-items:center;min-height:44px;'
             +'border-bottom:'+(isLast?'none':'1px solid var(--sf2)')+';';
           if(del)row.style.borderLeft='3px solid var(--del)';
@@ -2111,10 +2115,11 @@ function renderMonthly(){
           const icon=del?'<span style="color:var(--del);font-size:10px">⚠ </span>'
                     :warn?'<span style="color:var(--warn);font-size:10px">⏰ </span>':'';
           row.innerHTML='<span style="line-height:1.5;color:var(--tk-tx)">'+icon+t.task+'</span>'
-            +'<span style="font-size:11px;color:var(--tx2)">'+(t.wk||'')+'</span>'
-            +'<span style="font-size:12px;'+(del?'color:var(--del);font-weight:600':'color:var(--tx2)')+'">'+fd(t.date)+'</span>'
+            +'<span style="font-size:12px;'+(del?'color:var(--del);font-weight:600':'color:var(--tx2)')+'">'+ fd(t.date)+'</span>'
+            +'<span>'+sbadge(t.st,t)+'</span>'
+            +'<span style="font-size:11px;color:var(--tx3)">'+(t.stUpdated?fd(t.stUpdated):'—')+'</span>'
             +'<span style="font-size:12px;color:var(--tx2)">'+(t.pic||'—')+'</span>'
-            +'<span>'+sbadge(t.st,t)+'</span>';
+            +'<span style="font-size:11px;color:var(--tx2)">'+(t.wk||'')+'</span>';
           taskCol.appendChild(row);
         });
 
@@ -2195,7 +2200,7 @@ function manualSave(){
   // saveStatus를 Promise로 감싸서 완료 처리
   try{
     const STATUS={};
-    window.TASKS.forEach(t=>{STATUS[t.id]=t.st;});
+    window.TASKS.forEach(t=>{STATUS[t.id]={st:t.st,stUpdated:t.stUpdated||''};});
     window._fbDOC.set({STATUS},{merge:true})
       .then(()=>{
         btn.disabled=false;
@@ -2261,9 +2266,14 @@ function manualSave(){
       if(doc.exists){
         const s=doc.data().STATUS||{};
         let changed=false;
-        Object.entries(s).forEach(([id,st])=>{
+        Object.entries(s).forEach(([id,val])=>{
           const t=window.TASKS&&window.TASKS.find(x=>x.id===id);
-          if(t&&t.st!==st){t.st=st;changed=true;}
+          if(!t)return;
+          // 이전 형식: 문자열 "Done" / 새 형식: {st:'Done', stUpdated:'2026-06-29'}
+          const stVal=typeof val==='object'?( val.st||'') : val;
+          const stUpd=typeof val==='object'?(val.stUpdated||''):'';
+          if(t.st!==stVal){t.st=stVal;changed=true;}
+          if(stUpd)t.stUpdated=stUpd;
         });
         if(changed&&window.renderTasks){
           window.renderTasks();
@@ -2278,7 +2288,7 @@ function manualSave(){
     window.saveStatus=function(){
       if(!window.TASKS)return;
       const STATUS={};
-      window.TASKS.forEach(t=>{STATUS[t.id]=t.st;});
+      window.TASKS.forEach(t=>{STATUS[t.id]={st:t.st,stUpdated:t.stUpdated||''};});
       DOC.set({STATUS},{merge:true})
         .then(()=>console.log('✅ Status 저장'))
         .catch(e=>console.warn('저장 실패:',e));
