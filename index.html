@@ -1053,7 +1053,7 @@ function renderMs(){
       <div style="display:flex;gap:12px;margin-top:6px;padding-top:6px;border-top:1px solid var(--bd);font-size:11px;color:var(--tx2);align-items:center;">
         <span style="font-weight:600;color:var(--tx3);min-width:52px">Start</span>
         <input type="date" class="di" style="font-size:11px;padding:2px 6px;border-color:var(--bd);color:var(--tx2);background:var(--sf2)" 
-          value="${m.startDate||''}" data-msstartdate="${m.no}" title="Start 일정 입력">
+          value="${(()=>{const ts=TASKS.filter(t=>t.ms===m.no).map(t=>t.date).filter(Boolean).sort();return ts.length?ts[0]:(m.startDate||'');})()}" data-msstartdate="${m.no}" title="Start: 연결된 Task 최소 날짜 자동계산">
         <span style="font-weight:600;color:var(--tx3);min-width:38px">End</span>
         <span class="msdt">${fd(m.date)}</span>
       </div>`;
@@ -1440,11 +1440,15 @@ function renderGantt(){
     const mEnd=pd(m.date);
     const mStart=m.startDate?pd(m.startDate):null;
     const endX=mEnd?dateToX(m.date):null;
-    // startDate 있으면 사용, 없으면 null (바 미표시)
-    const startX=mStart?dateToX(m.startDate):null;
 
     // ── 연결된 Task 기반 상태 자동 계산 ──
     const mTasks=TASKS.filter(t=>t.ms===m.no);
+
+    // startDate 없으면 연결된 Task 최소 날짜 자동 계산 (Milestone 탭과 동일)
+    const taskDates=mTasks.map(t=>t.date).filter(Boolean).sort();
+    const autoStartDate=taskDates.length?taskDates[0]:null;
+    const effectiveStart=m.startDate||autoStartDate;
+    const startX=effectiveStart?dateToX(effectiveStart):null;
     let mSt;
     if(mTasks.length===0){
       // Task 없으면 기존 status 필드 사용
