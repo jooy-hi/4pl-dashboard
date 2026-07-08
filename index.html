@@ -852,12 +852,12 @@ function pd(s){if(!s)return null;const d=new Date(s);return isNaN(d)?null:d;}
 function fd(s){if(!s)return'—';const d=pd(s);if(!d)return s;return`${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`;}
 function w2n(s){const d=pd(s);if(!d)return'—';const j=new Date(d.getFullYear(),0,1);return'W'+Math.ceil(((d-j)/86400000+j.getDay()+1)/7);}
 function isDel(t){return !t.st&&pd(t.date)&&pd(t.date)<TODAY;}
+function isDelayed(t){return t.st==='Delayed'||isDel(t);}
 function isWarn(t){if(t.st==='Done')return false;const d=pd(t.date);if(!d)return false;const df=(d-TODAY)/86400000;return df>=0&&df<=7;}
 function sbadge(s,t){
-  if(t&&isDel(t)&&s!=='Done')return'<span class="badge bd-del">Delayed</span>';
   if(s==='Done')return'<span class="badge bd-done">Done</span>';
   if(s==='On Track')return'<span class="badge bd-ot">On Track</span>';
-  if(s==='Delayed')return'<span class="badge bd-del">Delayed</span>';
+  if(t&&isDelayed(t))return'<span class="badge bd-del">Delayed</span>';
   return'<span class="badge bd-pl">Planned</span>';
 }
 function pbadge(p){
@@ -867,9 +867,9 @@ function pbadge(p){
   return`<span class="badge bd-p2">${p}</span>`;
 }
 function sdot(s,t){
-  if(t&&isDel(t)&&s!=='Done')return'<span class="status-dot sdot-del"></span>';
   if(s==='Done')return'<span class="status-dot sdot-done"></span>';
   if(s==='On Track')return'<span class="status-dot sdot-ot"></span>';
+  if(t&&isDelayed(t))return'<span class="status-dot sdot-del"></span>';
   return'<span class="status-dot sdot-pl"></span>';
 }
 function addLog(id,field,ov,nv){
@@ -883,7 +883,7 @@ function updateSummary(){
   const active=TASKS.filter(t=>!t.cancelled);
   const done=active.filter(t=>t.st==='Done').length;
   const ot=active.filter(t=>t.st==='On Track').length;
-  const del=active.filter(t=>isDel(t)).length;
+  const del=active.filter(t=>isDelayed(t)).length;
   const pl=active.filter(t=>!t.st&&!isDel(t)).length;
   const tot=active.length,pct=tot?Math.round(done/tot*100):0;
   document.getElementById('sTot').textContent=tot;
@@ -1031,7 +1031,7 @@ function mF(t){
   if(taskFilter==='all')return true;
   if(t.cancelled)return false; // 취소된 태스크는 '전체' 외 필터에서 제외
   if(taskFilter==='planned')return !t.st&&!isDel(t);
-  if(taskFilter==='delayed')return isDel(t);
+  if(taskFilter==='delayed')return isDelayed(t);
   return t.st===taskFilter;
 }
 
@@ -2200,7 +2200,6 @@ function manualSave(){
   btn.disabled=true;
   btn.textContent='저장 중...';
 
-  // saveStatus를 Promise로 감싸서 완료 처리
   try{
     const STATUS={};
     window.TASKS.forEach(t=>{STATUS[t.id]={st:t.st,stUpdated:t.stUpdated||''};});
@@ -2262,9 +2261,8 @@ function manualSave(){
     firebase.initializeApp(cfg);
     const db=firebase.firestore();
     const DOC=db.collection('dashboard').doc('status');
-    window._fbDOC=DOC;  // 수동 저장용 전역 노출
+    window._fbDOC=DOC;
 
-    // 로드: 페이지 렌더 완료 후 Status만 덮어씌우고 재렌더
     DOC.get().then(doc=>{
       if(doc.exists){
         const s=doc.data().STATUS||{};
@@ -2272,7 +2270,6 @@ function manualSave(){
         Object.entries(s).forEach(([id,val])=>{
           const t=window.TASKS&&window.TASKS.find(x=>x.id===id);
           if(!t)return;
-          // 이전 형식: 문자열 "Done" / 새 형식: {st:'Done', stUpdated:'2026-06-29'}
           const stVal=typeof val==='object'?( val.st||'') : val;
           const stUpd=typeof val==='object'?(val.stUpdated||''):'';
           if(t.st!==stVal){t.st=stVal;changed=true;}
@@ -2287,7 +2284,6 @@ function manualSave(){
       }
     }).catch(e=>console.warn('Firebase 로드 실패:',e));
 
-    // 저장: TASKS의 Status를 Firestore에 저장
     window.saveStatus=function(){
       if(!window.TASKS)return;
       const STATUS={};
