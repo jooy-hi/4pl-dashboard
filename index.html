@@ -2189,10 +2189,10 @@ function initMonthlyFilters(){
 
 
 
-// ── 수동 저장 (구글시트) ──
+// ── 수동 저장 ──
 function manualSave(){
   if(!window.saveStatus){
-    alert('구글시트 연결이 필요합니다. 잠시 후 다시 시도해주세요.');
+    alert('Firebase 연결이 필요합니다. 잠시 후 다시 시도해주세요.');
     return;
   }
   const btn=document.getElementById('btnSave');
@@ -2200,20 +2200,29 @@ function manualSave(){
   btn.disabled=true;
   btn.textContent='저장 중...';
 
-  window.saveStatus()
-    .then(()=>{
-      btn.disabled=false;
-      btn.textContent='💾 저장';
-      msg.textContent='✅ 저장 완료!';
-      msg.style.display='inline';
-      setTimeout(()=>{msg.style.display='none';},2500);
-      console.log('✅ 수동 저장 완료');
-    })
-    .catch(e=>{
-      btn.disabled=false;
-      btn.textContent='💾 저장';
-      alert('저장 실패: '+e.message);
-    });
+  // saveStatus를 Promise로 감싸서 완료 처리
+  try{
+    const STATUS={};
+    window.TASKS.forEach(t=>{STATUS[t.id]={st:t.st,stUpdated:t.stUpdated||''};});
+    window._fbDOC.set({STATUS},{merge:true})
+      .then(()=>{
+        btn.disabled=false;
+        btn.textContent='💾 저장';
+        msg.textContent='✅ 저장 완료!';
+        msg.style.display='inline';
+        setTimeout(()=>{msg.style.display='none';},2500);
+        console.log('✅ 수동 저장 완료');
+      })
+      .catch(e=>{
+        btn.disabled=false;
+        btn.textContent='💾 저장';
+        alert('저장 실패: '+e.message);
+      });
+  }catch(e){
+    btn.disabled=false;
+    btn.textContent='💾 저장';
+    alert('저장 실패: '+e.message);
+  }
 }
 
 
@@ -2236,61 +2245,63 @@ function manualSave(){
 
 </script>
 
-<!-- 구글시트(Apps Script) 연동: 메인 렌더와 완전 독립 실행 -->
+<!-- Firebase: 메인 렌더와 완전 독립 실행 -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <script>
 (function(){
-  // ⚠️ 배포 후 Apps Script 웹앱 URL로 반드시 교체하세요 (설정 방법은 대화창 안내 참고)
-  const GAS_URL = "PASTE_YOUR_APPS_SCRIPT_WEBAPP_URL_HERE";
+  try{
+    const cfg={
+      apiKey:"AIzaSyAv5zegt7ymTz5ES0mSylbZhBh3lUtPK7A",
+      authDomain:"pldashboard-1e295.firebaseapp.com",
+      projectId:"pldashboard-1e295",
+      storageBucket:"pldashboard-1e295.firebasestorage.app",
+      messagingSenderId:"784244525018",
+      appId:"1:784244525018:web:ec97a2579fc92bb57ea2e3"
+    };
+    firebase.initializeApp(cfg);
+    const db=firebase.firestore();
+    const DOC=db.collection('dashboard').doc('status');
+    window._fbDOC=DOC;  // 수동 저장용 전역 노출
 
-  if(!GAS_URL || GAS_URL.indexOf('PASTE_YOUR')===0){
-    console.warn('⚠️ GAS_URL이 설정되지 않았습니다. Apps Script 배포 후 URL을 입력하세요.');
-    window.saveStatus=function(){return Promise.reject(new Error('GAS_URL 미설정'));};
-    return;
-  }
-
-  // 로드: 페이지 렌더 완료 후 Status만 덮어씌우고 재렌더
-  fetch(GAS_URL+'?action=list')
-    .then(r=>r.json())
-    .then(res=>{
-      if(!res.ok)throw new Error(res.error||'load failed');
-      const s=res.data||{};
-      let changed=false;
-      Object.entries(s).forEach(([id,val])=>{
-        const t=window.TASKS&&window.TASKS.find(x=>x.id===id);
-        if(!t)return;
-        const stVal=val.st||'';
-        const stUpd=val.stUpdated||'';
-        if(t.st!==stVal){t.st=stVal;changed=true;}
-        if(stUpd)t.stUpdated=stUpd;
-      });
-      if(changed&&window.renderTasks){
-        window.renderTasks();
-        window.updateSummary&&window.updateSummary();
-        window.renderMonthly&&window.renderMonthly();
-        console.log('✅ 구글시트 Status 적용');
+    // 로드: 페이지 렌더 완료 후 Status만 덮어씌우고 재렌더
+    DOC.get().then(doc=>{
+      if(doc.exists){
+        const s=doc.data().STATUS||{};
+        let changed=false;
+        Object.entries(s).forEach(([id,val])=>{
+          const t=window.TASKS&&window.TASKS.find(x=>x.id===id);
+          if(!t)return;
+          // 이전 형식: 문자열 "Done" / 새 형식: {st:'Done', stUpdated:'2026-06-29'}
+          const stVal=typeof val==='object'?( val.st||'') : val;
+          const stUpd=typeof val==='object'?(val.stUpdated||''):'';
+          if(t.st!==stVal){t.st=stVal;changed=true;}
+          if(stUpd)t.stUpdated=stUpd;
+        });
+        if(changed&&window.renderTasks){
+          window.renderTasks();
+          window.updateSummary&&window.updateSummary();
+          window.renderMonthly&&window.renderMonthly();
+          console.log('✅ Firebase Status 적용');
+        }
       }
-    })
-    .catch(e=>console.warn('구글시트 로드 실패:',e));
+    }).catch(e=>console.warn('Firebase 로드 실패:',e));
 
-  // 저장: TASKS의 Status를 구글시트에 저장 (POST, text/plain으로 CORS preflight 회피)
-  window.saveStatus=function(){
-    if(!window.TASKS)return Promise.reject(new Error('TASKS 없음'));
-    const STATUS={};
-    window.TASKS.forEach(t=>{STATUS[t.id]={st:t.st,stUpdated:t.stUpdated||''};});
-    return fetch(GAS_URL,{
-      method:'POST',
-      headers:{'Content-Type':'text/plain;charset=utf-8'},
-      body:JSON.stringify({STATUS})
-    })
-      .then(r=>r.json())
-      .then(res=>{
-        if(!res.ok)throw new Error(res.error||'save failed');
-        console.log('✅ Status 저장 완료 ('+res.count+'건)');
-        return res;
-      });
-  };
+    // 저장: TASKS의 Status를 Firestore에 저장
+    window.saveStatus=function(){
+      if(!window.TASKS)return;
+      const STATUS={};
+      window.TASKS.forEach(t=>{STATUS[t.id]={st:t.st,stUpdated:t.stUpdated||''};});
+      DOC.set({STATUS},{merge:true})
+        .then(()=>console.log('✅ Status 저장'))
+        .catch(e=>console.warn('저장 실패:',e));
+    };
 
-  console.log('✅ 구글시트 연동 초기화 완료');
+    console.log('✅ Firebase 초기화 완료');
+  }catch(e){
+    console.warn('Firebase 초기화 실패 (무시):',e);
+    window.saveStatus=function(){};
+  }
 })();
 </script>
 
