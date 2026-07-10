@@ -989,6 +989,7 @@ function renderTasks(){
       const ar=document.createElement('tr');ar.className='acr';
       ar.setAttribute('draggable','true');
       ar.dataset.dragkey=ak;ar.dataset.dragwsno=w.no;ar.dataset.dragano=a.no;
+      ar.dataset.actionlogid='ACTION_'+w.no+'_'+a.no;
       const actBtnHtml=aAllCancelled
         ?`<button class="restore-btn" data-restoreact="${w.no}||${a.no}" title="Action 복원 (하위 Task 포함)" style="margin-left:10px;float:right">↩ 복원</button>`
         :`<button class="dbtn" data-delact="${w.no}||${a.no}" title="Action 취소 처리 (하위 Task 전체 포함)" style="margin-left:10px;float:right">✕</button>`;
@@ -2064,11 +2065,15 @@ function showTaskLogPopup(tr,id){
 function hideTaskLogPopup(){const p=document.getElementById('taskLogPopup');if(p)p.remove();}
 document.addEventListener('mouseover',function(e){
   const tr=e.target.closest('tr.tkr[data-taskid]');
-  if(tr&&!tr.contains(e.relatedTarget))showTaskLogPopup(tr,tr.dataset.taskid);
+  if(tr&&!tr.contains(e.relatedTarget)){showTaskLogPopup(tr,tr.dataset.taskid);return;}
+  const ar=e.target.closest('tr.acr[data-actionlogid]');
+  if(ar&&!ar.contains(e.relatedTarget))showTaskLogPopup(ar,ar.dataset.actionlogid);
 });
 document.addEventListener('mouseout',function(e){
   const tr=e.target.closest('tr.tkr[data-taskid]');
-  if(tr&&!tr.contains(e.relatedTarget))hideTaskLogPopup();
+  if(tr&&!tr.contains(e.relatedTarget)){hideTaskLogPopup();return;}
+  const ar=e.target.closest('tr.acr[data-actionlogid]');
+  if(ar&&!ar.contains(e.relatedTarget))hideTaskLogPopup();
 });
 
 function goMs(no){
