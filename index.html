@@ -872,10 +872,54 @@ function sdot(s,t){
   if(t&&isDelayed(t))return'<span class="status-dot sdot-del"></span>';
   return'<span class="status-dot sdot-pl"></span>';
 }
-function addLog(id,field,ov,nv){
+function addLog(id,field,ov,nv,comment){
   const n=new Date();
   const ts=`${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')} ${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}`;
-  LOGS.unshift({ts,user:CUR_USER,id,field,ov:ov||'(없음)',nv:nv||'(없음)'});
+  LOGS.unshift({ts,user:CUR_USER,id,field,ov:ov||'(없음)',nv:nv||'(없음)',comment:(comment||'').trim()});
+}
+// 인앱 코멘트/확인 모달 (네이티브 prompt/confirm은 임베드 환경에 따라
+// 포커스·blur 타이밍이 꼬여 이후 로직이 실행되지 않는 문제가 있어 사용하지 않음)
+function showCommentModal({title,message,confirmLabel='저장',danger}){
+  return new Promise(resolve=>{
+    const old=document.getElementById('dynCommentModal');if(old)old.remove();
+    const ov=document.createElement('div');
+    ov.id='dynCommentModal';ov.className='mov open';
+    ov.innerHTML=`
+      <div class="mo" style="width:440px;max-width:92vw">
+        <div class="moh"><div class="mot">${title}</div><button class="mox" data-dccancel>✕</button></div>
+        <div class="mob">
+          ${message?`<div style="font-size:13px;color:var(--tx2);margin-bottom:12px;white-space:pre-line;line-height:1.6">${message}</div>`:''}
+          <div class="fr"><label class="fl">코멘트 (선택)</label><textarea class="fta" id="dcComment" placeholder="사유를 입력하세요 — 비워두면 변경 일자/항목만 기록됩니다"></textarea></div>
+        </div>
+        <div class="mof">
+          <button class="bs" data-dccancel>취소</button>
+          <button class="bp" data-dcok style="${danger?'background:var(--del)':''}">${confirmLabel}</button>
+        </div>
+      </div>`;
+    document.body.appendChild(ov);
+    let settled=false;
+    const finish=(result)=>{if(settled)return;settled=true;ov.remove();resolve(result);};
+    ov.querySelectorAll('[data-dccancel]').forEach(b=>b.addEventListener('click',()=>finish(null)));
+    ov.addEventListener('mousedown',e=>{if(e.target===ov)finish(null);});
+    ov.querySelector('[data-dcok]').addEventListener('click',()=>{
+      const ta=document.getElementById('dcComment');
+      finish((ta?ta.value:'').trim());
+    });
+    setTimeout(()=>{const ta=document.getElementById('dcComment');if(ta)ta.focus();},0);
+  });
+}
+// 값 변경 후 코멘트(선택)를 입력받고 로그를 남긴 뒤 onApply 콜백에서 실제 데이터 반영.
+// 코멘트를 비워도 로그에는 항상 변경 일시·항목·변경 전후 값이 자동 기록됨.
+function promptCommentAndLog(id,field,ov,nv,onApply){
+  showCommentModal({
+    title:`${field} 변경`,
+    message:`${field} : ${ov} → ${nv}`,
+    confirmLabel:'저장'
+  }).then(comment=>{
+    if(comment===null)return; // 사용자가 취소 — 변경 미적용
+    addLog(id,field,ov,nv,comment);
+    if(typeof onApply==='function')onApply();
+  });
 }
 
 // ── Summary ──
@@ -940,18 +984,24 @@ function renderTasks(){
       const aexp=!colAct.has(ak);
       let aHas=false;a.tasks.forEach(t=>{if(mT(t,q)&&mF(t))aHas=true;});
       if(!aHas)return;
+      const aAllCancelled=a.tasks.length>0&&a.tasks.every(t=>t.cancelled);
       // Action row — 중분류 (연파랑, draggable)
       const ar=document.createElement('tr');ar.className='acr';
       ar.setAttribute('draggable','true');
       ar.dataset.dragkey=ak;ar.dataset.dragwsno=w.no;ar.dataset.dragano=a.no;
+      const actBtnHtml=aAllCancelled
+        ?`<button class="restore-btn" data-restoreact="${w.no}||${a.no}" title="Action 복원 (하위 Task 포함)" style="margin-left:10px;float:right">↩ 복원</button>`
+        :`<button class="dbtn" data-delact="${w.no}||${a.no}" title="Action 취소 처리 (하위 Task 전체 포함)" style="margin-left:10px;float:right">✕</button>`;
       ar.innerHTML=`
         <td style="text-align:center;cursor:pointer" data-actog="${ak}">
           <span class="drag-handle" title="드래그하여 순서 변경">⠿</span>
         </td>
         <td colspan="8" style="cursor:pointer" data-actog="${ak}">
           <span style="font-size:10px;opacity:.7;margin-right:5px">Action ${a.no}</span>
-          <span style="font-weight:600">${a.action}</span>
+          <span style="font-weight:600" class="${aAllCancelled?'task-cancelled':''}">${a.action}</span>
+          ${aAllCancelled?'<span class="cancel-badge" style="margin-left:8px">취소됨</span>':''}
           ${aexp?'<span style="font-size:10px;margin-left:6px;opacity:.5">▾</span>':'<span style="font-size:10px;margin-left:6px;opacity:.5">▸</span>'}
+          ${actBtnHtml}
         </td>`;
       // drag events
       ar.addEventListener('dragstart',e=>{
@@ -986,6 +1036,7 @@ function renderTasks(){
         const del=!isCancelled&&isDel(t);const warn=!isCancelled&&isWarn(t)&&!del;
         const tr=document.createElement('tr');
         tr.className='tkr'+(isCancelled?' cancelled':'');
+        tr.dataset.taskid=t.id;
         if(!isCancelled){
           if(del)tr.style.borderLeft='3px solid var(--del)';
           else if(warn)tr.style.borderLeft='3px solid var(--warn)';
@@ -995,7 +1046,7 @@ function renderTasks(){
         const msh=t.ms?`<span class="msl" data-msnav="${t.ms}">${t.ms}</span>`:'—';
         const taskNameHtml=isCancelled
           ?`<span class="task-cancelled">${t.task}</span>${t.cancelMemo?`<span class="cancel-memo">💬 ${t.cancelMemo}</span>`:''}`
-          :`${del?'<span style="font-size:10px;color:var(--del);margin-right:3px">⚠</span>':warn?'<span style="font-size:10px;color:var(--warn);margin-right:3px">⏰</span>':''}${t.task}`;
+          :`${del?'<span style="font-size:10px;color:var(--del);margin-right:3px">⚠</span>':warn?'<span style="font-size:10px;color:var(--warn);margin-right:3px">⏰</span>':''}<span class="editable" data-tasked="${t.id}">${t.task}</span>`;
         const actionCell=isCancelled
           ?`<button class="restore-btn" data-restoretask="${t.id}" title="취소 복원">↩ 복원</button>`
           :`<button class="dbtn" data-canceltask="${t.id}" title="취소 처리">✕</button>`;
@@ -1634,20 +1685,65 @@ document.addEventListener('click',function(e){
   // ws toggle
   const wt=t.closest('[data-wstog]');
   if(wt){const no=parseInt(wt.dataset.wstog);if(expWs.has(no))expWs.delete(no);else expWs.add(no);renderTasks();return;}
+  // cancel action (+ 하위 Task 전체) — 완전 삭제가 아닌 '취소 처리' (회색/취소선)
+  const dac=t.closest('[data-delact]');
+  if(dac){
+    e.stopPropagation();
+    const [wsNoStr,anoStr]=dac.dataset.delact.split('||');
+    const wsNo=parseInt(wsNoStr);
+    const subTasks=TASKS.filter(x=>x.wsNo===wsNo&&x.ano===anoStr&&!x.cancelled);
+    const actionName=subTasks[0]?.action||TASKS.find(x=>x.wsNo===wsNo&&x.ano===anoStr)?.action||'(알 수 없음)';
+    if(!subTasks.length)return;
+    showCommentModal({
+      title:'Action 취소 처리',
+      message:`"${actionName}" Action과 하위 Task ${subTasks.length}개를 함께 취소 처리합니다.\n(완전 삭제가 아니며, 회색·취소선으로 표시되고 언제든 복원할 수 있습니다)`,
+      confirmLabel:'취소 처리',
+      danger:true
+    }).then(comment=>{
+      if(comment===null)return; // 취소
+      subTasks.forEach(x=>{x.cancelled=true;x.cancelMemo=comment.trim();});
+      addLog('ACTION_'+wsNo+'_'+anoStr,'Action 취소 처리','활성','취소'+(comment.trim()?(' ('+comment.trim()+')'):'')+' (Task '+subTasks.length+'개 포함)',comment);
+      renderTasks();updateSummary();
+    });
+    return;
+  }
+  // restore action (+ 하위 Task 전체)
+  const rac=t.closest('[data-restoreact]');
+  if(rac){
+    e.stopPropagation();
+    const [wsNoStr,anoStr]=rac.dataset.restoreact.split('||');
+    const wsNo=parseInt(wsNoStr);
+    const subTasks=TASKS.filter(x=>x.wsNo===wsNo&&x.ano===anoStr&&x.cancelled);
+    const actionName=subTasks[0]?.action||'(알 수 없음)';
+    subTasks.forEach(x=>{x.cancelled=false;x.cancelMemo='';});
+    addLog('ACTION_'+wsNo+'_'+anoStr,'Action 취소 복원','취소','활성 (Task '+subTasks.length+'개 포함)');
+    renderTasks();updateSummary();
+    return;
+  }
   // action toggle
   const at2=t.closest('[data-actog]');
-  if(at2){const k=at2.dataset.actog;if(colAct.has(k))colAct.delete(k);else colAct.add(k);renderTasks();return;}
+  if(at2&&!t.closest('[data-delact]')){const k=at2.dataset.actog;if(colAct.has(k))colAct.delete(k);else colAct.add(k);renderTasks();return;}
   // inline edits
   const se=t.closest('[data-sted]');if(se){editSt(se,se.dataset.sted);return;}
   const de=t.closest('[data-dated]');if(de){editDt(de,de.dataset.dated);return;}
   const pe=t.closest('[data-piced]');if(pe){editPic(pe,pe.dataset.piced);return;}
+  const tke=t.closest('[data-tasked]');if(tke){editTask(tke,tke.dataset.tasked);return;}
   // cancel task
   const ct=t.closest('[data-canceltask]');
   if(ct){
-    const memo=prompt('취소 사유를 입력해 주세요 (선택):','');
-    if(memo===null)return;
-    const task=TASKS.find(x=>x.id===ct.dataset.canceltask);
-    if(task){task.cancelled=true;task.cancelMemo=memo.trim();addLog(ct.dataset.canceltask,'취소 처리','활성','취소'+(memo.trim()?(' ('+memo.trim()+')'):''));renderTasks();updateSummary()}
+    const taskId=ct.dataset.canceltask;
+    const task=TASKS.find(x=>x.id===taskId);
+    if(!task)return;
+    showCommentModal({
+      title:'Task 취소 처리',
+      message:`"${task.task}"\n취소 처리하면 Delayed/Planned 등 집계에서 제외됩니다.`,
+      confirmLabel:'취소 처리'
+    }).then(memo=>{
+      if(memo===null)return;
+      task.cancelled=true;task.cancelMemo=memo.trim();
+      addLog(taskId,'취소 처리','활성','취소'+(memo.trim()?(' ('+memo.trim()+')'):''),memo);
+      renderTasks();updateSummary();
+    });
     return;
   }
   // restore task
@@ -1879,18 +1975,20 @@ function editSt(el,id){
     item.innerHTML='<span class="badge '+cls+'" style="pointer-events:none">'+l+'</span>';
     item.addEventListener('mousedown',e=>{
       e.preventDefault();e.stopPropagation();
-      const ov=t.st;t.st=v;
-      t.stUpdated=new Date().toISOString().slice(0,10);
-      addLog(id,'Status',ov||'Planned',v||'Planned');
-      updateSummary();
+      const ov=t.st;const nv=v;
       picker.remove();
-      if(taskFilter!=='all'){
-        taskFilter='all';
-        document.querySelectorAll('.fbtn[data-tf]').forEach(b=>b.classList.remove('active'));
-        const ab=document.querySelector('.fbtn[data-tf="all"]');if(ab)ab.classList.add('active');
-      }
-      renderTasks();
-      if(document.getElementById('tab-monthly').classList.contains('active'))renderMonthly();
+      promptCommentAndLog(id,'Status',ov||'Planned',nv||'Planned',()=>{
+        t.st=nv;
+        t.stUpdated=new Date().toISOString().slice(0,10);
+        updateSummary();
+        if(taskFilter!=='all'){
+          taskFilter='all';
+          document.querySelectorAll('.fbtn[data-tf]').forEach(b=>b.classList.remove('active'));
+          const ab=document.querySelector('.fbtn[data-tf="all"]');if(ab)ab.classList.add('active');
+        }
+        renderTasks();
+        if(document.getElementById('tab-monthly').classList.contains('active'))renderMonthly();
+      });
     });
     item.addEventListener('mouseover',()=>item.style.background='var(--sf2)');
     item.addEventListener('mouseout',()=>item.style.background=t.st===v?'var(--sf2)':'');
@@ -1903,7 +2001,10 @@ function editSt(el,id){
 function editDt(el,id){
   const t=TASKS.find(x=>x.id===id);if(!t)return;
   const i=document.createElement('input');i.type='date';i.className='di';i.value=t.date;
-  i.onchange=()=>{const ov=t.date;t.date=i.value;t.wk=w2n(i.value);addLog(id,'Target Date',ov,i.value);renderTasks()};
+  i.onchange=()=>{
+    const ov=t.date;const nv=i.value;
+    promptCommentAndLog(id,'Target Date',ov,nv,()=>{t.date=nv;t.wk=w2n(nv);renderTasks();});
+  };
   i.onblur=()=>renderTasks();
   el.replaceWith(i);i.focus();
 }
@@ -1912,10 +2013,63 @@ function editPic(el,id){
   const s=document.createElement('select');s.className='si';
   const ob=document.createElement('option');ob.value='';ob.textContent='—';s.appendChild(ob);
   PERSONS.forEach(p=>{const o=document.createElement('option');o.value=p;o.textContent=p;if(t.pic===p)o.selected=true;s.appendChild(o);});
-  s.onchange=()=>{const ov=t.pic;t.pic=s.value;addLog(id,'담당자',ov||'—',s.value||'—');renderTasks()};
+  s.onchange=()=>{
+    const ov=t.pic;const nv=s.value;
+    promptCommentAndLog(id,'담당자',ov||'—',nv||'—',()=>{t.pic=nv;renderTasks();});
+  };
   s.onblur=()=>renderTasks();
   el.replaceWith(s);s.focus();
 }
+
+function editTask(el,id){
+  const t=TASKS.find(x=>x.id===id);if(!t)return;
+  const i=document.createElement('input');i.type='text';i.className='di';i.value=t.task;i.style.minWidth='220px';
+  const commit=()=>{
+    const nv=i.value.trim();
+    if(nv&&nv!==t.task){
+      const ov=t.task;
+      promptCommentAndLog(id,'Task',ov,nv,()=>{t.task=nv;renderTasks();});
+    } else {
+      renderTasks();
+    }
+  };
+  i.onkeydown=(e)=>{if(e.key==='Enter')i.blur();if(e.key==='Escape'){i.value=t.task;i.blur();}};
+  i.onblur=commit;
+  el.replaceWith(i);i.focus();i.select();
+}
+// ── Task 편집 이력 호버 팝업 ──
+function showTaskLogPopup(tr,id){
+  hideTaskLogPopup();
+  const logs=LOGS.filter(l=>l.id===id);
+  if(!logs.length)return;
+  const pop=document.createElement('div');
+  pop.id='taskLogPopup';
+  pop.style.cssText='position:fixed;z-index:9999;background:#fff;border:1px solid var(--bd2);border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,.18);padding:10px 12px;min-width:280px;max-width:420px;max-height:260px;overflow-y:auto;pointer-events:none;';
+  const rect=tr.getBoundingClientRect();
+  const vh=window.innerHeight;
+  const top=(rect.bottom+260>vh)?Math.max(8,rect.top-8-Math.min(260,logs.length*54+30)):rect.bottom+4;
+  pop.style.top=top+'px';
+  pop.style.left=Math.max(8,rect.left)+'px';
+  let html='<div style="font-size:11px;font-weight:700;color:var(--tx2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.4px">✎ 편집 이력</div>';
+  logs.slice(0,10).forEach(l=>{
+    html+=`<div style="padding:5px 0;border-top:1px solid var(--sf2);font-size:12px;line-height:1.5">`
+      +`<div style="color:var(--tx3);font-size:11px">${l.ts}${l.user?(' · '+l.user):''}</div>`
+      +`<div><strong>${l.field}</strong>: ${l.ov} → ${l.nv}</div>`
+      +(l.comment?`<div style="color:var(--tx2);margin-top:2px">💬 ${l.comment}</div>`:'')
+      +`</div>`;
+  });
+  pop.innerHTML=html;
+  document.body.appendChild(pop);
+}
+function hideTaskLogPopup(){const p=document.getElementById('taskLogPopup');if(p)p.remove();}
+document.addEventListener('mouseover',function(e){
+  const tr=e.target.closest('tr.tkr[data-taskid]');
+  if(tr&&!tr.contains(e.relatedTarget))showTaskLogPopup(tr,tr.dataset.taskid);
+});
+document.addEventListener('mouseout',function(e){
+  const tr=e.target.closest('tr.tkr[data-taskid]');
+  if(tr&&!tr.contains(e.relatedTarget))hideTaskLogPopup();
+});
 
 function goMs(no){
   document.querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));
