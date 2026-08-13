@@ -2406,7 +2406,20 @@ function manualSave(){
   window.renderTasks=renderTasks;
   window.renderMonthly=renderMonthly;
   window.updateSummary=updateSummary;
-  updateSummary();renderTasks();renderMs();renderWs();renderGantt();initMonthlyFilters();renderMonthly();
+  try{
+    console.log('TASKS count:', TASKS.length);
+    console.log('WS count:', WS.length);
+    console.log('TASKS sample:', TASKS[0]);
+    updateSummary();
+    console.log('updateSummary done');
+    renderTasks();
+    console.log('renderTasks done');
+    renderMs();renderWs();renderGantt();initMonthlyFilters();renderMonthly();
+    console.log('All renders done');
+  }catch(err){
+    console.error('INIT ERROR:', err);
+    document.body.insertAdjacentHTML('afterbegin','<div style="background:red;color:white;padding:20px;font-size:14px;position:fixed;top:0;left:0;right:0;z-index:9999">오류: '+err.message+'</div>');
+  }
 })();
 
 // 데이터 변경 시마다 자동 저장 — 주요 액션 후  호출
